@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiresFlow - Dashboard de Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        uccDark: '#132740',
+                        uccLight: '#00acc9',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
+
+    <!-- Sidebar Unificado -->
+    <aside class="w-64 bg-uccDark text-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
+        <div class="p-8 text-center border-b border-slate-700">
+            <h2 class="text-2xl font-black tracking-tighter">
+                <span class="text-uccLight">Aires</span><span class="text-white">Flow</span>
+            </h2>
+            <p class="text-xs text-slate-400 font-medium mt-2">GESTIÓN DE CLIMATIZACIÓN</p>
+        </div>
+
+        <nav class="flex-1 px-4 py-8 space-y-1">
+            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 bg-uccLight text-uccDark rounded-xl shadow-lg font-bold text-sm">
+                <i class="fas fa-chart-line w-5"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-snowflake w-5"></i>
+                <span>Inventario</span>
+            </a>
+            <a href="asset_technical_sheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-file-invoice w-5"></i>
+                <span>Hoja de Vida</span>
+            </a>
+            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-calendar-check w-5"></i>
+                <span>Programación</span>
+            </a>
+            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-history w-5"></i>
+                <span>Auditoría</span>
+            </a>
+            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-clipboard-list w-5"></i>
+                <span>Reporte Servicio</span>
+            </a>
+            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-download w-5"></i>
+                <span>Exportar Datos</span>
+            </a>
+            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-shield-alt w-5"></i>
+                <span>Control de Acceso</span>
+            </a>
+            <a href="user_profile_settings.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-cog w-5"></i>
+                <span>Configuración</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-700">
+            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm justify-center">
+                <i class="fas fa-sign-out-alt w-5"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+
+        <!-- Header -->
+        <header class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm">
+            <img src="img/ucc.png" alt="UCC" class="h-12 object-contain">
+            <p class="text-xs font-black uppercase tracking-widest text-slate-500">ANÁLISIS EN TIEMPO REAL</p>
+        </header>
+
+        <!-- Contenido Scrollable -->
+        <div class="flex-1 overflow-y-auto">
+            <div class="p-10">
+                <!-- Encabezado -->
+                <div class="mb-10">
+                    <h1 class="text-4xl font-black text-uccDark tracking-tighter mb-2">Panel de Control</h1>
+                    <p class="text-slate-600 font-medium">Indicadores de gestión y carga térmica - Campus Montería</p>
+                </div>
+
+                <!-- KPI Grid Principal -->
+                <div class="grid grid-cols-4 gap-6 mb-10">
+                    <!-- Total Activos -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Total Activos</p>
+                        <h3 class="text-5xl font-black text-uccDark mb-2">142</h3>
+                        <p class="text-xs text-slate-500 font-medium">
+                            <i class="fas fa-arrow-up text-green-600 mr-1"></i>
+                            <span class="text-green-600 font-bold">+12</span> este mes
+                        </p>
+                    </div>
+
+                    <!-- Capacidad Total BTU -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 border-l-4 border-l-uccLight">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Capacidad Total</p>
+                        <h3 class="text-4xl font-black text-uccLight mb-2">2.4M <span class="text-sm font-bold">BTU</span></h3>
+                        <p class="text-xs text-slate-500 font-medium">
+                            Equivalente a <strong>200 TR</strong>
+                        </p>
+                    </div>
+
+                    <!-- Disponibilidad -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 border-l-4 border-l-green-500">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Disponibilidad</p>
+                        <h3 class="text-5xl font-black text-green-600 mb-2">98.2%</h3>
+                        <p class="text-xs text-slate-500 font-medium">
+                            <span class="text-green-600 font-bold">140</span> operativos
+                        </p>
+                    </div>
+
+                    <!-- Alertas Vencidas -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 border-l-4 border-l-red-500">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Alertas Vencidas</p>
+                        <h3 class="text-5xl font-black text-red-600 mb-2">03</h3>
+                        <p class="text-xs text-slate-500 font-medium">
+                            <span class="text-red-600 font-bold">2</span> en reparación
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Distribución Térmica -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-10 mb-10">
+                    <h3 class="text-sm font-black uppercase tracking-widest text-uccDark mb-8">Distribución Térmica por Piso</h3>
+
+                    <div class="flex items-end justify-between gap-6 h-64">
+                        <!-- Piso 1 -->
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="flex items-end gap-2 h-full w-full">
+                                <div class="flex-1 bg-slate-100 rounded-t-2xl flex items-end justify-center pb-4">
+                                    <div class="bg-uccLight rounded-t-xl w-3/4 h-[35%] transition-all hover:bg-uccDark hover:h-[40%] cursor-pointer"></div>
+                                </div>
+                            </div>
+                            <p class="text-xs font-black text-slate-600 mt-4">PISO 1</p>
+                            <p class="text-xs text-slate-500 font-bold">480 kW</p>
+                        </div>
+
+                        <!-- Piso 2 -->
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="flex items-end gap-2 h-full w-full">
+                                <div class="flex-1 bg-slate-100 rounded-t-2xl flex items-end justify-center pb-4">
+                                    <div class="bg-uccLight rounded-t-xl w-3/4 h-[65%] transition-all hover:bg-uccDark hover:h-[70%] cursor-pointer"></div>
+                                </div>
+                            </div>
+                            <p class="text-xs font-black text-slate-600 mt-4">PISO 2</p>
+                            <p class="text-xs text-slate-500 font-bold">780 kW</p>
+                        </div>
+
+                        <!-- Piso 3 -->
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="flex items-end gap-2 h-full w-full">
+                                <div class="flex-1 bg-slate-100 rounded-t-2xl flex items-end justify-center pb-4">
+                                    <div class="bg-uccLight rounded-t-xl w-3/4 h-[85%] transition-all hover:bg-uccDark hover:h-[90%] cursor-pointer"></div>
+                                </div>
+                            </div>
+                            <p class="text-xs font-black text-slate-600 mt-4">PISO 3</p>
+                            <p class="text-xs text-slate-500 font-bold">1,020 kW</p>
+                        </div>
+
+                        <!-- Piso 4 -->
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="flex items-end gap-2 h-full w-full">
+                                <div class="flex-1 bg-slate-100 rounded-t-2xl flex items-end justify-center pb-4">
+                                    <div class="bg-uccLight rounded-t-xl w-3/4 h-[95%] transition-all hover:bg-uccDark hover:h-[100%] cursor-pointer"></div>
+                                </div>
+                            </div>
+                            <p class="text-xs font-black text-slate-600 mt-4">PISO 4</p>
+                            <p class="text-xs text-slate-500 font-bold">1,200 kW</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estado de Equipos por Tipo -->
+                <div class="grid grid-cols-2 gap-6 mb-10">
+                    <!-- Tabla de Equipos -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <h3 class="text-sm font-black uppercase tracking-widest text-uccDark mb-6">Estado de Equipos</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <span class="text-sm font-bold text-slate-700">Operativos</span>
+                                <span class="text-xl font-black text-green-600">140</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-amber-50 rounded-xl">
+                                <span class="text-sm font-bold text-slate-700">En Reparación</span>
+                                <span class="text-xl font-black text-amber-600">2</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-slate-100 rounded-xl">
+                                <span class="text-sm font-bold text-slate-700">Inactivos</span>
+                                <span class="text-xl font-black text-slate-600">0</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-red-50 rounded-xl">
+                                <span class="text-sm font-bold text-slate-700">Dados de Baja</span>
+                                <span class="text-xl font-black text-red-600">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Mantenimientos -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <h3 class="text-sm font-black uppercase tracking-widest text-uccDark mb-6">Mantenimientos Este Mes</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <span class="text-sm font-bold text-slate-700">Realizados</span>
+                                <span class="text-xl font-black text-uccLight">28</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
+                                <span class="text-sm font-bold text-slate-700">Programados</span>
+                                <span class="text-xl font-black text-blue-600">12</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-slate-100 rounded-xl">
+                                <span class="text-sm font-bold text-slate-700">Pendientes</span>
+                                <span class="text-xl font-black text-slate-600">5</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-red-50 rounded-xl">
+                                <span class="text-sm font-bold text-slate-700">Vencidos</span>
+                                <span class="text-xl font-black text-red-600">3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloque de Exportación -->
+                <div class="bg-gradient-to-r from-uccDark to-slate-800 rounded-2xl p-8 text-white">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-black mb-2">Exportar para Power BI</h3>
+                            <p class="text-sm text-slate-300 font-medium">Datos limpios y normalizados listos para análisis avanzado</p>
+                        </div>
+                        <button class="bg-uccLight hover:bg-slate-100 text-uccDark font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                            <i class="fas fa-file-export"></i>
+                            <span>Exportar CSV</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

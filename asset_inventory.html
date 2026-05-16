@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiresFlow - Inventario de Activos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        uccDark: '#132740',
+                        uccLight: '#00acc9',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
+
+    <!-- Sidebar Unificado -->
+    <aside class="w-64 bg-uccDark text-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
+        <div class="p-8 text-center border-b border-slate-700">
+            <h2 class="text-2xl font-black tracking-tighter">
+                <span class="text-uccLight">Aires</span><span class="text-white">Flow</span>
+            </h2>
+            <p class="text-xs text-slate-400 font-medium mt-2">GESTIÓN DE CLIMATIZACIÓN</p>
+        </div>
+
+        <nav class="flex-1 px-4 py-8 space-y-1">
+            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-chart-line w-5"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 bg-uccLight text-uccDark rounded-xl shadow-lg font-bold text-sm">
+                <i class="fas fa-snowflake w-5"></i>
+                <span>Inventario</span>
+            </a>
+            <a href="asset_technical_sheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-file-invoice w-5"></i>
+                <span>Hoja de Vida</span>
+            </a>
+            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-calendar-check w-5"></i>
+                <span>Programación</span>
+            </a>
+            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-history w-5"></i>
+                <span>Auditoría</span>
+            </a>
+            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-clipboard-list w-5"></i>
+                <span>Reporte Servicio</span>
+            </a>
+            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-download w-5"></i>
+                <span>Exportar Datos</span>
+            </a>
+            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-shield-alt w-5"></i>
+                <span>Control de Acceso</span>
+            </a>
+            <a href="user_profile_settings.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-cog w-5"></i>
+                <span>Configuración</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-700">
+            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm justify-center">
+                <i class="fas fa-sign-out-alt w-5"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+
+        <!-- Header -->
+        <header class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm">
+            <img src="img/ucc.png" alt="UCC" class="h-12 object-contain">
+            <div class="text-right">
+                <p class="text-xs font-black uppercase tracking-widest text-slate-500">Gestión Técnica en Tiempo Real</p>
+            </div>
+        </header>
+
+        <!-- Contenido Scrollable -->
+        <div class="flex-1 overflow-y-auto">
+            <div class="p-10">
+                <!-- Encabezado de Sección -->
+                <div class="mb-10">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h1 class="text-4xl font-black text-uccDark tracking-tighter">Inventario Técnico</h1>
+                            <p class="text-slate-500 font-medium mt-2">Base de datos de activos instalados en campus Montería</p>
+                        </div>
+                        <button class="bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Nuevo Activo</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtros y Búsqueda -->
+                <div class="grid grid-cols-4 gap-4 mb-8">
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Código Activo</label>
+                        <input type="text" placeholder="Ej: 69911" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Estado</label>
+                        <select class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
+                            <option>Todos</option>
+                            <option>Operativo</option>
+                            <option>En reparacion</option>
+                            <option>Inactivo</option>
+                            <option>Dado de baja</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Bloque</label>
+                        <select class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
+                            <option>Todos</option>
+                            <option>Bloque A</option>
+                            <option>Bloque B</option>
+                            <option>Bloque Administrativo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Piso</label>
+                        <select class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
+                            <option>Todos</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabla de Inventario -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 border-b border-slate-200">
+                            <tr class="text-xs font-black uppercase tracking-widest text-slate-500">
+                                <th class="px-8 py-5 text-left">Código Activo</th>
+                                <th class="px-8 py-5 text-left">Marca / Modelo</th>
+                                <th class="px-8 py-5 text-left">Capacidad</th>
+                                <th class="px-8 py-5 text-left">Ubicación</th>
+                                <th class="px-8 py-5 text-left">Instalación</th>
+                                <th class="px-8 py-5 text-left">Estado</th>
+                                <th class="px-8 py-5 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50/50 transition cursor-pointer">
+                                <td class="px-8 py-5 font-black text-uccDark">69911</td>
+                                <td class="px-8 py-5 font-bold text-slate-700">LG / AS-W12GQLDG0</td>
+                                <td class="px-8 py-5 font-bold text-slate-600">
+                                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">43,000 BTU</span>
+                                </td>
+                                <td class="px-8 py-5 font-semibold text-slate-600">
+                                    <span class="text-xs">Bloque A - Aula 204</span><br>
+                                    <span class="text-xs text-slate-400">Piso 2</span>
+                                </td>
+                                <td class="px-8 py-5 text-slate-600 text-xs">12/05/2023</td>
+                                <td class="px-8 py-5">
+                                    <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
+                                        <i class="fas fa-check w-3"></i> Operativo
+                                    </span>
+                                </td>
+                                <td class="px-8 py-5 text-center">
+                                    <a href="asset_technical_sheet.html" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-uccLight hover:text-white text-uccDark px-4 py-2 rounded-lg text-xs font-bold transition">
+                                        <i class="fas fa-eye w-4"></i> Ver
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50/50 transition cursor-pointer">
+                                <td class="px-8 py-5 font-black text-uccDark">69912</td>
+                                <td class="px-8 py-5 font-bold text-slate-700">Daikin / FTXE50D</td>
+                                <td class="px-8 py-5 font-bold text-slate-600">
+                                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">60,000 BTU</span>
+                                </td>
+                                <td class="px-8 py-5 font-semibold text-slate-600">
+                                    <span class="text-xs">Bloque B - Lab. 101</span><br>
+                                    <span class="text-xs text-slate-400">Piso 1</span>
+                                </td>
+                                <td class="px-8 py-5 text-slate-600 text-xs">08/03/2024</td>
+                                <td class="px-8 py-5">
+                                    <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold">
+                                        <i class="fas fa-tools w-3"></i> En Reparación
+                                    </span>
+                                </td>
+                                <td class="px-8 py-5 text-center">
+                                    <a href="asset_technical_sheet.html" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-uccLight hover:text-white text-uccDark px-4 py-2 rounded-lg text-xs font-bold transition">
+                                        <i class="fas fa-eye w-4"></i> Ver
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50/50 transition cursor-pointer">
+                                <td class="px-8 py-5 font-black text-uccDark">69913</td>
+                                <td class="px-8 py-5 font-bold text-slate-700">Fujitsu / AGTK24LWTC</td>
+                                <td class="px-8 py-5 font-bold text-slate-600">
+                                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">24,000 BTU</span>
+                                </td>
+                                <td class="px-8 py-5 font-semibold text-slate-600">
+                                    <span class="text-xs">Bloque Administrativo - Oficina</span><br>
+                                    <span class="text-xs text-slate-400">Piso 3</span>
+                                </td>
+                                <td class="px-8 py-5 text-slate-600 text-xs">15/01/2024</td>
+                                <td class="px-8 py-5">
+                                    <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
+                                        <i class="fas fa-check w-3"></i> Operativo
+                                    </span>
+                                </td>
+                                <td class="px-8 py-5 text-center">
+                                    <a href="asset_technical_sheet.html" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-uccLight hover:text-white text-uccDark px-4 py-2 rounded-lg text-xs font-bold transition">
+                                        <i class="fas fa-eye w-4"></i> Ver
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div class="mt-8 flex items-center justify-between">
+                    <p class="text-xs text-slate-600 font-medium">Mostrando <strong>3</strong> de <strong>142</strong> equipos</p>
+                    <div class="flex gap-2">
+                        <button class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50 transition">← Anterior</button>
+                        <button class="px-3 py-2 bg-uccLight text-white rounded-lg text-sm font-bold">1</button>
+                        <button class="px-3 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">2</button>
+                        <button class="px-3 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">3</button>
+                        <button class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Siguiente →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

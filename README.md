@@ -1,2 +1,0 @@
-﻿# Registros_Frontend
-Html con tailwind y javascript, agrega barra de busqueda y agrega revision de datos.

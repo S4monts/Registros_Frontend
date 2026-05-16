@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiresFlow - Configuración de Perfil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        uccDark: '#132740',
+                        uccLight: '#00acc9',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-uccDark text-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
+        <div class="p-8 text-center border-b border-slate-700">
+            <h2 class="text-2xl font-black tracking-tighter"><span class="text-uccLight">Aires</span><span class="text-white">Flow</span></h2>
+            <p class="text-xs text-slate-400 font-medium mt-2">GESTIÓN DE CLIMATIZACIÓN</p>
+        </div>
+        <nav class="flex-1 px-4 py-8 space-y-1">
+            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-chart-line w-5"></i><span>Dashboard</span></a>
+            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-snowflake w-5"></i><span>Inventario</span></a>
+            <a href="asset_technical_sheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-file-invoice w-5"></i><span>Hoja de Vida</span></a>
+            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-calendar-check w-5"></i><span>Programación</span></a>
+            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-history w-5"></i><span>Auditoría</span></a>
+            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-clipboard-list w-5"></i><span>Reporte Servicio</span></a>
+            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-download w-5"></i><span>Exportar Datos</span></a>
+            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-shield-alt w-5"></i><span>Control de Acceso</span></a>
+            <a href="user_profile_settings.html" class="flex items-center gap-3 px-4 py-3 bg-uccLight text-uccDark rounded-xl shadow-lg font-bold text-sm"><i class="fas fa-cog w-5"></i><span>Configuración</span></a>
+        </nav>
+        <div class="p-4 border-t border-slate-700">
+            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        <header class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm">
+            <img src="img/ucc.png" alt="UCC" class="h-12 object-contain">
+            <p class="text-xs font-black uppercase tracking-widest text-slate-500">CONFIGURACIÓN DE USUARIO</p>
+        </header>
+
+        <div class="flex-1 overflow-y-auto">
+            <div class="p-10 max-w-4xl">
+                <!-- Perfil de Usuario -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-10 mb-8">
+                    <div class="flex items-start justify-between mb-8">
+                        <div class="flex items-center gap-6">
+                            <div class="w-24 h-24 bg-uccLight/10 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-user text-uccLight text-4xl"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-2xl font-black text-uccDark">Juan Carlos Martínez</h1>
+                                <p class="text-sm text-slate-600 font-medium">j.martinez@ucc.edu.co</p>
+                                <span class="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold mt-2">
+                                    <i class="fas fa-crown w-3"></i> Administrador
+                                </span>
+                            </div>
+                        </div>
+                        <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-bold text-sm transition">
+                            <i class="fas fa-image mr-2"></i> Cambiar Avatar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabs de Configuración -->
+                <div class="mb-8 flex gap-2 border-b border-slate-200 bg-white rounded-t-2xl p-4">
+                    <button class="px-6 py-3 font-bold text-sm border-b-2 border-b-uccLight text-uccDark">Información</button>
+                    <button class="px-6 py-3 font-bold text-sm text-slate-600 hover:text-uccDark transition">Seguridad</button>
+                    <button class="px-6 py-3 font-bold text-sm text-slate-600 hover:text-uccDark transition">Notificaciones</button>
+                </div>
+
+                <!-- Panel Información Personal -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-10 mb-8">
+                    <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Información Personal</h2>
+
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Nombre Completo</label>
+                                <input type="text" value="Juan Carlos Martínez" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Cédula</label>
+                                <input type="text" value="1234567890" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Correo Institucional</label>
+                                <input type="email" value="j.martinez@ucc.edu.co" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Teléfono</label>
+                                <input type="tel" value="+57 300 123 4567" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Departamento</label>
+                            <input type="text" value="Infraestructura Técnica" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Especialización</label>
+                            <select class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white">
+                                <option>Sistemas de Climatización</option>
+                                <option>Electricidad</option>
+                                <option>Mecánica</option>
+                                <option>General</option>
+                            </select>
+                        </div>
+
+                        <div class="flex gap-4 pt-4 border-t border-slate-200">
+                            <button type="submit" class="flex-1 bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                                <i class="fas fa-save"></i>
+                                <span>Guardar Cambios</span>
+                            </button>
+                            <button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Estadísticas de Usuario -->
+                <div class="grid grid-cols-4 gap-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Acceso a Sistema</p>
+                        <h3 class="text-2xl font-black text-uccDark mb-2">Activo</h3>
+                        <p class="text-xs text-slate-500">Desde el 01/03/2024</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Último Acceso</p>
+                        <h3 class="text-base font-black text-slate-700 mb-2">Hoy, 14:32</h3>
+                        <p class="text-xs text-slate-500">Desde IP: 192.168.1.10</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Reportes Generados</p>
+                        <h3 class="text-2xl font-black text-uccLight">24</h3>
+                        <p class="text-xs text-slate-500">Este año</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Permisos Activos</p>
+                        <h3 class="text-2xl font-black text-green-600">8</h3>
+                        <p class="text-xs text-slate-500">Todos validados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
+
