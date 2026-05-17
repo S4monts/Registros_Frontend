@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AiresFlow - Dashboard de Control</title>
+    <title>Gestión de Mantenimiento de Aires Acondicionados - Panel de Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -27,12 +27,11 @@
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
 
     <!-- Sidebar Unificado -->
-    <aside class="w-64 bg-uccDark text-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
-        <div class="p-8 text-center border-b border-slate-700">
-            <h2 class="text-2xl font-black tracking-tighter">
-                <span class="text-uccLight">Aires</span><span class="text-white">Flow</span>
-            </h2>
-            <p class="text-xs text-slate-400 font-medium mt-2">GESTIÓN DE CLIMATIZACIÓN</p>
+    <aside class="w-64 bg-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
+        <!-- Cabecera Blanca con Logo -->
+        <div class="p-6 flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
+            <img src="img/ucc.png" alt="UCC Logo" class="h-24 object-contain mb-2">
+            <h2 class="text-center text-sm font-black text-uccDark tracking-tighter">Sistema de Gestión de Aires</h2>
         </div>
 
         <nav class="flex-1 px-4 py-8 space-y-1">
@@ -40,42 +39,34 @@
                 <i class="fas fa-chart-line w-5"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-snowflake w-5"></i>
                 <span>Inventario</span>
             </a>
-            <a href="asset_technical_sheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
-                <i class="fas fa-file-invoice w-5"></i>
-                <span>Hoja de Vida</span>
-            </a>
-            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-calendar-check w-5"></i>
                 <span>Programación</span>
             </a>
-            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-history w-5"></i>
                 <span>Auditoría</span>
             </a>
-            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-clipboard-list w-5"></i>
                 <span>Reporte Servicio</span>
             </a>
-            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-download w-5"></i>
                 <span>Exportar Datos</span>
             </a>
-            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-shield-alt w-5"></i>
                 <span>Control de Acceso</span>
             </a>
-            <a href="user_profile_settings.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
-                <i class="fas fa-cog w-5"></i>
-                <span>Configuración</span>
-            </a>
         </nav>
 
-        <div class="p-4 border-t border-slate-700">
-            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm justify-center">
+        <div class="p-4 border-t border-slate-200">
+            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center">
                 <i class="fas fa-sign-out-alt w-5"></i>
                 <span>Cerrar Sesión</span>
             </button>
@@ -140,56 +131,6 @@
                     </div>
                 </div>
 
-                <!-- Gráfico de Distribución Térmica -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-10 mb-10">
-                    <h3 class="text-sm font-black uppercase tracking-widest text-uccDark mb-8">Distribución Térmica por Piso</h3>
-
-                    <div class="flex items-end justify-between gap-6 h-64">
-                        <!-- Piso 1 -->
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="flex items-end gap-2 h-full w-full">
-                                <div class="flex-1 bg-slate-100 rounded-t-2xl flex items-end justify-center pb-4">
-                                    <div class="bg-uccLight rounded-t-xl w-3/4 h-[35%] transition-all hover:bg-uccDark hover:h-[40%] cursor-pointer"></div>
-                                </div>
-                            </div>
-                            <p class="text-xs font-black text-slate-600 mt-4">PISO 1</p>
-                            <p class="text-xs text-slate-500 font-bold">480 kW</p>
-                        </div>
-
-                        <!-- Piso 2 -->
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="flex items-end gap-2 h-full w-full">
-                                <div class="flex-1 bg-slate-100 rounded-t-2xl flex items-end justify-center pb-4">
-                                    <div class="bg-uccLight rounded-t-xl w-3/4 h-[65%] transition-all hover:bg-uccDark hover:h-[70%] cursor-pointer"></div>
-                                </div>
-                            </div>
-                            <p class="text-xs font-black text-slate-600 mt-4">PISO 2</p>
-                            <p class="text-xs text-slate-500 font-bold">780 kW</p>
-                        </div>
-
-                        <!-- Piso 3 -->
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="flex items-end gap-2 h-full w-full">
-                                <div class="flex-1 bg-slate-100 rounded-t-2xl flex items-end justify-center pb-4">
-                                    <div class="bg-uccLight rounded-t-xl w-3/4 h-[85%] transition-all hover:bg-uccDark hover:h-[90%] cursor-pointer"></div>
-                                </div>
-                            </div>
-                            <p class="text-xs font-black text-slate-600 mt-4">PISO 3</p>
-                            <p class="text-xs text-slate-500 font-bold">1,020 kW</p>
-                        </div>
-
-                        <!-- Piso 4 -->
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="flex items-end gap-2 h-full w-full">
-                                <div class="flex-1 bg-slate-100 rounded-t-2xl flex items-end justify-center pb-4">
-                                    <div class="bg-uccLight rounded-t-xl w-3/4 h-[95%] transition-all hover:bg-uccDark hover:h-[100%] cursor-pointer"></div>
-                                </div>
-                            </div>
-                            <p class="text-xs font-black text-slate-600 mt-4">PISO 4</p>
-                            <p class="text-xs text-slate-500 font-bold">1,200 kW</p>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Estado de Equipos por Tipo -->
                 <div class="grid grid-cols-2 gap-6 mb-10">
@@ -237,20 +178,6 @@
                                 <span class="text-xl font-black text-red-600">3</span>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Bloque de Exportación -->
-                <div class="bg-gradient-to-r from-uccDark to-slate-800 rounded-2xl p-8 text-white">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h3 class="text-lg font-black mb-2">Exportar para Power BI</h3>
-                            <p class="text-sm text-slate-300 font-medium">Datos limpios y normalizados listos para análisis avanzado</p>
-                        </div>
-                        <button class="bg-uccLight hover:bg-slate-100 text-uccDark font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
-                            <i class="fas fa-file-export"></i>
-                            <span>Exportar CSV</span>
-                        </button>
                     </div>
                 </div>
             </div>

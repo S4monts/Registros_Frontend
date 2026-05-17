@@ -27,24 +27,23 @@
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-uccDark text-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
-        <div class="p-8 text-center border-b border-slate-700">
-            <h2 class="text-2xl font-black tracking-tighter"><span class="text-uccLight">Aires</span><span class="text-white">Flow</span></h2>
-            <p class="text-xs text-slate-400 font-medium mt-2">GESTIÓN DE CLIMATIZACIÓN</p>
+    <aside class="w-64 bg-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
+        <!-- Cabecera Blanca con Logo -->
+        <div class="p-6 flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
+            <img src="img/ucc.png" alt="UCC Logo" class="h-24 object-contain mb-2">
+            <h2 class="text-center text-sm font-black text-uccDark tracking-tighter">Sistema de Gestión de Aires</h2>
         </div>
         <nav class="flex-1 px-4 py-8 space-y-1">
-            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-chart-line w-5"></i><span>Dashboard</span></a>
-            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-snowflake w-5"></i><span>Inventario</span></a>
-            <a href="asset_technical_sheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-file-invoice w-5"></i><span>Hoja de Vida</span></a>
-            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-calendar-check w-5"></i><span>Programación</span></a>
-            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-history w-5"></i><span>Auditoría</span></a>
-            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-clipboard-list w-5"></i><span>Reporte Servicio</span></a>
-            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-download w-5"></i><span>Exportar Datos</span></a>
+            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-chart-line w-5"></i><span>Dashboard</span></a>
+            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-snowflake w-5"></i><span>Inventario</span></a>
+            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-calendar-check w-5"></i><span>Programación</span></a>
+            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-history w-5"></i><span>Auditoría</span></a>
+            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-clipboard-list w-5"></i><span>Reporte Servicio</span></a>
+            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-download w-5"></i><span>Exportar Datos</span></a>
             <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 bg-uccLight text-uccDark rounded-xl shadow-lg font-bold text-sm"><i class="fas fa-shield-alt w-5"></i><span>Control de Acceso</span></a>
-            <a href="user_profile_settings.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-cog w-5"></i><span>Configuración</span></a>
         </nav>
-        <div class="p-4 border-t border-slate-700">
-            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
+        <div class="p-4 border-t border-slate-200">
+            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
         </div>
     </aside>
 
@@ -72,12 +71,12 @@
                 <!-- Panel de Usuarios -->
                 <div class="grid grid-cols-4 gap-4 mb-8">
                     <div>
-                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Búsqueda</label>
-                        <input type="text" placeholder="Por nombre o correo..." class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                        <label for="userSearchFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Búsqueda</label>
+                        <input id="userSearchFilter" type="text" placeholder="Por nombre o correo..." class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
                     </div>
                     <div>
-                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Rol</label>
-                        <select class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white">
+                        <label for="userRoleFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Rol</label>
+                        <select id="userRoleFilter" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white">
                             <option>Todos</option>
                             <option>Administrador</option>
                             <option>Técnico</option>
@@ -86,8 +85,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Estado</label>
-                        <select class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white">
+                        <label for="userStatusFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Estado</label>
+                        <select id="userStatusFilter" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white">
                             <option>Todos</option>
                             <option>Activo</option>
                             <option>Inactivo</option>
@@ -95,54 +94,81 @@
                         </select>
                     </div>
                     <div class="flex items-end">
-                        <button class="w-full bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-lg transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-user-plus"></i> Nuevo Usuario
+                        <button onclick="openCreateUserModal()" class="w-full bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-user-plus"></i> + Añadir Nuevo Usuario
                         </button>
                     </div>
                 </div>
 
                 <!-- Tabla de Usuarios -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-visible">
                     <table class="w-full text-sm">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr class="text-xs font-black uppercase tracking-widest text-slate-500">
-                                <th class="px-8 py-5 text-left">Usuario</th>
+                                <th class="px-8 py-5 text-left rounded-tl-2xl">Usuario</th>
                                 <th class="px-8 py-5 text-left">Correo</th>
                                 <th class="px-8 py-5 text-left">Rol</th>
                                 <th class="px-8 py-5 text-left">Estado</th>
                                 <th class="px-8 py-5 text-left">Último Acceso</th>
-                                <th class="px-8 py-5 text-center">Acciones</th>
+                                <th class="px-8 py-5 text-center rounded-tr-2xl">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             <tr class="hover:bg-slate-50/50 transition">
-                                <td class="px-8 py-5 font-bold text-uccDark">Juan Carlos Martínez</td>
-                                <td class="px-8 py-5 text-slate-600">j.martinez@ucc.edu.co</td>
-                                <td class="px-8 py-5"><span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">Administrador</span></td>
+                                <td id="userName-1" class="px-8 py-5 font-bold text-uccDark">Juan Carlos Martínez</td>
+                                <td id="userEmail-1" class="px-8 py-5 text-slate-600">j.martinez@ucc.edu.co</td>
+                                <td class="px-8 py-5"><span id="userRoleBadge-1" class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">Administrador</span></td>
                                 <td class="px-8 py-5"><span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-check-circle w-3"></i> Activo</span></td>
                                 <td class="px-8 py-5 text-slate-600">Hoy, 14:32</td>
-                                <td class="px-8 py-5 text-center">
-                                    <button class="text-uccLight hover:text-uccDark font-bold">⋮</button>
+                                <td class="py-4 px-6 text-center relative overflow-visible z-30">
+                                    <div class="relative inline-block text-left">
+                                        <button onclick="toggleUserMenu(event, 'user-1')" class="p-2 rounded-lg hover:bg-slate-100 transition" aria-label="Acciones de usuario">
+                                            <i class="fas fa-ellipsis-v text-slate-400"></i>
+                                        </button>
+                                        <div id="userMenu-user-1" class="hidden absolute right-4 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl w-44 py-2 z-50 text-left animate-fade-in">
+                                            <button onclick="openProfileModal('user-1')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Ver Perfil / Editar</button>
+                                            <button onclick="assignUserRole('user-1', 'Técnico')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Asignar Rol de Técnico</button>
+                                            <button onclick="assignUserRole('user-1', 'Auxiliar')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Asignar Rol de Auxiliar</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             <tr class="hover:bg-slate-50/50 transition">
-                                <td class="px-8 py-5 font-bold text-uccDark">Carlos Peña Ruiz</td>
-                                <td class="px-8 py-5 text-slate-600">c.pena@ucc.edu.co</td>
-                                <td class="px-8 py-5"><span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Técnico</span></td>
+                                <td id="userName-2" class="px-8 py-5 font-bold text-uccDark">Carlos Peña Ruiz</td>
+                                <td id="userEmail-2" class="px-8 py-5 text-slate-600">c.pena@ucc.edu.co</td>
+                                <td class="px-8 py-5"><span id="userRoleBadge-2" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Técnico</span></td>
                                 <td class="px-8 py-5"><span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-check-circle w-3"></i> Activo</span></td>
                                 <td class="px-8 py-5 text-slate-600">Ayer, 16:15</td>
-                                <td class="px-8 py-5 text-center">
-                                    <button class="text-uccLight hover:text-uccDark font-bold">⋮</button>
+                                <td class="py-4 px-6 text-center relative overflow-visible z-30">
+                                    <div class="relative inline-block text-left">
+                                        <button onclick="toggleUserMenu(event, 'user-2')" class="p-2 rounded-lg hover:bg-slate-100 transition" aria-label="Acciones de usuario">
+                                            <i class="fas fa-ellipsis-v text-slate-400"></i>
+                                        </button>
+                                        <div id="userMenu-user-2" class="hidden absolute right-4 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl w-44 py-2 z-50 text-left animate-fade-in">
+                                            <button onclick="openProfileModal('user-2')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Ver Perfil / Editar</button>
+                                            <button onclick="assignUserRole('user-2', 'Técnico')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Asignar Rol de Técnico</button>
+                                            <button onclick="assignUserRole('user-2', 'Auxiliar')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Asignar Rol de Auxiliar</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             <tr class="hover:bg-slate-50/50 transition">
-                                <td class="px-8 py-5 font-bold text-uccDark">Andrea López Cervantes</td>
-                                <td class="px-8 py-5 text-slate-600">a.lopez@ucc.edu.co</td>
-                                <td class="px-8 py-5"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Supervisor</span></td>
+                                <td id="userName-3" class="px-8 py-5 font-bold text-uccDark rounded-bl-2xl">Andrea López Cervantes</td>
+                                <td id="userEmail-3" class="px-8 py-5 text-slate-600">a.lopez@ucc.edu.co</td>
+                                <td class="px-8 py-5"><span id="userRoleBadge-3" class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Supervisor</span></td>
                                 <td class="px-8 py-5"><span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-check-circle w-3"></i> Activo</span></td>
                                 <td class="px-8 py-5 text-slate-600">Hace 5 días</td>
-                                <td class="px-8 py-5 text-center">
-                                    <button class="text-uccLight hover:text-uccDark font-bold">⋮</button>
+                                <td class="py-4 px-6 text-center relative overflow-visible z-30 rounded-br-2xl">
+                                    <div class="relative inline-block text-left">
+                                        <button onclick="toggleUserMenu(event, 'user-3')" class="p-2 rounded-lg hover:bg-slate-100 transition" aria-label="Acciones de usuario">
+                                            <i class="fas fa-ellipsis-v text-slate-400"></i>
+                                        </button>
+                                        <div id="userMenu-user-3" class="hidden absolute right-4 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl w-44 py-2 z-50 text-left animate-fade-in">
+                                            <button onclick="openProfileModal('user-3')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Ver Perfil / Editar</button>
+                                            <button onclick="assignUserRole('user-3', 'Técnico')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Asignar Rol de Técnico</button>
+                                            <button onclick="assignUserRole('user-3', 'Auxiliar')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Asignar Rol de Auxiliar</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -175,6 +201,378 @@
             </div>
         </div>
     </main>
+
+    <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-50 w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] overflow-y-auto">
+            <div class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <img src="img/ucc.png" alt="UCC" class="h-12 object-contain">
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500">CONFIGURACIÓN DE USUARIO</p>
+                        <h2 id="profileModalTitle" class="text-lg font-black text-uccDark">Juan Carlos Martínez</h2>
+                    </div>
+                </div>
+                <button onclick="closeProfileModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+            </div>
+
+            <div class="p-6 md:p-10">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-10 mb-8">
+                    <div class="flex items-start justify-between mb-8 gap-6">
+                        <div class="flex items-center gap-6">
+                            <div class="w-24 h-24 bg-uccLight/10 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-user text-uccLight text-4xl"></i>
+                            </div>
+                            <div>
+                                <h1 id="profileName" class="text-2xl font-black text-uccDark">Juan Carlos Martínez</h1>
+                                <p id="profileEmail" class="text-sm text-slate-600 font-medium">j.martinez@ucc.edu.co</p>
+                                <span id="profileRoleBadge" class="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold mt-2">
+                                    <i class="fas fa-crown w-3"></i> Administrador
+                                </span>
+                            </div>
+                        </div>
+                        <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-bold text-sm transition">
+                            <i class="fas fa-image mr-2"></i> Cambiar Avatar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-8 flex gap-2 border-b border-slate-200 bg-white rounded-t-2xl p-4">
+                    <button class="px-6 py-3 font-bold text-sm border-b-2 border-b-uccLight text-uccDark">Información</button>
+                    <button class="px-6 py-3 font-bold text-sm text-slate-600 hover:text-uccDark transition">Seguridad</button>
+                    <button class="px-6 py-3 font-bold text-sm text-slate-600 hover:text-uccDark transition">Notificaciones</button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-10 mb-8">
+                    <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Información Personal</h2>
+
+                    <form class="space-y-6" onsubmit="saveProfileChanges(event)">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label for="profileFullName" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Nombre Completo</label>
+                                <input id="profileFullName" type="text" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9]">
+                            </div>
+                            <div>
+                                <label for="profileDocument" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Cédula</label>
+                                <input id="profileDocument" type="text" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9]">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label for="profileInstitutionalEmail" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Correo Institucional</label>
+                                <input id="profileInstitutionalEmail" type="email" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9]">
+                            </div>
+                            <div>
+                                <label for="profilePhone" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Teléfono</label>
+                                <input id="profilePhone" type="tel" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9]">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="profileDepartment" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Departamento</label>
+                            <input id="profileDepartment" type="text" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9]">
+                        </div>
+
+                        <div>
+                            <label for="profileSpecialization" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Especialización</label>
+                            <select id="profileSpecialization" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9] bg-white">
+                                <option>Sistemas de Climatización</option>
+                                <option>Electricidad</option>
+                                <option>Mecánica</option>
+                                <option>General</option>
+                            </select>
+                        </div>
+
+                        <div class="flex gap-4 pt-4 border-t border-slate-200">
+                            <button type="submit" class="flex-1 bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                                <i class="fas fa-save"></i>
+                                <span>Guardar Cambios</span>
+                            </button>
+                            <button type="button" onclick="closeProfileModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="grid grid-cols-4 gap-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Acceso a Sistema</p>
+                        <h3 id="profileAccessStatus" class="text-2xl font-black text-uccDark mb-2">Activo</h3>
+                        <p id="profileAccessSince" class="text-xs text-slate-500">Desde el 01/03/2024</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Último Acceso</p>
+                        <h3 id="profileLastLogin" class="text-base font-black text-slate-700 mb-2">Hoy, 14:32</h3>
+                        <p id="profileLastLoginIp" class="text-xs text-slate-500">Desde IP: 192.168.1.10</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Reportes Generados</p>
+                        <h3 id="profileReportsCount" class="text-2xl font-black text-uccLight">24</h3>
+                        <p class="text-xs text-slate-500">Este año</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Permisos Activos</p>
+                        <h3 id="profilePermissionsCount" class="text-2xl font-black text-green-600">8</h3>
+                        <p class="text-xs text-slate-500">Todos validados</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-end">
+                    <button onclick="deactivateUser()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                        <i class="fas fa-user-slash"></i>
+                        <span>Dar de Baja Personal</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-crear-usuario" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-50 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] overflow-y-auto">
+            <div class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <img src="img/ucc.png" alt="UCC" class="h-12 object-contain">
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500">REGISTRO DE PERSONAL</p>
+                        <h2 class="text-lg font-black text-uccDark">Añadir Nuevo Usuario</h2>
+                    </div>
+                </div>
+                <button onclick="closeCreateUserModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+            </div>
+
+            <div class="p-6 md:p-10">
+                <form class="space-y-6" onsubmit="saveNewUser(event)">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="newUserName" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Nombre</label>
+                            <input id="newUserName" type="text" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9]" placeholder="Nombre completo">
+                        </div>
+                        <div>
+                            <label for="newUserEmail" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Correo</label>
+                            <input id="newUserEmail" type="email" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9]" placeholder="correo@ucc.edu.co">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="newUserDocument" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Cédula</label>
+                            <input id="newUserDocument" type="text" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9]" placeholder="Número de documento">
+                        </div>
+                        <div>
+                            <label for="newUserPhone" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Teléfono</label>
+                            <input id="newUserPhone" type="tel" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9]" placeholder="+57 ...">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="newUserRole" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Selector de Rol</label>
+                        <select id="newUserRole" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00acc9] bg-white">
+                            <option>Administrador</option>
+                            <option>Técnico</option>
+                            <option>Auxiliar</option>
+                            <option>Supervisor</option>
+                        </select>
+                    </div>
+
+                    <div class="flex gap-4 pt-4 border-t border-slate-200">
+                        <button type="submit" class="flex-1 bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-save"></i>
+                            <span>Guardar Usuario</span>
+                        </button>
+                        <button type="button" onclick="closeCreateUserModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const userProfiles = {
+            'user-1': {
+                name: 'Juan Carlos Martínez',
+                email: 'j.martinez@ucc.edu.co',
+                document: '1234567890',
+                phone: '+57 300 123 4567',
+                department: 'Infraestructura Técnica',
+                specialization: 'Sistemas de Climatización',
+                role: 'Administrador',
+                roleClass: 'bg-purple-100 text-purple-700',
+                roleIcon: 'fa-crown',
+                accessStatus: 'Activo',
+                accessSince: 'Desde el 01/03/2024',
+                lastLogin: 'Hoy, 14:32',
+                lastLoginIp: 'Desde IP: 192.168.1.10',
+                reportsCount: '24',
+                permissionsCount: '8'
+            },
+            'user-2': {
+                name: 'Carlos Peña Ruiz',
+                email: 'c.pena@ucc.edu.co',
+                document: '1098765432',
+                phone: '+57 301 555 8821',
+                department: 'Operaciones Técnicas',
+                specialization: 'General',
+                role: 'Técnico',
+                roleClass: 'bg-blue-100 text-blue-700',
+                roleIcon: 'fa-screwdriver-wrench',
+                accessStatus: 'Activo',
+                accessSince: 'Desde el 12/06/2024',
+                lastLogin: 'Ayer, 16:15',
+                lastLoginIp: 'Desde IP: 192.168.1.14',
+                reportsCount: '18',
+                permissionsCount: '5'
+            },
+            'user-3': {
+                name: 'Andrea López Cervantes',
+                email: 'a.lopez@ucc.edu.co',
+                document: '1122334455',
+                phone: '+57 302 888 0044',
+                department: 'Coordinación de Mantenimiento',
+                specialization: 'Mecánica',
+                role: 'Supervisor',
+                roleClass: 'bg-green-100 text-green-700',
+                roleIcon: 'fa-user-check',
+                accessStatus: 'Activo',
+                accessSince: 'Desde el 05/08/2023',
+                lastLogin: 'Hace 5 días',
+                lastLoginIp: 'Desde IP: 192.168.1.22',
+                reportsCount: '31',
+                permissionsCount: '9'
+            }
+        };
+
+        let currentUserId = 'user-1';
+
+        function closeAllMenus() {
+            Object.keys(userProfiles).forEach((id) => {
+                const menu = document.getElementById(`userMenu-${id}`);
+                if (menu) menu.classList.add('hidden');
+            });
+        }
+
+        function toggleUserMenu(event, userId) {
+            event.stopPropagation();
+            const menu = document.getElementById(`userMenu-${userId}`);
+            const isHidden = menu.classList.contains('hidden');
+            closeAllMenus();
+            if (isHidden) {
+                menu.classList.remove('hidden');
+            }
+        }
+
+        function openProfileModal(userId) {
+            closeAllMenus();
+            currentUserId = userId;
+            const user = userProfiles[userId];
+
+            document.getElementById('profileModalTitle').textContent = user.name;
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileEmail').textContent = user.email;
+            document.getElementById('profileRoleBadge').className = `inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mt-2 ${user.roleClass}`;
+            document.getElementById('profileRoleBadge').innerHTML = `<i class="fas ${user.roleIcon} w-3"></i> ${user.role}`;
+            document.getElementById('profileFullName').value = user.name;
+            document.getElementById('profileDocument').value = user.document;
+            document.getElementById('profileInstitutionalEmail').value = user.email;
+            document.getElementById('profilePhone').value = user.phone;
+            document.getElementById('profileDepartment').value = user.department;
+            document.getElementById('profileSpecialization').value = user.specialization;
+            document.getElementById('profileAccessStatus').textContent = user.accessStatus;
+            document.getElementById('profileAccessSince').textContent = user.accessSince;
+            document.getElementById('profileLastLogin').textContent = user.lastLogin;
+            document.getElementById('profileLastLoginIp').textContent = user.lastLoginIp;
+            document.getElementById('profileReportsCount').textContent = user.reportsCount;
+            document.getElementById('profilePermissionsCount').textContent = user.permissionsCount;
+
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        function openCreateUserModal() {
+            closeAllMenus();
+            document.getElementById('modal-crear-usuario').classList.remove('hidden');
+        }
+
+        function closeCreateUserModal() {
+            document.getElementById('modal-crear-usuario').classList.add('hidden');
+        }
+
+        function saveNewUser(event) {
+            event.preventDefault();
+            closeCreateUserModal();
+            alert('Usuario registrado correctamente');
+        }
+
+        function updateRoleBadge(userId, role) {
+            const badge = document.getElementById(`userRoleBadge-${userId.split('-')[1]}`);
+            const profileBadge = document.getElementById('profileRoleBadge');
+            const roleConfig = {
+                Administrador: { className: 'bg-purple-100 text-purple-700', icon: 'fa-crown' },
+                Tecnico: { className: 'bg-blue-100 text-blue-700', icon: 'fa-screwdriver-wrench' },
+                Auxiliar: { className: 'bg-emerald-100 text-emerald-700', icon: 'fa-clipboard-list' },
+                Supervisor: { className: 'bg-green-100 text-green-700', icon: 'fa-user-check' }
+            };
+            const normalizedRole = role.normalize('NFD').replaceAll(/[\u0300-\u036f]/g, '');
+            const config = roleConfig[normalizedRole] || roleConfig.Auxiliar;
+
+            if (badge) {
+                badge.className = `px-3 py-1 rounded-full text-xs font-bold ${config.className}`;
+                badge.textContent = role;
+            }
+
+            if (currentUserId === userId && profileBadge) {
+                profileBadge.className = `inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mt-2 ${config.className}`;
+                profileBadge.innerHTML = `<i class="fas ${config.icon} w-3"></i> ${role}`;
+            }
+
+            userProfiles[userId].role = role;
+            userProfiles[userId].roleClass = config.className;
+            userProfiles[userId].roleIcon = config.icon;
+        }
+
+        function assignUserRole(userId, role) {
+            closeAllMenus();
+            updateRoleBadge(userId, role);
+            if (currentUserId === userId) {
+                document.getElementById('profileModal').classList.remove('hidden');
+            }
+        }
+
+        function saveProfileChanges(event) {
+            event.preventDefault();
+            const user = userProfiles[currentUserId];
+
+            user.name = document.getElementById('profileFullName').value;
+            user.email = document.getElementById('profileInstitutionalEmail').value;
+            user.document = document.getElementById('profileDocument').value;
+            user.phone = document.getElementById('profilePhone').value;
+            user.department = document.getElementById('profileDepartment').value;
+            user.specialization = document.getElementById('profileSpecialization').value;
+
+            document.getElementById(`userName-${currentUserId.split('-')[1]}`).textContent = user.name;
+            document.getElementById(`userEmail-${currentUserId.split('-')[1]}`).textContent = user.email;
+            document.getElementById('profileModalTitle').textContent = user.name;
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileEmail').textContent = user.email;
+
+            alert('Cambios guardados para ' + user.name);
+        }
+
+        function deactivateUser() {
+            alert('Dar de baja personal: ' + currentUserId);
+        }
+
+        document.addEventListener('click', closeAllMenus);
+        document.getElementById('profileModal').addEventListener('click', function (event) {
+            if (event.target === this) closeProfileModal();
+        });
+        document.getElementById('modal-crear-usuario').addEventListener('click', function (event) {
+            if (event.target === this) closeCreateUserModal();
+        });
+    </script>
 
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AiresFlow - Reporte de Servicio</title>
+    <title>Gestión de Mantenimiento de Aires Acondicionados - Reporte Técnico</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -27,24 +27,23 @@
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-uccDark text-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
-        <div class="p-8 text-center border-b border-slate-700">
-            <h2 class="text-2xl font-black tracking-tighter"><span class="text-uccLight">Aires</span><span class="text-white">Flow</span></h2>
-            <p class="text-xs text-slate-400 font-medium mt-2">GESTIÓN DE CLIMATIZACIÓN</p>
+    <aside class="w-64 bg-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
+        <!-- Cabecera Blanca con Logo -->
+        <div class="p-6 flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
+            <img src="img/ucc.png" alt="UCC Logo" class="h-24 object-contain mb-2">
+            <h2 class="text-center text-sm font-black text-uccDark tracking-tighter">Sistema de Gestión de Aires</h2>
         </div>
         <nav class="flex-1 px-4 py-8 space-y-1">
-            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-chart-line w-5"></i><span>Dashboard</span></a>
-            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-snowflake w-5"></i><span>Inventario</span></a>
-            <a href="asset_technical_sheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-file-invoice w-5"></i><span>Hoja de Vida</span></a>
-            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-calendar-check w-5"></i><span>Programación</span></a>
-            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-history w-5"></i><span>Auditoría</span></a>
+            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-chart-line w-5"></i><span>Dashboard</span></a>
+            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-snowflake w-5"></i><span>Inventario</span></a>
+            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-calendar-check w-5"></i><span>Programación</span></a>
+            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-history w-5"></i><span>Auditoría</span></a>
             <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 bg-uccLight text-uccDark rounded-xl shadow-lg font-bold text-sm"><i class="fas fa-clipboard-list w-5"></i><span>Reporte Servicio</span></a>
-            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-download w-5"></i><span>Exportar Datos</span></a>
-            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-shield-alt w-5"></i><span>Control de Acceso</span></a>
-            <a href="user_profile_settings.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm"><i class="fas fa-cog w-5"></i><span>Configuración</span></a>
+            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-download w-5"></i><span>Exportar Datos</span></a>
+            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-shield-alt w-5"></i><span>Control de Acceso</span></a>
         </nav>
-        <div class="p-4 border-t border-slate-700">
-            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
+        <div class="p-4 border-t border-slate-200">
+            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
         </div>
     </aside>
 
@@ -69,15 +68,21 @@
                             <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Identificación de Equipo</h2>
                             <div class="grid grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Código Activo *</label>
-                                    <input type="text" required class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight" placeholder="Ej: 69911">
+                                    <label for="codigoActivo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Código Activo *</label>
+                                    <div class="flex gap-2">
+                                        <input id="codigoActivo" type="text" required class="flex-1 w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm" placeholder="Ej: 69911">
+                                        <button type="button" onclick="openBuscarActivoModal()" class="bg-uccLight hover:bg-[#0092ab] text-white font-bold px-4 py-3 rounded-xl shadow-md transition-all flex items-center justify-center" title="Buscar activo">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Ubicación *</label>
-                                    <select required class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white">
-                                        <option>Seleccionar...</option>
-                                        <option>Bloque A - Aula 204</option>
-                                        <option>Bloque B - Lab 101</option>
+                                    <label for="ubicacion" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Ubicación *</label>
+                                    <select id="ubicacion" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="bloque-a-aula-204">Bloque A - Aula 204</option>
+                                        <option value="bloque-b-lab-101">Bloque B - Lab 101</option>
+                                        <option value="bloque-admin-oficina">Bloque Administrativo - Oficina</option>
                                     </select>
                                 </div>
                             </div>
@@ -87,17 +92,17 @@
                         <div>
                             <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Tipo de Intervención</h2>
                             <div class="grid grid-cols-3 gap-4">
-                                <label class="flex items-center p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-uccLight transition">
+                                <label class="flex items-center p-4 border-2 border-slate-300 rounded-xl cursor-pointer hover:border-uccLight transition bg-white">
                                     <input type="radio" name="tipo" value="preventivo" class="w-4 h-4 accent-uccLight">
                                     <span class="ml-3 font-bold text-sm text-slate-700">Preventivo</span>
                                 </label>
-                                <label class="flex items-center p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-uccLight transition">
+                                <label class="flex items-center p-4 border-2 border-slate-300 rounded-xl cursor-pointer hover:border-uccLight transition bg-white">
                                     <input type="radio" name="tipo" value="correctivo" class="w-4 h-4 accent-uccLight">
                                     <span class="ml-3 font-bold text-sm text-slate-700">Correctivo</span>
                                 </label>
-                                <label class="flex items-center p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-uccLight transition">
-                                    <input type="radio" name="tipo" value="inspección" class="w-4 h-4 accent-uccLight">
-                                    <span class="ml-3 font-bold text-sm text-slate-700">Inspección</span>
+                                <label class="flex items-center p-4 border-2 border-slate-300 rounded-xl cursor-pointer hover:border-uccLight transition bg-white">
+                                    <input type="radio" name="tipo" value="emergencia" class="w-4 h-4 accent-uccLight">
+                                    <span class="ml-3 font-bold text-sm text-slate-700">Emergencia<br/><span class="text-xs text-slate-500">(Muerte Súbita)</span></span>
                                 </label>
                             </div>
                         </div>
@@ -107,12 +112,12 @@
                             <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Datos de la Intervención</h2>
                             <div class="grid grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Fecha de Intervención *</label>
-                                    <input type="date" required class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                                    <label for="fechaIntervención" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Fecha de Intervención *</label>
+                                    <input id="fechaIntervención" type="date" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Horas Realizadas *</label>
-                                    <input type="number" step="0.5" required class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight" placeholder="2.5">
+                                    <label for="horasRealizadas" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Horas Realizadas *</label>
+                                    <input id="horasRealizadas" type="number" step="0.5" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm" placeholder="2.5">
                                 </div>
                             </div>
                         </div>
@@ -120,7 +125,8 @@
                         <!-- Sección 4: Descripción del Trabajo -->
                         <div>
                             <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Descripción del Trabajo</h2>
-                            <textarea required class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight resize-none" rows="6" placeholder="Detalle las actividades realizadas, observaciones y estado del equipo..."></textarea>
+                            <label for="descripcionTrabajo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Descripción *</label>
+                            <textarea id="descripcionTrabajo" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm resize-none" rows="6" placeholder="Detalle las actividades realizadas, observaciones y estado del equipo..."></textarea>
                         </div>
 
                         <!-- Sección 5: Hallazgos y Recomendaciones -->
@@ -128,12 +134,12 @@
                             <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Hallazgos y Recomendaciones</h2>
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Problemas Encontrados</label>
-                                    <textarea class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight resize-none" rows="3" placeholder="Describe los problemas identificados..."></textarea>
+                                    <label for="problemas" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Problemas Encontrados</label>
+                                    <textarea id="problemas" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm resize-none" rows="3" placeholder="Describe los problemas identificados..."></textarea>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Acciones Recomendadas</label>
-                                    <textarea class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight resize-none" rows="3" placeholder="Próximas acciones sugeridas..."></textarea>
+                                    <label for="recomendaciones" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Acciones Recomendadas</label>
+                                    <textarea id="recomendaciones" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm resize-none" rows="3" placeholder="Próximas acciones sugeridas..."></textarea>
                                 </div>
                             </div>
                         </div>
@@ -142,24 +148,24 @@
                         <div>
                             <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Estado Posterior a Intervención</h2>
                             <div class="grid grid-cols-3 gap-4">
-                                <label class="flex items-center p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-green-500 transition">
+                                <label class="flex items-center p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50 transition bg-green-50">
                                     <input type="radio" name="estado" value="operativo" class="w-4 h-4 accent-green-600">
-                                    <span class="ml-3 font-bold text-sm text-slate-700">Operativo</span>
+                                    <span class="ml-3 font-bold text-sm text-green-700">Operativo</span>
                                 </label>
-                                <label class="flex items-center p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-amber-500 transition">
-                                    <input type="radio" name="estado" value="condicionado" class="w-4 h-4 accent-amber-600">
-                                    <span class="ml-3 font-bold text-sm text-slate-700">Condicionado</span>
+                                <label class="flex items-center p-4 border-2 border-amber-200 rounded-xl cursor-pointer hover:bg-amber-50 transition bg-amber-50">
+                                    <input type="radio" name="estado" value="en-observacion" class="w-4 h-4 accent-amber-600">
+                                    <span class="ml-3 font-bold text-sm text-amber-700">En Observación</span>
                                 </label>
-                                <label class="flex items-center p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-red-500 transition">
+                                <label class="flex items-center p-4 border-2 border-red-200 rounded-xl cursor-pointer hover:bg-red-50 transition bg-red-50">
                                     <input type="radio" name="estado" value="fuera-servicio" class="w-4 h-4 accent-red-600">
-                                    <span class="ml-3 font-bold text-sm text-slate-700">Fuera de Servicio</span>
+                                    <span class="ml-3 font-bold text-sm text-red-700">Fuera de Servicio</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Botones de Acción -->
                         <div class="flex gap-4 pt-8 border-t border-slate-200">
-                            <button type="submit" class="flex-1 bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                            <button type="submit" class="flex-1 bg-[#00acc9] hover:bg-[#0092ab] text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform active:scale-95 flex items-center justify-center gap-2 text-sm">
                                 <i class="fas fa-save"></i>
                                 <span>Guardar Reporte</span>
                             </button>
@@ -175,6 +181,101 @@
         </div>
     </main>
 
+    <!-- Modal Buscar Activo -->
+    <div id="modal-buscar-activo" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-50 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <img src="img/ucc.png" alt="Logo UCC" class="h-12 object-contain">
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div>
+                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Buscar Activo</span>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Selecciona un equipo de aire acondicionado</p>
+                    </div>
+                </div>
+                <button onclick="closeBuscarActivoModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+            </div>
+
+            <div class="p-10 overflow-y-auto max-h-[85vh]">
+                <div class="space-y-6">
+                    <div>
+                        <label for="buscarActivoInput" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Buscar por código o ubicación</label>
+                        <input id="buscarActivoInput" type="text" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm" placeholder="Ej: 69911 o Bloque A">
+                    </div>
+
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-500">Equipos Disponibles</h3>
+                        <div id="listaActivos" class="space-y-2">
+                            <!-- Los activos se cargarán dinámicamente aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de activos disponibles
+        const activos = [
+            { id: '69911', marca: 'LG', modelo: 'AS-W12GQLDG0', ubicacion: 'Bloque A - Aula 204', btu: '43,000 BTU' },
+            { id: '69912', marca: 'Daikin', modelo: 'FTXE50D', ubicacion: 'Bloque B - Lab 101', btu: '60,000 BTU' },
+            { id: '69913', marca: 'Fujitsu', modelo: 'AGTK24LWTC', ubicacion: 'Bloque Administrativo - Oficina', btu: '24,000 BTU' },
+            { id: '69914', marca: 'Midea', modelo: 'MSAB-36CRN1', ubicacion: 'Bloque A - Aula 301', btu: '36,000 BTU' },
+            { id: '69915', marca: 'LG', modelo: 'AS-W18GQLDG0', ubicacion: 'Bloque C - Comedor', btu: '18,000 BTU' }
+        ];
+
+        function openBuscarActivoModal() {
+            document.getElementById('modal-buscar-activo').classList.remove('hidden');
+            renderizarActivos(activos);
+        }
+
+        function closeBuscarActivoModal() {
+            document.getElementById('modal-buscar-activo').classList.add('hidden');
+        }
+
+        function renderizarActivos(listaActivos) {
+            const contenedor = document.getElementById('listaActivos');
+            contenedor.innerHTML = listaActivos.map(activo => `
+                <div class="bg-white rounded-xl border border-slate-200 p-4 flex justify-between items-center hover:shadow-md transition">
+                    <div class="flex-1">
+                        <p class="font-bold text-uccDark text-sm">${activo.id} - ${activo.marca} ${activo.modelo}</p>
+                        <p class="text-xs text-slate-600 mt-1">${activo.ubicacion}</p>
+                        <p class="text-xs text-slate-500 mt-1">${activo.btu}</p>
+                    </div>
+                    <button onclick="seleccionarActivo('${activo.id}')" class="bg-uccLight hover:bg-[#0092ab] text-white font-bold px-4 py-2 rounded-lg transition text-sm">
+                        Seleccionar
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function seleccionarActivo(codigoActivo) {
+            // Inyectar el código en el input del formulario principal
+            document.getElementById('codigoActivo').value = codigoActivo;
+            closeBuscarActivoModal();
+        }
+
+        // Búsqueda en tiempo real
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputBusqueda = document.getElementById('buscarActivoInput');
+            if (inputBusqueda) {
+                inputBusqueda.addEventListener('input', function(e) {
+                    const termino = e.target.value.toLowerCase();
+                    const activosFiltrados = activos.filter(activo =>
+                        activo.id.toLowerCase().includes(termino) ||
+                        activo.ubicacion.toLowerCase().includes(termino) ||
+                        activo.marca.toLowerCase().includes(termino)
+                    );
+                    renderizarActivos(activosFiltrados);
+                });
+            }
+        });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modal-buscar-activo').addEventListener('click', function (event) {
+            if (event.target === this) closeBuscarActivoModal();
+        });
+    </script>
+
 </body>
 </html>
-

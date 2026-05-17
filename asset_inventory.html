@@ -27,16 +27,15 @@
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
 
     <!-- Sidebar Unificado -->
-    <aside class="w-64 bg-uccDark text-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
-        <div class="p-8 text-center border-b border-slate-700">
-            <h2 class="text-2xl font-black tracking-tighter">
-                <span class="text-uccLight">Aires</span><span class="text-white">Flow</span>
-            </h2>
-            <p class="text-xs text-slate-400 font-medium mt-2">GESTIÓN DE CLIMATIZACIÓN</p>
+    <aside class="w-64 bg-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
+        <!-- Cabecera Blanca con Logo -->
+        <div class="p-6 flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
+            <img src="img/ucc.png" alt="UCC Logo" class="h-24 object-contain mb-2">
+            <h2 class="text-center text-sm font-black text-uccDark tracking-tighter">Sistema de Gestión de Aires</h2>
         </div>
 
         <nav class="flex-1 px-4 py-8 space-y-1">
-            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-chart-line w-5"></i>
                 <span>Dashboard</span>
             </a>
@@ -44,38 +43,30 @@
                 <i class="fas fa-snowflake w-5"></i>
                 <span>Inventario</span>
             </a>
-            <a href="asset_technical_sheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
-                <i class="fas fa-file-invoice w-5"></i>
-                <span>Hoja de Vida</span>
-            </a>
-            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-calendar-check w-5"></i>
                 <span>Programación</span>
             </a>
-            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-history w-5"></i>
                 <span>Auditoría</span>
             </a>
-            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-clipboard-list w-5"></i>
                 <span>Reporte Servicio</span>
             </a>
-            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-download w-5"></i>
                 <span>Exportar Datos</span>
             </a>
-            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
+            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
                 <i class="fas fa-shield-alt w-5"></i>
                 <span>Control de Acceso</span>
             </a>
-            <a href="user_profile_settings.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm">
-                <i class="fas fa-cog w-5"></i>
-                <span>Configuración</span>
-            </a>
         </nav>
 
-        <div class="p-4 border-t border-slate-700">
-            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700/50 rounded-xl transition font-medium text-sm justify-center">
+        <div class="p-4 border-t border-slate-200">
+            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center">
                 <i class="fas fa-sign-out-alt w-5"></i>
                 <span>Cerrar Sesión</span>
             </button>
@@ -103,9 +94,9 @@
                             <h1 class="text-4xl font-black text-uccDark tracking-tighter">Inventario Técnico</h1>
                             <p class="text-slate-500 font-medium mt-2">Base de datos de activos instalados en campus Montería</p>
                         </div>
-                        <button class="bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                        <button onclick="openCrearActivoModal()" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
                             <i class="fas fa-plus"></i>
-                            <span>Nuevo Activo</span>
+                            <span>Registrar Nuevo Activo</span>
                         </button>
                     </div>
                 </div>
@@ -113,12 +104,12 @@
                 <!-- Filtros y Búsqueda -->
                 <div class="grid grid-cols-4 gap-4 mb-8">
                     <div>
-                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Código Activo</label>
-                        <input type="text" placeholder="Ej: 69911" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                        <label for="assetCodeFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Código Activo</label>
+                        <input id="assetCodeFilter" type="text" placeholder="Ej: 69911" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
                     </div>
                     <div>
-                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Estado</label>
-                        <select class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
+                        <label for="assetStateFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Estado</label>
+                        <select id="assetStateFilter" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
                             <option>Todos</option>
                             <option>Operativo</option>
                             <option>En reparacion</option>
@@ -127,8 +118,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Bloque</label>
-                        <select class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
+                        <label for="assetBlockFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Bloque</label>
+                        <select id="assetBlockFilter" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
                             <option>Todos</option>
                             <option>Bloque A</option>
                             <option>Bloque B</option>
@@ -136,8 +127,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Piso</label>
-                        <select class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
+                        <label for="assetFloorFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Piso</label>
+                        <select id="assetFloorFilter" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
                             <option>Todos</option>
                             <option>1</option>
                             <option>2</option>
@@ -148,7 +139,7 @@
                 </div>
 
                 <!-- Tabla de Inventario -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-white rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-2xl shadow-sm border border-slate-200 overflow-visible">
                     <table class="w-full text-sm">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr class="text-xs font-black uppercase tracking-widest text-slate-500">
@@ -179,9 +170,10 @@
                                     </span>
                                 </td>
                                 <td class="px-8 py-5 text-center">
-                                    <a href="asset_technical_sheet.html" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-uccLight hover:text-white text-uccDark px-4 py-2 rounded-lg text-xs font-bold transition">
-                                        <i class="fas fa-eye w-4"></i> Ver
-                                    </a>
+                                    <button onclick="openTechnicalSheet(69911)" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition" title="Ver detalles técnicos">
+                                        <i class="fas fa-eye text-[#00acc9]"></i>
+                                        <span class="ml-2">Ver Detalles</span>
+                                    </button>
                                 </td>
                             </tr>
 
@@ -202,9 +194,10 @@
                                     </span>
                                 </td>
                                 <td class="px-8 py-5 text-center">
-                                    <a href="asset_technical_sheet.html" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-uccLight hover:text-white text-uccDark px-4 py-2 rounded-lg text-xs font-bold transition">
-                                        <i class="fas fa-eye w-4"></i> Ver
-                                    </a>
+                                    <button onclick="openTechnicalSheet(69912)" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition" title="Ver detalles técnicos">
+                                        <i class="fas fa-eye text-[#00acc9]"></i>
+                                        <span class="ml-2">Ver Detalles</span>
+                                    </button>
                                 </td>
                             </tr>
 
@@ -225,9 +218,10 @@
                                     </span>
                                 </td>
                                 <td class="px-8 py-5 text-center">
-                                    <a href="asset_technical_sheet.html" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-uccLight hover:text-white text-uccDark px-4 py-2 rounded-lg text-xs font-bold transition">
-                                        <i class="fas fa-eye w-4"></i> Ver
-                                    </a>
+                                    <button onclick="openTechnicalSheet(69913)" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition" title="Ver detalles técnicos">
+                                        <i class="fas fa-eye text-[#00acc9]"></i>
+                                        <span class="ml-2">Ver Detalles</span>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -248,6 +242,393 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal Crear Nuevo Activo -->
+    <div id="modal-crear-activo" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-50 w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <img src="img/ucc.png" alt="Logo UCC" class="h-12 object-contain">
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div>
+                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Registrar Nuevo Equipo</span>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Sistema de Gestión de Aires</p>
+                    </div>
+                </div>
+                <button onclick="closeCrearActivoModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+            </div>
+
+            <div class="p-10 overflow-y-auto max-h-[85vh]">
+                <form onsubmit="submitCrearActivo(event)" class="space-y-8">
+                    <div class="grid grid-cols-2 gap-8">
+                        <div>
+                            <label for="inputCodigoActivo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Código ID del Activo</label>
+                            <input id="inputCodigoActivo" type="text" placeholder="Ej: AC-1001" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label for="inputUbicacion" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Ubicación Física</label>
+                            <input id="inputUbicacion" type="text" placeholder="Ej: Bloque A, Aula 204" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label for="inputMarca" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Marca / Modelo del Aire</label>
+                            <input id="inputMarca" type="text" placeholder="Ej: LG AS-W12GQLDG0" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label for="selectCapacidad" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Capacidad en BTUs</label>
+                            <select id="selectCapacidad" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
+                                <option value="">Selecciona una capacidad</option>
+                                <option value="12000">12,000 BTU</option>
+                                <option value="18000">18,000 BTU</option>
+                                <option value="24000">24,000 BTU</option>
+                                <option value="30000">30,000 BTU</option>
+                                <option value="43000">43,000 BTU</option>
+                                <option value="60000">60,000 BTU</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="inputVoltaje" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Voltaje de Operación</label>
+                            <input id="inputVoltaje" type="text" placeholder="Ej: 220V" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label for="selectRefrigerante" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Tipo de Gas Refrigerante</label>
+                            <select id="selectRefrigerante" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
+                                <option value="">Selecciona un refrigerante</option>
+                                <option value="R410A">R410A</option>
+                                <option value="R32">R32</option>
+                                <option value="R407C">R407C</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-4 justify-end pt-6 border-t border-slate-200">
+                        <button type="button" onclick="closeCrearActivoModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2">
+                            <i class="fas fa-times"></i>
+                            <span>Cancelar</span>
+                        </button>
+                        <button type="submit" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-check"></i>
+                            <span>Registrar Activo</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ficha Técnica del Equipo -->
+    <div id="modal-hoja-vida" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-50 w-full max-w-6xl rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[85vh] overflow-y-auto">
+            <div class="bg-white shadow-sm px-10 py-4 flex items-center justify-between border-b sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <img src="img/ucc.png" alt="Logo UCC" class="h-12 object-contain">
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div>
+                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Hoja de Vida Técnica</span>
+                        <p id="technicalSheetSubtitle" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">ID de Inventario</p>
+                    </div>
+                </div>
+                <button onclick="closeTechnicalSheetModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+            </div>
+
+            <div class="p-6 md:p-10 bg-[url('https://www.transparenttextures.com/patterns/clean-gray-paper.png')]">
+                <div class="space-y-8">
+                    <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row">
+                        <div class="bg-uccDark p-12 text-white md:w-1/3 flex flex-col justify-center relative">
+                            <span class="text-[10px] font-black text-uccLight uppercase tracking-[0.4em] mb-4">ID de Inventario</span>
+                            <h1 id="technicalSheetId" class="text-5xl font-black tracking-tighter mb-6 leading-none">AC-B1-402</h1>
+                            <div id="technicalSheetStatusPill" class="inline-flex items-center gap-2 bg-green-500/20 text-green-300 px-4 py-1.5 rounded-full w-fit">
+                                <div class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></div>
+                                <span class="text-[10px] font-black uppercase tracking-widest">Estado: Operativo</span>
+                            </div>
+                        </div>
+
+                        <div class="p-12 md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div class="space-y-6">
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b pb-2">Especificaciones Técnicas</h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Marca / Fabricante</p>
+                                        <p id="technicalSheetBrand" class="text-sm font-black text-uccDark">YORK</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Modelo Comercial</p>
+                                        <p id="technicalSheetModel" class="text-sm font-black text-uccDark">HCH45P17C</p>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Referencia de Catálogo</p>
+                                        <p id="technicalSheetReference" class="text-sm font-black text-uccDark">Split Piso Techo High Efficiency</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b pb-2">Capacidad Termodinámica</h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Potencia (BTU)</p>
+                                        <p id="technicalSheetBtu" class="text-sm font-black text-uccDark italic">43,000 BTU/h</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Tonelaje (TR)</p>
+                                        <p id="technicalSheetTr" class="text-sm font-black text-uccDark italic">3.58 TR</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 italic"><i class="fas fa-map-marker-alt mr-2 text-uccLight"></i> Ubicación Técnica</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between border-b border-slate-50 pb-2">
+                                    <span class="text-xs font-bold text-slate-500">Bloque:</span>
+                                    <span id="technicalSheetBlock" class="text-xs font-black text-uccDark uppercase">Multidisciplinario</span>
+                                </div>
+                                <div class="flex justify-between border-b border-slate-50 pb-2">
+                                    <span class="text-xs font-bold text-slate-500">Piso / Nivel:</span>
+                                    <span id="technicalSheetFloor" class="text-xs font-black text-uccDark uppercase">Cuarto Piso</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-xs font-bold text-slate-500">Espacio Académico:</span>
+                                    <span id="technicalSheetSpace" class="text-xs font-black text-uccDark uppercase">Aula 407</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 italic"><i class="fas fa-calendar-alt mr-2 text-uccLight"></i> Ciclo de Vida</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between border-b border-slate-50 pb-2">
+                                    <span class="text-xs font-bold text-slate-500">Fecha Instalación:</span>
+                                    <span id="technicalSheetInstallDate" class="text-xs font-black text-uccDark tracking-tighter">12 / 05 / 2023</span>
+                                </div>
+                                <div class="flex justify-between border-b border-slate-50 pb-2">
+                                    <span class="text-xs font-bold text-slate-500">Último Servicio:</span>
+                                    <span id="technicalSheetLastService" class="text-xs font-black text-uccDark tracking-tighter">15 / MAR / 2026</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-xs font-bold text-slate-500">Garantía Proveedor:</span>
+                                    <span id="technicalSheetWarranty" class="text-xs font-black text-green-600 uppercase">Vigente</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-uccLight p-8 rounded-3xl shadow-xl shadow-uccLight/20 text-white flex flex-col justify-between">
+                            <p class="text-[9px] font-black uppercase tracking-[0.2em] opacity-70 italic">Planificación Preventiva</p>
+                            <div>
+                                <p class="text-[10px] font-bold text-white/80 uppercase">Próximo Mantenimiento</p>
+                                <h3 id="technicalSheetNextMaintenance" class="text-3xl font-black tracking-tighter mt-1">20 / JUN / 2026</h3>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-white/20">
+                                <p id="technicalSheetCountdown" class="text-[9px] font-bold italic opacity-60">Faltan 38 días para la intervención reglamentaria.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="px-10 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <h3 class="text-xs font-black text-uccDark uppercase tracking-widest italic">Historial de Intervenciones Técnicas</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-white text-[9px] font-black text-slate-400 uppercase tracking-widest border-b">
+                                    <tr>
+                                        <th class="px-10 py-4">Fecha</th>
+                                        <th class="px-10 py-4">Técnico Responsable</th>
+                                        <th class="px-10 py-4">Tipo</th>
+                                        <th class="px-10 py-4">Observaciones del Servicio</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="technicalSheetHistory" class="divide-y divide-slate-50 text-xs"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-4 justify-end pb-2">
+                        <button onclick="editTechnicalSheet()" class="bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-pen"></i>
+                            <span>Editar</span>
+                        </button>
+                        <button onclick="decommissionTechnicalSheet()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-triangle-exclamation"></i>
+                            <span>Dar de Baja de la Institución</span>
+                        </button>
+                        <button onclick="closeTechnicalSheetModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2">
+                            <i class="fas fa-times"></i>
+                            <span>Cerrar Ventana</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de fichas técnicas de equipos
+        const technicalSheetData = {
+            69911: {
+                id: '69911',
+                subtitle: 'Código activo 69911 · Aula 204 · Bloque A',
+                statusText: 'Operativo',
+                statusClass: 'bg-green-500/20 text-green-300',
+                statusDot: 'bg-green-300',
+                brand: 'LG',
+                model: 'AS-W12GQLDG0',
+                reference: 'Mini Split Inverter Alta Eficiencia',
+                btu: '43,000 BTU/h',
+                tr: '3.58 TR',
+                block: 'Bloque A',
+                floor: 'Piso 2',
+                space: 'Aula 204',
+                installDate: '12 / 05 / 2023',
+                lastService: '15 / MAR / 2026',
+                warranty: 'Vigente',
+                nextMaintenance: '20 / JUN / 2026',
+                countdown: 'Faltan 38 días para la intervención reglamentaria.',
+                history: [
+                    ['15 / MAR / 2026', 'Andrés Felipe Ruiz', 'Preventivo', 'Limpieza química de serpentines, revisión de presiones y ajuste de bornes eléctricos de potencia.'],
+                    ['18 / NOV / 2025', 'María Fernanda Pineda', 'Correctivo', 'Corrección de fuga en línea de líquido, recarga de refrigerante y verificación del compresor.']
+                ]
+            },
+            69912: {
+                id: '69912',
+                subtitle: 'Código activo 69912 · Lab. 101 · Bloque B',
+                statusText: 'En Reparación',
+                statusClass: 'bg-amber-500/20 text-amber-200',
+                statusDot: 'bg-amber-300',
+                brand: 'Daikin',
+                model: 'FTXE50D',
+                reference: 'Split Inverter de Laboratorio',
+                btu: '60,000 BTU/h',
+                tr: '5.00 TR',
+                block: 'Bloque B',
+                floor: 'Piso 1',
+                space: 'Laboratorio 101',
+                installDate: '08 / 03 / 2024',
+                lastService: '28 / ABR / 2026',
+                warranty: 'Vigente',
+                nextMaintenance: '12 / JUL / 2026',
+                countdown: 'Intervención priorizada pendiente de cierre técnico.',
+                history: [
+                    ['28 / ABR / 2026', 'Carlos Gómez', 'Correctivo', 'Diagnóstico de placa electrónica y sustitución de capacitor de arranque.'],
+                    ['06 / DIC / 2025', 'Laura Herrera', 'Preventivo', 'Lavado de filtros, inspección de ventiladores y calibración de termostato.']
+                ]
+            },
+            69913: {
+                id: '69913',
+                subtitle: 'Código activo 69913 · Oficina · Bloque Administrativo',
+                statusText: 'Operativo',
+                statusClass: 'bg-green-500/20 text-green-300',
+                statusDot: 'bg-green-300',
+                brand: 'Fujitsu',
+                model: 'AGTK24LWTC',
+                reference: 'Equipo Tipo Cassette Administrativo',
+                btu: '24,000 BTU/h',
+                tr: '2.00 TR',
+                block: 'Bloque Administrativo',
+                floor: 'Piso 3',
+                space: 'Oficina',
+                installDate: '15 / 01 / 2024',
+                lastService: '03 / MAY / 2026',
+                warranty: 'Vigente',
+                nextMaintenance: '25 / JUL / 2026',
+                countdown: 'Rutina preventiva programada sin novedades críticas.',
+                history: [
+                    ['03 / MAY / 2026', 'Santiago Ortiz', 'Preventivo', 'Limpieza de drenajes, revisión de amperajes y prueba general de operación.'],
+                    ['11 / AGO / 2025', 'Ana María Torres', 'Correctivo', 'Ajuste de conexión eléctrica y cambio de sensor de temperatura ambiente.']
+                ]
+            }
+        };
+
+        let currentTechnicalSheetId = null;
+
+        function openTechnicalSheet(equipmentId) {
+            const data = technicalSheetData[equipmentId] || technicalSheetData[69911];
+            currentTechnicalSheetId = data.id;
+
+            document.getElementById('technicalSheetSubtitle').textContent = data.subtitle;
+            document.getElementById('technicalSheetId').textContent = data.id;
+            document.getElementById('technicalSheetStatusPill').className = `inline-flex items-center gap-2 px-4 py-1.5 rounded-full w-fit ${data.statusClass}`;
+            document.getElementById('technicalSheetStatusPill').innerHTML = `<div class="w-2 h-2 ${data.statusDot} rounded-full animate-pulse"></div><span class="text-[10px] font-black uppercase tracking-widest">Estado: ${data.statusText}</span>`;
+            document.getElementById('technicalSheetBrand').textContent = data.brand;
+            document.getElementById('technicalSheetModel').textContent = data.model;
+            document.getElementById('technicalSheetReference').textContent = data.reference;
+            document.getElementById('technicalSheetBtu').textContent = data.btu;
+            document.getElementById('technicalSheetTr').textContent = data.tr;
+            document.getElementById('technicalSheetBlock').textContent = data.block;
+            document.getElementById('technicalSheetFloor').textContent = data.floor;
+            document.getElementById('technicalSheetSpace').textContent = data.space;
+            document.getElementById('technicalSheetInstallDate').textContent = data.installDate;
+            document.getElementById('technicalSheetLastService').textContent = data.lastService;
+            document.getElementById('technicalSheetWarranty').textContent = data.warranty;
+            document.getElementById('technicalSheetNextMaintenance').textContent = data.nextMaintenance;
+            document.getElementById('technicalSheetCountdown').textContent = data.countdown;
+
+            const historyBody = document.getElementById('technicalSheetHistory');
+            historyBody.innerHTML = data.history.map(([date, technician, type, notes]) => `
+                <tr>
+                    <td class="px-10 py-6 font-black text-uccDark tracking-tighter italic">${date}</td>
+                    <td class="px-10 py-6 font-bold text-slate-600">${technician}</td>
+                    <td class="px-10 py-6"><span class="px-3 py-1 bg-blue-100 text-uccLight rounded-full font-black text-[9px] uppercase tracking-tighter">${type}</span></td>
+                    <td class="px-10 py-6 text-slate-400 leading-relaxed italic">${notes}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('modal-hoja-vida').classList.remove('hidden');
+        }
+
+        function closeTechnicalSheetModal() {
+            document.getElementById('modal-hoja-vida').classList.add('hidden');
+        }
+
+        function editTechnicalSheet() {
+            alert('Editar ficha técnica del activo ' + currentTechnicalSheetId);
+        }
+
+        function decommissionTechnicalSheet() {
+            if (confirm('¿Está seguro de que desea dar de baja este activo? Esta acción no se puede deshacer.')) {
+                alert('Solicitud de baja institucional para el activo ' + currentTechnicalSheetId + ' procesada correctamente.');
+                closeTechnicalSheetModal();
+            }
+        }
+
+        document.getElementById('modal-hoja-vida').addEventListener('click', function (event) {
+            if (event.target === this) closeTechnicalSheetModal();
+        });
+
+        // Funciones del Modal de Crear Activo
+        function openCrearActivoModal() {
+            document.getElementById('modal-crear-activo').classList.remove('hidden');
+        }
+
+        function closeCrearActivoModal() {
+            document.getElementById('modal-crear-activo').classList.add('hidden');
+            document.getElementById('inputCodigoActivo').value = '';
+            document.getElementById('inputUbicacion').value = '';
+            document.getElementById('inputMarca').value = '';
+            document.getElementById('selectCapacidad').value = '';
+            document.getElementById('inputVoltaje').value = '';
+            document.getElementById('selectRefrigerante').value = '';
+        }
+
+        function submitCrearActivo(event) {
+            event.preventDefault();
+            const codigo = document.getElementById('inputCodigoActivo').value;
+            const ubicacion = document.getElementById('inputUbicacion').value;
+            const marca = document.getElementById('inputMarca').value;
+            const capacidad = document.getElementById('selectCapacidad').value;
+            const voltaje = document.getElementById('inputVoltaje').value;
+            const refrigerante = document.getElementById('selectRefrigerante').value;
+
+            alert(`Activo registrado exitosamente:\nCódigo: ${codigo}\nUbicación: ${ubicacion}\nMarca: ${marca}\nCapacidad: ${capacidad} BTU\nVoltaje: ${voltaje}\nRefrigerante: ${refrigerante}`);
+            closeCrearActivoModal();
+        }
+
+        document.getElementById('modal-crear-activo').addEventListener('click', function (event) {
+            if (event.target === this) closeCrearActivoModal();
+        });
+    </script>
 
 </body>
 </html>
