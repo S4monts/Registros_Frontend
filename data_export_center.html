@@ -26,10 +26,14 @@
 
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
 
+    <!-- Overlay para cerrar sidebar en móvil -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden backdrop-blur-sm transition-opacity"></div>
+
     <!-- Sidebar -->
-    <aside class="w-64 bg-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
+    <aside id="main-sidebar" class="w-64 bg-white flex flex-col shadow-2xl overflow-y-auto fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
         <!-- Cabecera Blanca con Logo -->
-        <div class="p-6 flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
+        <div class="p-6 relative flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
+            <button id="btn-close-sidebar" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
             <img src="img/ucc.png" alt="UCC Logo" class="h-24 object-contain mb-2">
             <h2 class="text-center text-sm font-black text-uccDark tracking-tighter">Sistema de Gestión de Aires</h2>
         </div>
@@ -49,7 +53,12 @@
 
     <main class="flex-1 flex flex-col h-screen overflow-hidden">
         <header class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm">
-            <img src="img/ucc.png" alt="UCC" class="h-12 object-contain">
+            <div class="flex items-center gap-4">
+                <button id="btn-menu-toggle" type="button" class="text-slate-500 hover:text-[#00acc9] transition focus:outline-none bg-slate-100 hover:bg-slate-200 p-2 rounded-lg">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+                <img src="img/ucc.png" alt="UCC Logo" class="h-10 md:h-12 object-contain hidden sm:block">
+            </div>
             <p class="text-xs font-black uppercase tracking-widest text-slate-500">CENTRO DE EXPORTACIÓN TÉCNICA</p>
         </header>
 

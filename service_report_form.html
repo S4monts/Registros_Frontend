@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Mantenimiento de Aires Acondicionados - Reporte Técnico</title>
+    <title>AiresFlow - Reporte Técnico de Servicio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -20,262 +20,413 @@
             }
         }
     </script>
+
+    <script src="js/auth_guard.js"></script>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white flex flex-col shrink-0 shadow-2xl overflow-y-auto">
-        <!-- Cabecera Blanca con Logo -->
-        <div class="p-6 flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
+    <!-- Overlay para cerrar sidebar en móvil -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden backdrop-blur-sm transition-opacity"></div>
+
+    <aside id="main-sidebar" class="w-64 bg-white flex flex-col shadow-2xl overflow-y-auto fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="p-6 relative flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
+            <button id="btn-close-sidebar" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
             <img src="img/ucc.png" alt="UCC Logo" class="h-24 object-contain mb-2">
             <h2 class="text-center text-sm font-black text-uccDark tracking-tighter">Sistema de Gestión de Aires</h2>
         </div>
+
         <nav class="flex-1 px-4 py-8 space-y-1">
-            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-chart-line w-5"></i><span>Dashboard</span></a>
-            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-snowflake w-5"></i><span>Inventario</span></a>
-            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-calendar-check w-5"></i><span>Programación</span></a>
-            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-history w-5"></i><span>Auditoría</span></a>
-            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 bg-uccLight text-uccDark rounded-xl shadow-lg font-bold text-sm"><i class="fas fa-clipboard-list w-5"></i><span>Reporte Servicio</span></a>
-            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-download w-5"></i><span>Exportar Datos</span></a>
-            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-shield-alt w-5"></i><span>Control de Acceso</span></a>
+            <a href="analytics_dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-chart-line w-5"></i><span>Dashboard</span>
+            </a>
+            <a href="asset_inventory.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-snowflake w-5"></i><span>Inventario</span>
+            </a>
+            <a href="maintenance_scheduler.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-calendar-check w-5"></i><span>Programación</span>
+            </a>
+            <a href="maintenance_audit_logs.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-history w-5"></i><span>Auditoría</span>
+            </a>
+            <a href="service_report_form.html" class="flex items-center gap-3 px-4 py-3 bg-uccLight text-uccDark rounded-xl shadow-lg font-bold text-sm">
+                <i class="fas fa-clipboard-list w-5"></i><span>Reporte Servicio</span>
+            </a>
+            <a href="data_export_center.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-download w-5"></i><span>Exportar Datos</span>
+            </a>
+            <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm">
+                <i class="fas fa-shield-alt w-5"></i><span>Control de Acceso</span>
+            </a>
         </nav>
+
         <div class="p-4 border-t border-slate-200">
-            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
+            <button id="btn-cerrar-sesion" class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center">
+                <i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span>
+            </button>
         </div>
     </aside>
 
     <main class="flex-1 flex flex-col h-screen overflow-hidden">
         <header class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm">
-            <img src="img/ucc.png" alt="UCC" class="h-12 object-contain">
-            <p class="text-xs font-black uppercase tracking-widest text-slate-500">FORMULARIO DE REPORTE TÉCNICO</p>
+            <div class="flex items-center gap-4">
+                <button id="btn-menu-toggle" type="button" class="text-slate-500 hover:text-[#00acc9] transition focus:outline-none bg-slate-100 hover:bg-slate-200 p-2 rounded-lg">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+                <img src="img/ucc.png" alt="UCC Logo" class="h-10 md:h-12 object-contain hidden sm:block">
+            </div>
+            <div>
+                <p class="text-xs font-black uppercase tracking-widest text-slate-500 text-right">Infraestructura Campus Montería</p>
+                <p class="text-sm font-bold text-uccDark text-right">Formulario de Reporte Técnico de Servicio</p>
+            </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto">
-            <div class="p-10 max-w-4xl">
-                <div class="mb-10">
-                    <h1 class="text-4xl font-black text-uccDark tracking-tighter mb-2">Reporte de Servicio</h1>
-                    <p class="text-slate-600 font-medium">Formular y registrar intervenciones técnicas en campo</p>
+        <div class="flex-1 overflow-y-auto p-10 max-w-4xl w-full mx-auto">
+            <form id="reporteForm" class="space-y-8 bg-white p-8 border border-slate-200 rounded-3xl shadow-sm">
+
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-xl font-black text-uccDark">Registrar Intervención Técnica</h2>
+                    <p class="text-xs text-slate-400 font-medium mt-1">Todos los campos son estrictamente obligatorios para poder procesar la orden.</p>
                 </div>
 
-                <!-- Formulario de Reporte -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-10">
-                    <form class="space-y-8">
-                        <!-- Sección 1: Identificación -->
-                        <div>
-                            <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Identificación de Equipo</h2>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div>
-                                    <label for="codigoActivo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Código Activo *</label>
-                                    <div class="flex gap-2">
-                                        <input id="codigoActivo" type="text" required class="flex-1 w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm" placeholder="Ej: 69911">
-                                        <button type="button" onclick="openBuscarActivoModal()" class="bg-uccLight hover:bg-[#0092ab] text-white font-bold px-4 py-3 rounded-xl shadow-md transition-all flex items-center justify-center" title="Buscar activo">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label for="ubicacion" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Ubicación *</label>
-                                    <select id="ubicacion" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="bloque-a-aula-204">Bloque A - Aula 204</option>
-                                        <option value="bloque-b-lab-101">Bloque B - Lab 101</option>
-                                        <option value="bloque-admin-oficina">Bloque Administrativo - Oficina</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sección 2: Tipo de Intervención -->
-                        <div>
-                            <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Tipo de Intervención</h2>
-                            <div class="grid grid-cols-3 gap-4">
-                                <label class="flex items-center p-4 border-2 border-slate-300 rounded-xl cursor-pointer hover:border-uccLight transition bg-white">
-                                    <input type="radio" name="tipo" value="preventivo" class="w-4 h-4 accent-uccLight">
-                                    <span class="ml-3 font-bold text-sm text-slate-700">Preventivo</span>
-                                </label>
-                                <label class="flex items-center p-4 border-2 border-slate-300 rounded-xl cursor-pointer hover:border-uccLight transition bg-white">
-                                    <input type="radio" name="tipo" value="correctivo" class="w-4 h-4 accent-uccLight">
-                                    <span class="ml-3 font-bold text-sm text-slate-700">Correctivo</span>
-                                </label>
-                                <label class="flex items-center p-4 border-2 border-slate-300 rounded-xl cursor-pointer hover:border-uccLight transition bg-white">
-                                    <input type="radio" name="tipo" value="emergencia" class="w-4 h-4 accent-uccLight">
-                                    <span class="ml-3 font-bold text-sm text-slate-700">Emergencia<br/><span class="text-xs text-slate-500">(Muerte Súbita)</span></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Sección 3: Datos Técnicos -->
-                        <div>
-                            <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Datos de la Intervención</h2>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div>
-                                    <label for="fechaIntervención" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Fecha de Intervención *</label>
-                                    <input id="fechaIntervención" type="date" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
-                                </div>
-                                <div>
-                                    <label for="horasRealizadas" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Horas Realizadas *</label>
-                                    <input id="horasRealizadas" type="number" step="0.5" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm" placeholder="2.5">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sección 4: Descripción del Trabajo -->
-                        <div>
-                            <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Descripción del Trabajo</h2>
-                            <label for="descripcionTrabajo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Descripción *</label>
-                            <textarea id="descripcionTrabajo" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm resize-none" rows="6" placeholder="Detalle las actividades realizadas, observaciones y estado del equipo..."></textarea>
-                        </div>
-
-                        <!-- Sección 5: Hallazgos y Recomendaciones -->
-                        <div>
-                            <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Hallazgos y Recomendaciones</h2>
-                            <div class="space-y-4">
-                                <div>
-                                    <label for="problemas" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Problemas Encontrados</label>
-                                    <textarea id="problemas" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm resize-none" rows="3" placeholder="Describe los problemas identificados..."></textarea>
-                                </div>
-                                <div>
-                                    <label for="recomendaciones" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Acciones Recomendadas</label>
-                                    <textarea id="recomendaciones" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm resize-none" rows="3" placeholder="Próximas acciones sugeridas..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sección 6: Estado del Equipo -->
-                        <div>
-                            <h2 class="text-lg font-black text-uccDark uppercase tracking-widest mb-6 pb-4 border-b border-slate-200">Estado Posterior a Intervención</h2>
-                            <div class="grid grid-cols-3 gap-4">
-                                <label class="flex items-center p-4 border-2 border-green-200 rounded-xl cursor-pointer hover:bg-green-50 transition bg-green-50">
-                                    <input type="radio" name="estado" value="operativo" class="w-4 h-4 accent-green-600">
-                                    <span class="ml-3 font-bold text-sm text-green-700">Operativo</span>
-                                </label>
-                                <label class="flex items-center p-4 border-2 border-amber-200 rounded-xl cursor-pointer hover:bg-amber-50 transition bg-amber-50">
-                                    <input type="radio" name="estado" value="en-observacion" class="w-4 h-4 accent-amber-600">
-                                    <span class="ml-3 font-bold text-sm text-amber-700">En Observación</span>
-                                </label>
-                                <label class="flex items-center p-4 border-2 border-red-200 rounded-xl cursor-pointer hover:bg-red-50 transition bg-red-50">
-                                    <input type="radio" name="estado" value="fuera-servicio" class="w-4 h-4 accent-red-600">
-                                    <span class="ml-3 font-bold text-sm text-red-700">Fuera de Servicio</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Botones de Acción -->
-                        <div class="flex gap-4 pt-8 border-t border-slate-200">
-                            <button type="submit" class="flex-1 bg-[#00acc9] hover:bg-[#0092ab] text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform active:scale-95 flex items-center justify-center gap-2 text-sm">
-                                <i class="fas fa-save"></i>
-                                <span>Guardar Reporte</span>
-                            </button>
-                            <button type="button" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-6 py-3 rounded-xl transition-all flex items-center justify-center gap-2">
-                                <i class="fas fa-file-pdf"></i>
-                                <span>Descargar PDF</span>
-                            </button>
-                            <button type="reset" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition">Limpiar</button>
-                        </div>
-                    </form>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Fecha del Servicio <span class="text-red-500">*</span></label>
+                        <input type="date" id="fechaMantenimiento" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-uccLight">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Técnico Responsable</label>
+                        <input type="text" id="nombreTecnico" readonly required class="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-xl px-4 py-3 text-sm font-bold cursor-not-allowed">
+                    </div>
                 </div>
-            </div>
+
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
+                    <h3 class="text-sm font-black text-uccDark uppercase tracking-wider"><i class="fas fa-snowflake text-uccLight mr-2"></i>Identificación del Equipo</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Código del Activo <span class="text-red-500">*</span></label>
+                            <div class="relative flex gap-2">
+                                <input type="text" id="codigoActivo" required readonly placeholder="Use la lupa para buscar..." class="w-full bg-white border border-slate-300 rounded-xl pl-4 pr-4 py-3 text-sm font-bold text-uccDark focus:outline-none">
+                                <button type="button" onclick="openBuscarActivoModal()" class="px-4 bg-uccDark hover:bg-slate-800 text-white rounded-xl transition shadow-md flex items-center justify-center">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Ubicación del Equipo <span class="text-red-500">*</span></label>
+                            <input type="text" id="ubicacion" required readonly placeholder="Se autocompleta con el código..." class="w-full bg-slate-100 border border-slate-200 text-slate-600 font-bold rounded-xl px-4 py-3 text-sm cursor-not-allowed">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Tipo de Mantenimiento <span class="text-red-500">*</span></label>
+                        <select id="tipoMantenimiento" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-uccLight">
+                            <option value="" disabled selected>Seleccione el tipo...</option>
+                            <option value="1">Preventivo</option>
+                            <option value="2">Correctivo</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Descripción del Trabajo Realizado <span class="text-red-500">*</span></label>
+                        <textarea id="descripcionTrabajo" required rows="3" placeholder="Detalle exactamente las tareas de mantenimiento ejecutadas..." class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-uccLight shadow-sm resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-[#132740]/5 border border-[#132740]/10 rounded-2xl space-y-6">
+                    <h3 class="text-sm font-black text-uccDark uppercase tracking-wider"><i class="fas fa-search-plus text-uccLight mr-2"></i>Hallazgos y Recomendaciones</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Problemas Encontrados <span class="text-red-500">*</span></label>
+                            <textarea id="problemas_encontrados" required rows="4" placeholder="Describa fallas, fugas, piezas desgastadas o anomalías detectadas durante la revisión..." class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-uccLight shadow-sm resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Acciones Recomendadas <span class="text-red-500">*</span></label>
+                            <textarea id="acciones_recomendadas" required rows="4" placeholder="Indique qué se debe hacer a futuro (ej: cambio de compresor próximo, monitoreo de presión, etc)..." class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-uccLight shadow-sm resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-3">Estado Final del Equipo <span class="text-red-500">*</span></label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <label class="flex items-center p-4 bg-green-50 border border-green-200 rounded-xl cursor-pointer hover:bg-green-100/50 transition">
+                            <input type="radio" name="estado" value="Operativo" required checked class="w-4 h-4 accent-green-600">
+                            <span class="ml-3 font-bold text-sm text-green-700">Operativo</span>
+                        </label>
+                        <label class="flex items-center p-4 bg-amber-50 border border-amber-200 rounded-xl cursor-pointer hover:bg-amber-100/50 transition">
+                            <input type="radio" name="estado" value="En Observación" required class="w-4 h-4 accent-amber-600">
+                            <span class="ml-3 font-bold text-sm text-amber-700">En Observación</span>
+                        </label>
+                        <label class="flex items-center p-4 bg-red-50 border border-red-200 rounded-xl cursor-pointer hover:bg-red-100/50 transition">
+                            <input type="radio" name="estado" value="Fuera de Servicio" required class="w-4 h-4 accent-red-600">
+                            <span class="ml-3 font-bold text-sm text-red-700">Fuera de Servicio</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                    <label for="costo_servicio" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">
+                        <i class="fas fa-hand-holding-usd text-uccLight mr-2"></i>Costo del Servicio Técnico (Mano de Obra) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative max-w-xs">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 font-black">$</span>
+                        <input type="number" id="costo_servicio" name="costo_servicio" required step="100" min="0" placeholder="Ej: 80000" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-uccLight focus:border-transparent focus:outline-none transition">
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2 font-medium">* Ingrese 0 si el servicio está cubierto por garantía institucional. No dejar vacío.</p>
+                </div>
+
+                <div class="border-t border-slate-200 pt-6">
+                    <h3 class="text-lg font-black text-uccDark mb-4">
+                        <i class="fas fa-tools text-uccLight mr-2"></i>Repuestos Utilizados en Campo
+                    </h3>
+
+                    <div id="contenedor-repuestos" class="space-y-4">
+                        <div class="flex flex-col md:flex-row gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl repuesto-item relative">
+                            <div class="flex-1">
+                                <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Repuesto / Insumo <span class="text-red-500">*</span></label>
+                                <select name="repuesto_id" required class="w-full bg-white px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
+                                    <option value="" disabled selected>Seleccione un componente...</option>
+                                    <option value="1">Gas Refrigerante R-410A</option>
+                                    <option value="2">Capacitor 45uF</option>
+                                    <option value="3">Filtro de Aire</option>
+                                    <option value="0">Ninguno (Solo Mano de Obra)</option>
+                                </select>
+                            </div>
+                            <div class="w-full md:w-32">
+                                <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Cantidad <span class="text-red-500">*</span></label>
+                                <input type="number" name="cantidad" required step="0.1" min="0" value="0" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
+                            </div>
+                            <div class="w-full md:w-40">
+                                <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Costo Unit. ($) <span class="text-red-500">*</span></label>
+                                <input type="number" name="precio_unitario" required step="100" min="0" value="0" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
+                            </div>
+                            <div class="flex items-end">
+                                <button type="button" class="btn-eliminar-repuesto px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition" title="Quitar repuesto">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="btn-agregar-repuesto" class="mt-4 px-4 py-2 text-sm font-bold text-uccLight hover:bg-slate-100 rounded-lg transition flex items-center gap-2">
+                        <i class="fas fa-plus-circle"></i> Agregar otro repuesto
+                    </button>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-200">
+                    <button type="button" id="btn-limpiar-formulario" class="w-full sm:w-1/3 bg-white border-2 border-slate-200 hover:bg-slate-100 text-slate-600 font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+                        <i class="fas fa-eraser"></i><span>Limpiar Todo</span>
+                    </button>
+                    <button type="submit" class="flex-1 bg-uccLight hover:bg-opacity-90 text-white font-bold py-3 px-6 rounded-xl shadow-md transition transform active:scale-95 flex items-center justify-center gap-2 text-sm">
+                        <i class="fas fa-save"></i>
+                        <span>Guardar Reporte Definitivo</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </main>
 
-    <!-- Modal Buscar Activo -->
-    <div id="modal-buscar-activo" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-50 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
-            <div class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm sticky top-0 z-10">
-                <div class="flex items-center gap-4">
-                    <img src="img/ucc.png" alt="Logo UCC" class="h-12 object-contain">
-                    <div class="h-8 w-px bg-slate-200"></div>
-                    <div>
-                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Buscar Activo</span>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Selecciona un equipo de aire acondicionado</p>
-                    </div>
-                </div>
-                <button onclick="closeBuscarActivoModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+    <div id="modal-buscar-activo" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl shadow-xl max-w-xl w-full max-h-[80vh] flex flex-col overflow-hidden border border-slate-200">
+            <div class="p-6 bg-slate-800 text-white flex items-center justify-between">
+                <h3 class="font-black text-base uppercase tracking-wider">Buscar Aire Acondicionado</h3>
+                <button type="button" onclick="closeBuscarActivoModal()" class="text-slate-400 hover:text-white transition"><i class="fas fa-times text-lg"></i></button>
             </div>
-
-            <div class="p-10 overflow-y-auto max-h-[85vh]">
-                <div class="space-y-6">
-                    <div>
-                        <label for="buscarActivoInput" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Buscar por código o ubicación</label>
-                        <input id="buscarActivoInput" type="text" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm" placeholder="Ej: 69911 o Bloque A">
-                    </div>
-
-                    <div class="space-y-3">
-                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-500">Equipos Disponibles</h3>
-                        <div id="listaActivos" class="space-y-2">
-                            <!-- Los activos se cargarán dinámicamente aquí -->
-                        </div>
-                    </div>
+            <div class="p-6 border-b border-slate-100">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400"><i class="fas fa-search"></i></span>
+                    <input type="text" id="buscarActivoInput" placeholder="Filtre por código o ubicación..." class="w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
                 </div>
             </div>
+            <div id="listaActivos" class="flex-1 overflow-y-auto p-6 space-y-3 bg-slate-50"></div>
         </div>
     </div>
 
     <script>
-        // Datos de activos disponibles
-        const activos = [
-            { id: '69911', marca: 'LG', modelo: 'AS-W12GQLDG0', ubicacion: 'Bloque A - Aula 204', btu: '43,000 BTU' },
-            { id: '69912', marca: 'Daikin', modelo: 'FTXE50D', ubicacion: 'Bloque B - Lab 101', btu: '60,000 BTU' },
-            { id: '69913', marca: 'Fujitsu', modelo: 'AGTK24LWTC', ubicacion: 'Bloque Administrativo - Oficina', btu: '24,000 BTU' },
-            { id: '69914', marca: 'Midea', modelo: 'MSAB-36CRN1', ubicacion: 'Bloque A - Aula 301', btu: '36,000 BTU' },
-            { id: '69915', marca: 'LG', modelo: 'AS-W18GQLDG0', ubicacion: 'Bloque C - Comedor', btu: '18,000 BTU' }
+        document.addEventListener("DOMContentLoaded", () => {
+            const nombreUsuario = localStorage.getItem("usuario_nombre") || "técnico.infraestructura";
+            const inputTecnico = document.getElementById("nombreTecnico");
+            if (inputTecnico) inputTecnico.value = nombreUsuario.toUpperCase();
+
+            const inputFecha = document.getElementById("fechaMantenimiento");
+            if (inputFecha) inputFecha.value = new Date().toISOString().split('T')[0];
+        });
+
+        // Simulación de Base de Datos para el Modal
+        const activosMaestros = [
+            { id: "AC-MON-101", ubicacion: "Bloque A - Aula 102 (Sistemas)", marca: "LG Eco" },
+            { id: "AC-MON-102", ubicacion: "Bloque A - Sala de Servidores", marca: "Carrier Ind" },
+            { id: "AC-MON-103", ubicacion: "Bloque B - Biblioteca Central", marca: "Trane High" }
         ];
 
         function openBuscarActivoModal() {
             document.getElementById('modal-buscar-activo').classList.remove('hidden');
-            renderizarActivos(activos);
+            renderizarActivosList(activosMaestros);
         }
 
         function closeBuscarActivoModal() {
             document.getElementById('modal-buscar-activo').classList.add('hidden');
         }
 
-        function renderizarActivos(listaActivos) {
-            const contenedor = document.getElementById('listaActivos');
-            contenedor.innerHTML = listaActivos.map(activo => `
-                <div class="bg-white rounded-xl border border-slate-200 p-4 flex justify-between items-center hover:shadow-md transition">
-                    <div class="flex-1">
-                        <p class="font-bold text-uccDark text-sm">${activo.id} - ${activo.marca} ${activo.modelo}</p>
-                        <p class="text-xs text-slate-600 mt-1">${activo.ubicacion}</p>
-                        <p class="text-xs text-slate-500 mt-1">${activo.btu}</p>
+        function renderizarActivosList(lista) {
+            const contenedor = document.getElementById("listaActivos");
+            if (!contenedor) return;
+            if (lista.length === 0) {
+                contenedor.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No se encontraron activos.</p>`;
+                return;
+            }
+            contenedor.innerHTML = lista.map(activo => `
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center hover:border-uccLight transition">
+                    <div>
+                        <p class="text-sm font-black text-uccDark">${activo.id}</p>
+                        <p class="text-xs text-slate-500 mt-0.5 font-medium"><i class="fas fa-map-marker-alt text-uccLight mr-1"></i>${activo.ubicacion}</p>
                     </div>
-                    <button onclick="seleccionarActivo('${activo.id}')" class="bg-uccLight hover:bg-[#0092ab] text-white font-bold px-4 py-2 rounded-lg transition text-sm">
+                    <button type="button" onclick="seleccionarEquipoCompleto('${activo.id}', '${activo.ubicacion}')" class="bg-uccLight hover:bg-opacity-90 text-white font-bold px-4 py-2 rounded-xl text-xs shadow transition">
                         Seleccionar
                     </button>
                 </div>
             `).join('');
         }
 
-        function seleccionarActivo(codigoActivo) {
-            // Inyectar el código en el input del formulario principal
-            document.getElementById('codigoActivo').value = codigoActivo;
+        function seleccionarEquipoCompleto(id, ubicacion) {
+            document.getElementById('codigoActivo').value = id;
+            document.getElementById('ubicacion').value = ubicacion;
             closeBuscarActivoModal();
         }
 
-        // Búsqueda en tiempo real
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputBusqueda = document.getElementById('buscarActivoInput');
-            if (inputBusqueda) {
-                inputBusqueda.addEventListener('input', function(e) {
-                    const termino = e.target.value.toLowerCase();
-                    const activosFiltrados = activos.filter(activo =>
-                        activo.id.toLowerCase().includes(termino) ||
-                        activo.ubicacion.toLowerCase().includes(termino) ||
-                        activo.marca.toLowerCase().includes(termino)
-                    );
-                    renderizarActivos(activosFiltrados);
-                });
+        document.getElementById("buscarActivoInput")?.addEventListener("input", (e) => {
+            const busqueda = e.target.value.toLowerCase().trim();
+            const filtrados = activosMaestros.filter(a =>
+                a.id.toLowerCase().includes(busqueda) ||
+                a.ubicacion.toLowerCase().includes(busqueda)
+            );
+            renderizarActivosList(filtrados);
+        });
+
+        // 3. Gestión de la Tabla Dinámica de Repuestos
+        document.getElementById("btn-agregar-repuesto")?.addEventListener("click", () => {
+            const contenedor = document.getElementById("contenedor-repuestos");
+            const nuevaFila = document.createElement("div");
+            nuevaFila.className = "flex flex-col md:flex-row gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl repuesto-item relative";
+            nuevaFila.innerHTML = `
+                <div class="flex-1">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Repuesto / Insumo <span class="text-red-500">*</span></label>
+                    <select name="repuesto_id" required class="w-full bg-white px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
+                        <option value="" disabled selected>Seleccione un componente...</option>
+                        <option value="1">Gas Refrigerante R-410A</option>
+                        <option value="2">Capacitor 45uF</option>
+                        <option value="3">Filtro de Aire</option>
+                        <option value="0">Ninguno (Solo Mano de Obra)</option>
+                    </select>
+                </div>
+                <div class="w-full md:w-32">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Cantidad <span class="text-red-500">*</span></label>
+                    <input type="number" name="cantidad" required step="0.1" min="0" value="0" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
+                </div>
+                <div class="w-full md:w-40">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Costo Unit. ($) <span class="text-red-500">*</span></label>
+                    <input type="number" name="precio_unitario" required step="100" min="0" value="0" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
+                </div>
+                <div class="flex items-end">
+                    <button type="button" class="btn-eliminar-repuesto px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition" title="Quitar repuesto">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            contenedor.appendChild(nuevaFila);
+        });
+
+        document.getElementById("contenedor-repuestos")?.addEventListener("click", (e) => {
+            const boton = e.target.closest(".btn-eliminar-repuesto");
+            if (boton) {
+                const filas = document.querySelectorAll(".repuesto-item");
+                if (filas.length > 1) {
+                    boton.closest(".repuesto-item").remove();
+                } else {
+                    alert("El reporte debe mantener al menos una fila. Si no usó repuestos, seleccione 'Ninguno' y deje los valores en 0.");
+                }
             }
         });
 
-        // Cerrar modal al hacer clic fuera
-        document.getElementById('modal-buscar-activo').addEventListener('click', function (event) {
-            if (event.target === this) closeBuscarActivoModal();
+        document.getElementById("btn-cerrar-sesion")?.addEventListener("click", () => {
+            localStorage.clear();
+            window.location.href = "/";
+        });
+
+        // 5. Intercepción del Submit con Bloqueo de Validación Estricto
+        document.getElementById("reporteForm")?.addEventListener("submit", function(e) {
+            e.preventDefault(); // Detenemos la recarga de página por defecto
+
+            // 🔒 ESTRICTO: Si el formulario no pasa la validación de campos vacíos, frena la ejecución
+            if (!this.checkValidity()) {
+                this.reportValidity(); // Llama al globo nativo del navegador indicando el campo vacío
+                return;
+            }
+
+            const payloadMantenimiento = {
+                fecha_mantenimiento: document.getElementById("fechaMantenimiento").value,
+                codigo_activo: document.getElementById("codigoActivo").value,
+                tipo_mantenimiento_id: parseInt(document.getElementById("tipoMantenimiento").value),
+                detalle_mantenimiento: document.getElementById("descripcionTrabajo").value,
+
+                // Nuevos campos mapeados
+                problemas_encontrados: document.getElementById("problemas_encontrados").value,
+                acciones_recomendadas: document.getElementById("acciones_recomendadas").value,
+
+                estado_equipo: document.querySelector('input[name="estado"]:checked').value,
+                costo_servicio: parseFloat(document.getElementById("costo_servicio").value) || 0.0,
+                componentes_usados: []
+            };
+
+            const filasRepuestos = document.querySelectorAll(".repuesto-item");
+            filasRepuestos.forEach(fila => {
+                const id = fila.querySelector('select[name="repuesto_id"]').value;
+                const cant = fila.querySelector('input[name="cantidad"]').value;
+                const precio = fila.querySelector('input[name="precio_unitario"]').value;
+
+                if (id && parseInt(id) !== 0) { // Ignorar si seleccionó "Ninguno"
+                    payloadMantenimiento.componentes_usados.push({
+                        repuesto_utilizado_id: parseInt(id),
+                        cantidad: parseFloat(cant),
+                        precio_unitario: parseFloat(precio)
+                    });
+                }
+            });
+
+            console.log("🚀 Payload Validado y Listo:", payloadMantenimiento);
+            alert("✅ Formulario enviado con éxito. No hubo campos vacíos.");
+        });
+
+        // Botón Limpiar Todo - restaura algunos valores por defecto y elimina filas adicionales
+        document.getElementById("btn-limpiar-formulario")?.addEventListener("click", () => {
+            if (confirm("¿Está seguro de limpiar todo? Se perderán los datos ingresados.")) {
+                document.getElementById("reporteForm").reset();
+
+                // Restaurar nombre y fecha
+                const nombreUsuario = localStorage.getItem("usuario_nombre") || "técnico.infraestructura";
+                const inputTecnico = document.getElementById("nombreTecnico");
+                if (inputTecnico) inputTecnico.value = nombreUsuario.toUpperCase();
+                const inputFecha = document.getElementById("fechaMantenimiento");
+                if (inputFecha) inputFecha.value = new Date().toISOString().split('T')[0];
+
+                // Limpiar filas dinámicas de repuestos
+                const filasRepuestos = document.querySelectorAll(".repuesto-item");
+                for (let i = 1; i < filasRepuestos.length; i++) filasRepuestos[i].remove();
+                if(filasRepuestos.length > 0) {
+                    filasRepuestos[0].querySelector('select[name="repuesto_id"]').value = "";
+                    filasRepuestos[0].querySelector('input[name="cantidad"]').value = "0";
+                    filasRepuestos[0].querySelector('input[name="precio_unitario"]').value = "0";
+                }
+            }
         });
     </script>
-
 </body>
 </html>
