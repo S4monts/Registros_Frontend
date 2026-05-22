@@ -622,23 +622,58 @@
             document.getElementById('selectRefrigerante').value = '';
         }
 
-        function submitCrearActivo(event) {
+        const capacidadATonelaje = {
+            '12000': 1.00,
+            '18000': 1.50,
+            '24000': 2.00,
+            '30000': 2.50,
+            '43000': 3.58,
+            '60000': 5.00
+        };
+
+        async function submitCrearActivo(event) {
             event.preventDefault();
-            const codigo = document.getElementById('inputCodigoActivo').value;
-            const ubicacion = document.getElementById('inputUbicacion').value;
-            const marca = document.getElementById('inputMarca').value;
+            const form = event.currentTarget;
+            const codigoActivo = document.getElementById('inputCodigoActivo').value.trim();
+            const ubicacion = document.getElementById('inputUbicacion').value.trim();
+            const marca = document.getElementById('inputMarca').value.trim();
             const capacidad = document.getElementById('selectCapacidad').value;
-            const voltaje = document.getElementById('inputVoltaje').value;
+            const voltaje = document.getElementById('inputVoltaje').value.trim();
             const refrigerante = document.getElementById('selectRefrigerante').value;
 
-            alert(`Activo registrado exitosamente:\nCódigo: ${codigo}\nUbicación: ${ubicacion}\nMarca: ${marca}\nCapacidad: ${capacidad} BTU\nVoltaje: ${voltaje}\nRefrigerante: ${refrigerante}`);
-            closeCrearActivoModal();
+            const objetoDatos = {
+                codigo_activo: codigoActivo,
+                modelo: marca,
+                capacidad_btu: Number(capacidad),
+                tonelaje: capacidadATonelaje[capacidad] ?? null,
+                numero_serie: `${codigoActivo}-${capacidad}`,
+                fecha_instalacion: new Date().toISOString().split('T')[0],
+                estado: 'Operativo',
+                marca_id: 1,
+                tipo_equipo_id: 1,
+                espacio_id: 1,
+                voltaje,
+                ubicacion,
+                refrigerante
+            };
+
+            try {
+                await API.post('/equipos/', objetoDatos);
+                alert('Activo registrado exitosamente.');
+                form.reset();
+                closeCrearActivoModal();
+            } catch (error) {
+                alert(`Error al registrar el activo: ${error.message || error}`);
+            }
         }
 
         document.getElementById('modal-crear-activo').addEventListener('click', function (event) {
             if (event.target === this) closeCrearActivoModal();
         });
     </script>
+
+    <script src="js/api.js"></script>
+    <script src="js/sidebar.js"></script>
 
 </body>
 </html>

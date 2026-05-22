@@ -21,8 +21,9 @@
         }
     </script>
     <script src="js/auth_guard.js"></script>
+    <script src="js/config.js" defer></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
@@ -48,7 +49,7 @@
             <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 bg-uccLight text-uccDark rounded-xl shadow-lg font-bold text-sm"><i class="fas fa-shield-alt w-5"></i><span>Control de Acceso</span></a>
         </nav>
         <div class="p-4 border-t border-slate-200">
-            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
+            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
         </div>
     </aside>
 
@@ -510,10 +511,55 @@
             document.getElementById('modal-crear-usuario').classList.add('hidden');
         }
 
-        function saveNewUser(event) {
+        const rolesBackend = {
+            Administrador: 'Jefe de Infraestructura',
+            Tecnico: 'Tecnico',
+            Auxiliar: 'Auxiliar de Infraestructura'
+        };
+
+        function normalizarTexto(valor) {
+            return (valor || '').normalize('NFD').replaceAll(/[\u0300-\u036f]/g, '');
+        }
+
+        function generarPasswordTemporal(correo, documento, telefono) {
+            const semilla = `${correo || ''}${documento || ''}${telefono || ''}`.replaceAll(/[^a-zA-Z0-9]/g, '');
+            return (semilla.length >= 8 ? semilla : `${semilla}Ucc2026!`).slice(0, 255);
+        }
+
+        async function saveNewUser(event) {
             event.preventDefault();
-            closeCreateUserModal();
-            alert('Usuario registrado correctamente');
+            const form = event.currentTarget;
+            const nombreCompleto = document.getElementById('newUserName').value.trim();
+            const correoInstitucional = document.getElementById('newUserEmail').value.trim();
+            const documento = document.getElementById('newUserDocument').value.trim();
+            const telefono = document.getElementById('newUserPhone').value.trim();
+            const rolFrontend = document.getElementById('newUserRole').value.trim();
+            const rolFrontendNormalizado = normalizarTexto(rolFrontend);
+            const rolFrontendCanonico = rolFrontendNormalizado === 'Supervisor' ? 'Administrador' : rolFrontendNormalizado;
+            const partesNombre = nombreCompleto.split(/\s+/).filter(Boolean);
+            const nombre = partesNombre.shift() || nombreCompleto;
+            const apellido = partesNombre.join(' ') || nombre;
+            const codigoUniversitario = documento ? Number(documento.replaceAll(/\D/g, '')) || null : null;
+
+            const objetoDatos = {
+                nombre,
+                apellido,
+                correo_institucional: correoInstitucional,
+                telefono,
+                codigo_universitario: codigoUniversitario,
+                password: generarPasswordTemporal(correoInstitucional, documento, telefono),
+                tipo_rol: rolesBackend[rolFrontendCanonico] || 'Tecnico',
+                activo: true
+            };
+
+            try {
+                await API.post('/usuarios/', objetoDatos);
+                alert('Usuario registrado correctamente');
+                form.reset();
+                closeCreateUserModal();
+            } catch (error) {
+                alert(`Error al registrar el usuario: ${error.message || error}`);
+            }
         }
 
         function updateRoleBadge(userId, role) {
@@ -583,6 +629,9 @@
             if (event.target === this) closeCreateUserModal();
         });
     </script>
+
+    <script src="js/api.js"></script>
+    <script src="js/sidebar.js"></script>
 
 </body>
 </html>

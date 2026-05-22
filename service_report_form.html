@@ -251,13 +251,25 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const nombreUsuario = localStorage.getItem("usuario_nombre") || "técnico.infraestructura";
-            const inputTecnico = document.getElementById("nombreTecnico");
-            if (inputTecnico) inputTecnico.value = nombreUsuario.toUpperCase();
+        // ==========================================
+        // Inicialización del Formulario de Reporte
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Leer el nombre del usuario desde localStorage (guardado por login.js)
+            const nombreUsuario = localStorage.getItem('usuario_nombre') || 'TÉCNICO DE INFRAESTRUCTURA';
 
-            const inputFecha = document.getElementById("fechaMantenimiento");
-            if (inputFecha) inputFecha.value = new Date().toISOString().split('T')[0];
+            // Rellenar el campo del técnico responsable (bloqueado para trazabilidad)
+            const inputTecnico = document.getElementById('nombreTecnico');
+            if (inputTecnico) {
+                inputTecnico.value = nombreUsuario.toUpperCase();
+                inputTecnico.readOnly = true; // Bloqueo de seguridad definitivo
+            }
+
+            // Auto-llenar la fecha actual
+            const inputFecha = document.getElementById('fechaMantenimiento');
+            if (inputFecha) {
+                inputFecha.value = new Date().toISOString().split('T')[0];
+            }
         });
 
         // Simulación de Base de Datos para el Modal
@@ -405,16 +417,20 @@
             alert("✅ Formulario enviado con éxito. No hubo campos vacíos.");
         });
 
-        // Botón Limpiar Todo - restaura algunos valores por defecto y elimina filas adicionales
+        // Botón Limpiar Todo - restaura formulario y campos de trazabilidad
         document.getElementById("btn-limpiar-formulario")?.addEventListener("click", () => {
             if (confirm("¿Está seguro de limpiar todo? Se perderán los datos ingresados.")) {
                 document.getElementById("reporteForm").reset();
 
-                // Restaurar nombre y fecha
-                const nombreUsuario = localStorage.getItem("usuario_nombre") || "técnico.infraestructura";
-                const inputTecnico = document.getElementById("nombreTecnico");
-                if (inputTecnico) inputTecnico.value = nombreUsuario.toUpperCase();
-                const inputFecha = document.getElementById("fechaMantenimiento");
+                // Restaurar nombre del técnico y fecha
+                const nombreUsuario = localStorage.getItem('usuario_nombre') || 'TÉCNICO DE INFRAESTRUCTURA';
+                const inputTecnico = document.getElementById('nombreTecnico');
+                if (inputTecnico) {
+                    inputTecnico.value = nombreUsuario.toUpperCase();
+                    inputTecnico.readOnly = true;
+                }
+
+                const inputFecha = document.getElementById('fechaMantenimiento');
                 if (inputFecha) inputFecha.value = new Date().toISOString().split('T')[0];
 
                 // Limpiar filas dinámicas de repuestos
@@ -428,5 +444,8 @@
             }
         });
     </script>
+    <script src="js/api.js"></script>
+    <script src="js/sidebar.js"></script>
+
 </body>
 </html>

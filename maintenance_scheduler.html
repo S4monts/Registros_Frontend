@@ -47,7 +47,7 @@
             <a href="admin_access_control.html" class="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm"><i class="fas fa-shield-alt w-5"></i><span>Control de Acceso</span></a>
         </nav>
         <div class="p-4 border-t border-slate-200">
-            <button class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
+            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-100 rounded-xl transition font-medium text-sm justify-center"><i class="fas fa-sign-out-alt w-5"></i><span>Cerrar Sesión</span></button>
         </div>
     </aside>
 
@@ -352,10 +352,50 @@
             document.getElementById('modal-detalle-orden').classList.add('hidden');
         }
 
-        function guardarCambiosOrden() {
+        const tecnicosPorId = {
+            juan: 1,
+            carlos: 2,
+            andy: 3,
+            maria: 4,
+            laura: 5
+        };
+
+        const ordenesProgramadas = {
+            69911: {
+                fecha_programada: '2024-06-15',
+                tipo_mantenimiento_id: 1,
+                encargado_id: 1
+            },
+            69912: {
+                fecha_programada: '2024-06-10',
+                tipo_mantenimiento_id: 2,
+                encargado_id: 2
+            }
+        };
+
+        async function guardarCambiosOrden() {
             const tecnico = document.getElementById('selectTecnicoReasignar').value;
-            alert(`Cambios de planificación guardados correctamente.\nNuevo técnico asignado: ${tecnico}`);
-            closeDetalleOrdenModal();
+            const ordenBase = ordenesProgramadas[currentOrderId];
+
+            if (!ordenBase) {
+                alert('No se encontró información base de la orden seleccionada.');
+                return;
+            }
+
+            const objetoDatos = {
+                fecha_programada: ordenBase.fecha_programada,
+                equipo_id: currentOrderId,
+                encargado_id: tecnicosPorId[tecnico] ?? ordenBase.encargado_id,
+                tipo_mantenimiento_id: ordenBase.tipo_mantenimiento_id
+            };
+
+            try {
+                await API.post('/programaciones/', objetoDatos);
+                alert('Cambios de planificación guardados correctamente.');
+                closeDetalleOrdenModal();
+            } catch (error) {
+                alert(`Error al guardar los cambios de la orden: ${error.message || error}`);
+            }
         }
 
         function cancelarMantenimiento() {
@@ -369,6 +409,9 @@
             if (event.target === this) closeDetalleOrdenModal();
         });
     </script>
+
+    <script src="js/api.js"></script>
+    <script src="js/sidebar.js"></script>
 
 </body>
 </html>
