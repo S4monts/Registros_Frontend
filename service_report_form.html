@@ -121,6 +121,13 @@
                             <input type="text" id="ubicacion" required readonly placeholder="Se autocompleta con el código..." class="w-full bg-slate-100 border border-slate-200 text-slate-600 font-bold rounded-xl px-4 py-3 text-sm cursor-not-allowed">
                         </div>
                     </div>
+
+                    <div>
+                        <label for="select-espacio" class="block text-xs font-bold uppercase text-slate-600 mb-2">Espacio / Salón de Intervención <span class="text-red-500">*</span></label>
+                        <select id="select-espacio" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-uccLight">
+                            <option value="" disabled selected>Cargando espacios disponibles...</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="space-y-6">
@@ -183,9 +190,21 @@
                     <p class="text-xs text-slate-400 mt-2 font-medium">* Ingrese 0 si el servicio está cubierto por garantía institucional. No dejar vacío.</p>
                 </div>
 
+                <div class="p-6 bg-blue-50 border border-blue-200 rounded-2xl">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-4">
+                        <i class="fas fa-toolbox text-uccLight mr-2"></i>Componentes Utilizados en el Servicio
+                    </label>
+                    <div id="contenedor-componentes" class="space-y-3">
+                        <div class="text-center text-slate-400 py-4">
+                            <i class="fas fa-spinner text-2xl animate-spin"></i>
+                            <p class="text-sm mt-2">Cargando componentes disponibles...</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="border-t border-slate-200 pt-6">
                     <h3 class="text-lg font-black text-uccDark mb-4">
-                        <i class="fas fa-tools text-uccLight mr-2"></i>Repuestos Utilizados en Campo
+                        <i class="fas fa-tools text-uccLight mr-2"></i>Repuestos Adicionales Utilizados en Campo
                     </h3>
 
                     <div id="contenedor-repuestos" class="space-y-4">
@@ -374,7 +393,7 @@
         });
 
         // 5. Intercepción del Submit con Bloqueo de Validación Estricto
-        document.getElementById("reporteForm")?.addEventListener("submit", function(e) {
+        document.getElementById("reporteForm")?.addEventListener("submit", async function(e) {
             e.preventDefault(); // Detenemos la recarga de página por defecto
 
             // 🔒 ESTRICTO: Si el formulario no pasa la validación de campos vacíos, frena la ejecución
@@ -413,8 +432,51 @@
                 }
             });
 
-            console.log("🚀 Payload Validado y Listo:", payloadMantenimiento);
-            alert("✅ Formulario enviado con éxito. No hubo campos vacíos.");
+            // 🚀 Enviar el Payload al Backend mediante POST
+            try {
+                // 1. Mostrar estado de carga (opcional pero recomendado)
+                const btnGuardar = document.querySelector('button[type="submit"]');
+                const textoOriginal = btnGuardar.innerHTML;
+                btnGuardar.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Guardando...';
+                btnGuardar.disabled = true;
+
+                // 2. Hacer la petición a FastAPI
+                const response = await fetch("http://127.0.0.1:8000/api/v1/mantenimientos/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payloadMantenimiento)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "Error interno del servidor al guardar.");
+                }
+
+                const dataGuardada = await response.json();
+
+                // 3. Éxito
+                alert("✅ Reporte de mantenimiento guardado exitosamente en la base de datos.");
+
+                // 4. Limpiar el formulario después de guardar
+                document.getElementById("reporteForm").reset();
+                // Volver a ocultar los campos de los componentes
+                document.querySelectorAll(".inputs-detalle").forEach(div => div.classList.add("d-none"));
+
+                // Restaurar botón
+                btnGuardar.innerHTML = textoOriginal;
+                btnGuardar.disabled = false;
+
+            } catch (error) {
+                console.error("Error al enviar el reporte:", error);
+                alert(`❌ Ocurrió un error al guardar: ${error.message}`);
+
+                // Restaurar botón en caso de error
+                const btnGuardar = document.querySelector('button[type="submit"]');
+                btnGuardar.innerHTML = '<i class="fas fa-save mr-2"></i> Guardar Reporte';
+                btnGuardar.disabled = false;
+            }
         });
 
         // Botón Limpiar Todo - restaura formulario y campos de trazabilidad
@@ -432,20 +494,12 @@
 
                 const inputFecha = document.getElementById('fechaMantenimiento');
                 if (inputFecha) inputFecha.value = new Date().toISOString().split('T')[0];
-
-                // Limpiar filas dinámicas de repuestos
-                const filasRepuestos = document.querySelectorAll(".repuesto-item");
-                for (let i = 1; i < filasRepuestos.length; i++) filasRepuestos[i].remove();
-                if(filasRepuestos.length > 0) {
-                    filasRepuestos[0].querySelector('select[name="repuesto_id"]').value = "";
-                    filasRepuestos[0].querySelector('input[name="cantidad"]').value = "0";
-                    filasRepuestos[0].querySelector('input[name="precio_unitario"]').value = "0";
-                }
             }
         });
     </script>
     <script src="js/api.js"></script>
     <script src="js/sidebar.js"></script>
+    <script src="js/service_report_form.js" defer></script>
 
 </body>
 </html>

@@ -1,107 +1,153 @@
 /**
- * AiresFlow - Controlador Centralizado del Menú Lateral (Sidebar)
- * Gestiona de manera responsiva la visibilidad en móviles y pantallas de escritorio.
+ * AiresFlow - Sidebar modular exclusivo para Técnico.
+ * Inyecta solo dos accesos y mantiene el comportamiento móvil sin listeners globales.
  */
 (function () {
     function inicializarSidebar() {
         const sidebar = document.getElementById("sidebar") || document.getElementById("main-sidebar");
         const overlay = document.getElementById("sidebar-overlay");
-
-        // Buscar botones de apertura (hamburguesa) o cierre dinámicamente
-        const botonesMenu = document.querySelectorAll('[id*="btn-menu"], .toggle-sidebar, .fa-bars');
-        const botonCerrar = document.getElementById("btn-close-sidebar");
+        const userRole = localStorage.getItem("userRole");
+        const currentPath = window.location.pathname.toLowerCase();
 
         if (!sidebar || !overlay) {
-            console.warn("⚠️ Advertencia Sidebar: Elementos estructurales no encontrados en esta vista.");
+            console.warn("⚠️ Sidebar: no se encontraron los elementos estructurales necesarios.");
             return;
         }
 
-        // Función nativa para alternar visibilidad (Toggle)
         function toggleSidebar() {
             sidebar.classList.toggle("-translate-x-full");
             overlay.classList.toggle("hidden");
         }
 
-        // Función explícita para cerrar el menú lateral
         function cerrarSidebar() {
             sidebar.classList.add("-translate-x-full");
             overlay.classList.add("hidden");
         }
 
-        function abrirSidebar() {
-            sidebar.classList.remove("-translate-x-full");
-            overlay.classList.remove("hidden");
+        function obtenerNavContainer() {
+            return document.querySelector("#sidebar nav") || document.querySelector("nav");
         }
 
-        function sincronizarResponsive() {
-            if (window.innerWidth >= 768) {
-                overlay.classList.add("hidden");
-            } else {
-                overlay.classList.add("hidden");
+        function limpiarEInyectarNavTecnico() {
+            if (userRole !== "Tecnico") {
+                return;
             }
-        }
 
-        // Asignar listeners a todos los botones detectados que abren el menú
-        botonesMenu.forEach((boton) => {
-            const elementoClickable = boton.tagName === "I" || boton.classList.contains("fa-bars")
-                ? (boton.parentElement || boton)
-                : boton;
+            const navContainer = obtenerNavContainer();
+            if (!navContainer) {
+                return;
+            }
 
-            elementoClickable.addEventListener("click", (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (window.innerWidth < 768) {
-                    toggleSidebar();
-                } else {
-                    abrirSidebar();
+            navContainer.innerHTML = "";
+
+            const botones = [
+                {
+                    id: "nav-reporte-tecnico",
+                    href: "service_report_form.html",
+                    label: "Registrar Reporte Técnico",
+                    icono: "fas fa-clipboard-list"
+                },
+                {
+                    id: "nav-inventario",
+                    href: "asset_inventory.html",
+                    label: "Historial de Activos",
+                    icono: "fas fa-history"
+                }
+            ];
+
+            botones.forEach((boton) => {
+                if (!document.getElementById(boton.id)) {
+                    navContainer.insertAdjacentHTML(
+                        "beforeend",
+                        `
+                                <a href="${boton.href}" id="${boton.id}" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-700/50 hover:text-white rounded-xl transition-all text-sm font-medium group">
+                                    <div class="text-slate-500 group-hover:text-uccLight transition-colors">
+                                    <i class="${boton.icono} text-base"></i>
+                                </div>
+                                <span>${boton.label}</span>
+                            </a>
+                        `
+                    );
                 }
             });
-        });
 
-        if (botonCerrar) {
-            botonCerrar.addEventListener("click", cerrarSidebar);
+            const navInventario = document.getElementById("nav-inventario");
+            if (navInventario && currentPath.includes("asset_inventory.html")) {
+                navInventario.classList.remove("text-slate-300", "hover:bg-slate-700/50", "hover:text-white");
+                navInventario.classList.add("bg-uccLight", "text-uccDark", "font-bold");
+
+                const iconoContenedor = navInventario.querySelector("div");
+                const textoInventario = navInventario.querySelector("span");
+
+                if (iconoContenedor) {
+                    iconoContenedor.className = "text-uccDark";
+                }
+
+                if (textoInventario) {
+                    textoInventario.className = "text-uccDark";
+                }
+            }
         }
 
-        // Fallback global: si algún trigger cambia de estructura, cualquier clic sobre el icono o su contenedor abre el sidebar.
-        document.addEventListener("click", (e) => {
-            const trigger = e.target.closest('[id*="btn-menu"], .toggle-sidebar, .fa-bars');
-            if (!trigger) return;
-            if (trigger.id === "btn-close-sidebar") return;
+        function reemplazarYVincular(selector, accion) {
+            const nodos = Array.from(document.querySelectorAll(selector));
+            const elementosUnicos = new Set();
 
-            e.preventDefault();
-            e.stopPropagation();
-            if (window.innerWidth < 768) {
-                toggleSidebar();
-            } else {
-                abrirSidebar();
-            }
-        }, true);
+            nodos.forEach((nodo) => {
+                const raiz = nodo.matches("button, a") ? nodo : (nodo.closest("button, a") || nodo);
+                elementosUnicos.add(raiz);
+            });
 
-        // Cerrar al hacer clic en el fondo oscuro (overlay)
-        overlay.addEventListener("click", cerrarSidebar);
+            elementosUnicos.forEach((elemento) => {
+                if (!elemento.parentNode) {
+                    return;
+                }
 
-        // Cerrar de forma inteligente si se hace clic en un enlace de navegación móvil
-        const enlacesNavegacion = sidebar.querySelectorAll("nav a");
-        enlacesNavegacion.forEach((enlace) => {
-            enlace.addEventListener("click", () => {
-                if (window.innerWidth < 768) { // Solo en dispositivos móviles (Breakpoint md de Tailwind)
+                const clon = elemento.cloneNode(true);
+                elemento.parentNode.replaceChild(clon, elemento);
+                clon.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    accion();
+                });
+            });
+        }
+
+        function vincularControlesMoviles() {
+            reemplazarYVincular('[id*="btn-menu"], .fa-bars, #btn-menu-mobile, .toggle-sidebar', toggleSidebar);
+
+            const btnCloseSidebar = document.getElementById("btn-close-sidebar");
+            if (btnCloseSidebar && btnCloseSidebar.parentNode) {
+                const clonClose = btnCloseSidebar.cloneNode(true);
+                btnCloseSidebar.parentNode.replaceChild(clonClose, btnCloseSidebar);
+                clonClose.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     cerrarSidebar();
-                }
+                });
+            }
+
+            overlay.addEventListener("click", cerrarSidebar);
+
+            sidebar.querySelectorAll("nav a").forEach((enlace) => {
+                enlace.addEventListener("click", () => {
+                    if (window.innerWidth < 768) {
+                        cerrarSidebar();
+                    }
+                });
             });
-        });
+        }
 
-        window.addEventListener("resize", sincronizarResponsive);
+        limpiarEInyectarNavTecnico();
+        vincularControlesMoviles();
         cerrarSidebar();
-        sincronizarResponsive();
 
-        console.log("✅ Controlador centralizado del Sidebar cargado con éxito.");
+        console.log("✅ Sidebar técnico cargado con éxito.");
     }
 
-    // Ejecutar la inicialización dependiendo del estado de carga del árbol de elementos
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", inicializarSidebar);
     } else {
         inicializarSidebar();
     }
 })();
-
