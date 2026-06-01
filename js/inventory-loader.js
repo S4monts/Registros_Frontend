@@ -82,6 +82,29 @@ function cargarSelectoresFormularios() {
             const select = document.getElementById("select-bloque-espacio");
             if (select) select.innerHTML = '<option value="">Error al cargar bloques</option>';
         });
+
+    // Cargar Tipos de Equipo en selector
+    fetch(`${API_BASE_URL}/tipos-equipo/`)
+        .then(r => r.json())
+        .then(data => {
+            const tiposEquipo = Array.isArray(data) ? data : (data.items || []);
+            const select = document.getElementById("select-tipo-equipo");
+            if (select) {
+                select.innerHTML = '<option value="">Selecciona tipo de equipo</option>';
+                tiposEquipo.forEach(tipo => {
+                    const option = document.createElement("option");
+                    option.value = tipo.id;
+                    option.textContent = tipo.nombre;
+                    select.appendChild(option);
+                });
+                console.log(`✅ Cargados ${tiposEquipo.length} tipos de equipo`);
+            }
+        })
+        .catch(err => {
+            console.error("❌ Error al cargar tipos de equipo:", err);
+            const select = document.getElementById("select-tipo-equipo");
+            if (select) select.innerHTML = '<option value="">Error al cargar tipos</option>';
+        });
 }
 
 /**
@@ -192,10 +215,10 @@ function crearFilaEquipo(equipo) {
     // Construir la ubicación (combinar espacio, bloque, piso)
     const ubicacion = construirUbicacion(equipo);
 
-    // Formatear capacidad BTU
-    const capacidadBTU = equipo.capacidad_btu
-        ? `${equipo.capacidad_btu.toLocaleString("es-CO")} BTU`
-        : "No especificada";
+    // Obtener tipo de equipo
+    const tipoEquipo = equipo.tipo_equipo
+        ? (typeof equipo.tipo_equipo === 'object' ? equipo.tipo_equipo.nombre : equipo.tipo_equipo)
+        : "No especificado";
 
     // Número de serie (con valor por defecto si no existe)
     const numeroSerie = equipo.numero_serie || "N/A";
@@ -213,8 +236,8 @@ function crearFilaEquipo(equipo) {
             ${marcaModelo}
         </td>
         <td class="px-8 py-5 font-bold text-slate-600">
-            <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">
-                ${capacidadBTU}
+            <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-lg text-xs font-bold">
+                ${tipoEquipo}
             </span>
         </td>
         <td class="px-8 py-5 font-semibold text-slate-600 col-ubicacion">
@@ -421,13 +444,37 @@ async function submitCrearEspacio(event) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.detail || "Error al crear el espacio");
+            const mensajeError = errorData.detail || "Error al crear el espacio";
+            
+            // Mostrar mensaje de error de forma elegante
+            const errorElement = document.getElementById("error-crear-espacio") || document.createElement("div");
+            errorElement.id = "error-crear-espacio";
+            errorElement.className = "p-4 bg-red-50 border border-red-200 rounded-lg mt-4";
+            errorElement.innerHTML = `
+                <p class="text-sm font-bold text-red-600">
+                    <i class="fas fa-exclamation-circle mr-2"></i>${mensajeError}
+                </p>
+            `;
+            
+            const form = document.getElementById("formCrearEspacio");
+            if (form && !document.getElementById("error-crear-espacio")) {
+                form.appendChild(errorElement);
+            }
+            
+            console.error("❌ Error al crear espacio:", mensajeError);
+            return;
         }
 
         const resultado = await response.json();
         console.log("✅ Espacio creado exitosamente:", resultado);
 
         alert("✅ Espacio registrado exitosamente en la base de datos");
+
+        // Limpiar mensaje de error si existe
+        const errorElement = document.getElementById("error-crear-espacio");
+        if (errorElement) {
+            errorElement.remove();
+        }
 
         // Cerrar modal
         closeCrearEspacioModal();
@@ -436,8 +483,21 @@ async function submitCrearEspacio(event) {
         cargarSelectoresFormularios();
 
     } catch (error) {
-        console.error("❌ Error al crear espacio:", error);
-        alert(`❌ Error: ${error.message}`);
+        console.error("❌ Error inesperado al crear espacio:", error);
+        
+        const errorElement = document.getElementById("error-crear-espacio") || document.createElement("div");
+        errorElement.id = "error-crear-espacio";
+        errorElement.className = "p-4 bg-red-50 border border-red-200 rounded-lg mt-4";
+        errorElement.innerHTML = `
+            <p class="text-sm font-bold text-red-600">
+                <i class="fas fa-exclamation-circle mr-2"></i>Error inesperado: ${error.message}
+            </p>
+        `;
+        
+        const form = document.getElementById("formCrearEspacio");
+        if (form && !document.getElementById("error-crear-espacio")) {
+            form.appendChild(errorElement);
+        }
     }
 }
 
@@ -477,6 +537,8 @@ async function submitCrearActivoFormulario(event) {
         const numeroSerie = document.getElementById("inputNumeroSerie").value.trim();
         const voltaje = document.getElementById("inputVoltaje").value.trim();
         const refrigerante = document.getElementById("selectRefrigerante").value;
+        const fechaCompra = document.getElementById("inputFechaCompra").value;
+        const fechaInstalacion = document.getElementById("inputFechaInstalacion").value;
 
         // Validación básica
         if (!codigoActivo || isNaN(marcaId) || isNaN(espacioId) || isNaN(capacidadBtu) || !numeroSerie || !voltaje || !refrigerante) {
@@ -485,18 +547,20 @@ async function submitCrearActivoFormulario(event) {
         }
 
         // Construir payload con los datos correctos
-        const payload = {
-            codigo_activo: codigoActivo,
-            marca_id: marcaId,              // Lectura real desde selector
-            espacio_id: espacioId,          // Lectura real desde selector
-            tipo_equipo_id: tipoEquipoId,   // Lectura real desde selector
-            capacidad_btu: capacidadBtu,
-            numero_serie: numeroSerie,
-            voltaje: voltaje,
-            refrigerante: refrigerante,
-            estado: "Operativo",
-            tonelaje: capacidadATonelaje[capacidadBtu.toString()] || null
-        };
+         const payload = {
+             codigo_activo: codigoActivo,
+             marca_id: marcaId,              // Lectura real desde selector
+             espacio_id: espacioId,          // Lectura real desde selector
+             tipo_equipo_id: tipoEquipoId,   // Lectura real desde selector
+             capacidad_btu: capacidadBtu,
+             numero_serie: numeroSerie,
+             voltaje: voltaje,
+             refrigerante: refrigerante,
+             estado: "Operativo",
+             tonelaje: capacidadATonelaje[capacidadBtu.toString()] || null,
+             fecha_compra: fechaCompra || null,
+             fecha_instalacion: fechaInstalacion || null
+         };
 
         console.log("🚀 Enviando equipo con datos válidos:", payload);
 
@@ -528,6 +592,176 @@ async function submitCrearActivoFormulario(event) {
     } catch (error) {
         console.error("❌ Error al crear equipo:", error);
         alert(`❌ Error: ${error.message}`);
+    }
+}
+
+// ========================================
+// FUNCIONES DE MODAL (HOJA DE VIDA TÉCNICA)
+// ========================================
+
+/**
+ * Abre el modal de Hoja de Vida Técnica y carga los datos del equipo
+ * @param {number} equipoId - ID del equipo a mostrar
+ */
+async function openTechnicalSheet(equipoId) {
+    const modal = document.getElementById("modal-hoja-vida");
+    
+    if (!modal) {
+        console.error("❌ Modal con id='modal-hoja-vida' no encontrado");
+        return;
+    }
+
+    try {
+        // Guardar ID del equipo actualmente abierto
+        window.currentEquipoId = equipoId;
+        
+        // Mostrar modal con estado de carga
+        modal.classList.remove("hidden");
+        modal.style.display = 'flex';
+        document.body.classList.add('overflow-hidden');
+        
+        console.log("📋 Cargando datos del equipo ID:", equipoId);
+        
+        // Realizar petición GET para obtener datos del equipo
+        const response = await fetch(`${API_BASE_URL}/equipos/${equipoId}/`);
+        
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const equipo = await response.json();
+        console.log("✅ Datos del equipo cargados:", equipo);
+
+        // Rellenar campos del modal con los datos obtenidos
+        const campos = {
+            technicalSheetId: equipo.codigo_activo || "N/A",
+            technicalSheetBrand: equipo.marca 
+                ? (typeof equipo.marca === 'object' ? equipo.marca.nombre : equipo.marca)
+                : "No especificada",
+            technicalSheetModel: equipo.modelo || "No especificado",
+            technicalSheetType: equipo.tipo 
+                ? (typeof equipo.tipo === 'object' ? equipo.tipo.nombre : equipo.tipo)
+                : "No especificado",
+            technicalSheetBtu: equipo.capacidad_btu 
+                ? `${equipo.capacidad_btu.toLocaleString("es-CO")} BTU/h`
+                : "No especificada",
+            technicalSheetTr: equipo.tonelaje 
+                ? `${parseFloat(equipo.tonelaje).toFixed(2)} TR`
+                : "No especificado",
+            technicalSheetBlock: equipo.espacio && equipo.espacio.codigo_espacio
+                ? equipo.espacio.codigo_espacio
+                : "No especificado",
+            technicalSheetSpace: equipo.espacio && equipo.espacio.nombre
+                ? equipo.espacio.nombre
+                : "No especificado",
+            technicalSheetFloor: equipo.espacio && equipo.espacio.piso
+                ? `Piso ${equipo.espacio.piso}`
+                : "No especificado",
+            technicalSheetInstallDate: equipo.fecha_instalacion
+                ? new Date(equipo.fecha_instalacion).toLocaleDateString("es-CO")
+                : "No especificada",
+            technicalSheetLastService: equipo.ultima_fecha
+                ? new Date(equipo.ultima_fecha).toLocaleDateString("es-CO")
+                : "No registrada",
+            technicalSheetWarranty: "Vigente",
+            technicalSheetNextMaintenance: equipo.proxima_fecha
+                ? new Date(equipo.proxima_fecha).toLocaleDateString("es-CO")
+                : "No programado",
+            technicalSheetCountdown: "Información disponible",
+            technicalSheetStatusPill: obtenerBadgeEstado(equipo.estado),
+            technicalSheetSubtitle: equipo.numero_serie || "Sin serie",
+            technicalSheetSerialNumber: equipo.numero_serie || "No especificado",
+            technicalSheetVoltage: equipo.voltaje || "No especificado",
+            technicalSheetRefrigerant: equipo.refrigerante || "No especificado"
+        };
+
+        // Actualizar campos de texto sin reemplazar el HTML
+        Object.keys(campos).forEach(id => {
+            const elemento = document.getElementById(id);
+            if (elemento) {
+                if (id === "technicalSheetStatusPill") {
+                    elemento.innerHTML = campos[id];
+                } else {
+                    elemento.textContent = campos[id];
+                }
+            } else {
+                console.warn(`⚠️  Campo no encontrado: ${id}`);
+            }
+        });
+
+        console.log("✅ Modal de Hoja de Vida Técnica rellenado exitosamente");
+
+    } catch (error) {
+        console.error("❌ Error al cargar detalles técnicos:", error);
+        alert(`Error al cargar los detalles del equipo: ${error.message}`);
+    }
+}
+
+/**
+ * Edita el equipo actualmente abierto
+ */
+async function editTechnicalSheet() {
+    if (!window.currentEquipoId) {
+        alert("❌ No hay equipo seleccionado");
+        return;
+    }
+    
+    // TODO: Implementar modal de edición
+    console.log("📝 Editar equipo ID:", window.currentEquipoId);
+    alert("⚠️  Función de edición en desarrollo");
+}
+
+/**
+ * Cambia el estado del equipo a "Inactivo" (dar de baja)
+ */
+async function decommissionTechnicalSheet() {
+    if (!window.currentEquipoId) {
+        alert("❌ No hay equipo seleccionado");
+        return;
+    }
+    
+    const confirmar = confirm("⚠️  ¿Deseas desactivar este equipo? Se marcará como Inactivo en el sistema.");
+    if (!confirmar) return;
+    
+    try {
+        console.log("🔄 Desactivando equipo ID:", window.currentEquipoId);
+        
+        const response = await fetch(`${API_BASE_URL}/equipos/${window.currentEquipoId}/estado/Inactivo`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Error al desactivar el equipo");
+        }
+        
+        const resultado = await response.json();
+        console.log("✅ Equipo desactivado exitosamente:", resultado);
+        
+        alert("✅ Equipo desactivado correctamente");
+        closeTechnicalSheetModal();
+        cargarInventarioCompleto();
+        
+    } catch (error) {
+        console.error("❌ Error al desactivar equipo:", error);
+        alert(`Error: ${error.message}`);
+    }
+}
+
+/**
+ * Cierra el modal de Hoja de Vida Técnica
+ */
+function closeTechnicalSheetModal() {
+    const modal = document.getElementById("modal-hoja-vida");
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.style.display = 'none';
+        document.body.classList.remove('overflow-hidden');
+        window.currentEquipoId = null;
+        console.log("✅ Modal de Hoja de Vida Técnica cerrado");
     }
 }
 

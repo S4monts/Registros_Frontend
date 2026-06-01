@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <script src="js/auth_guard.js"></script>
@@ -160,9 +160,9 @@
                             <tr class="text-xs font-black uppercase tracking-widest text-slate-500">
                                 <th class="px-8 py-5 text-left">Código Activo</th>
                                 <th class="px-8 py-5 text-left">Marca / Modelo</th>
-                                <th class="px-8 py-5 text-left">Capacidad</th>
+                                <th class="px-8 py-5 text-left">Tipo de Equipo</th>
                                 <th class="px-8 py-5 text-left">Ubicación</th>
-                                <th class="px-8 py-5 text-left">Instalación</th>
+                                <th class="px-8 py-5 text-left">Número de Serie</th>
                                 <th class="px-8 py-5 text-left">Estado</th>
                                 <th class="px-8 py-5 text-center">Acciones</th>
                             </tr>
@@ -295,8 +295,7 @@
                          <div>
                              <label for="select-tipo-equipo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Tipo de Equipo</label>
                              <select id="select-tipo-equipo" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
-                                 <option value="">Selecciona tipo de equipo</option>
-                                 <option value="1">Aire Acondicionado</option>
+                                 <option value="">Cargando tipos de equipo...</option>
                              </select>
                          </div>
                          <div>
@@ -327,6 +326,14 @@
                                  <option value="R32">R32</option>
                                  <option value="R407C">R407C</option>
                              </select>
+                         </div>
+                         <div>
+                             <label for="inputFechaCompra" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Fecha de Compra</label>
+                             <input id="inputFechaCompra" type="date" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
+                         </div>
+                         <div>
+                             <label for="inputFechaInstalacion" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Fecha de Instalación</label>
+                             <input id="inputFechaInstalacion" type="date" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
                          </div>
                     </div>
 
@@ -425,159 +432,147 @@
     </div>
 
     <!-- Modal Ficha Técnica del Equipo -->
-    <div id="modal-hoja-vida" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-50 w-full max-w-6xl rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[85vh] overflow-y-auto">
-            <div class="bg-white shadow-sm px-10 py-4 flex items-center justify-between border-b sticky top-0 z-10">
-                <div class="flex items-center gap-4">
-                    <img src="img/ucc.png" alt="Logo UCC" class="h-12 object-contain">
-                    <div class="h-8 w-px bg-slate-200"></div>
+    <div id="modal-hoja-vida" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4" style="display: none;">
+        <div class="bg-white w-full max-w-6xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto relative">
+            <div class="bg-white px-10 py-6 border-b sticky top-0 z-10 flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <img src="img/ucc.png" alt="UCC" class="h-12 object-contain">
                     <div>
-                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Hoja de Vida Técnica</span>
-                        <p id="technicalSheetSubtitle" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">ID de Inventario</p>
+                        <h2 class="text-uccDark font-black text-lg">Hoja de Vida Técnica</h2>
+                        <p id="technicalSheetSubtitle" class="text-sm text-slate-500">---</p>
                     </div>
                 </div>
-                <button onclick="closeTechnicalSheetModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+                <button type="button" onclick="closeTechnicalSheetModal()" class="text-slate-500 hover:text-uccDark text-3xl font-black leading-none">×</button>
             </div>
 
-            <div class="p-6 md:p-10 bg-[url('https://www.transparenttextures.com/patterns/clean-gray-paper.png')]">
-                <div class="space-y-8">
-                    <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row">
-                        <div class="bg-uccDark p-12 text-white md:w-1/3 flex flex-col justify-center relative">
-                            <span class="text-[10px] font-black text-uccLight uppercase tracking-[0.4em] mb-4">ID de Inventario</span>
-                            <h1 id="technicalSheetId" class="text-5xl font-black tracking-tighter mb-6 leading-none">AC-B1-402</h1>
-                            <div id="technicalSheetStatusPill" class="inline-flex items-center gap-2 bg-green-500/20 text-green-300 px-4 py-1.5 rounded-full w-fit">
-                                <div class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></div>
-                                <span class="text-[10px] font-black uppercase tracking-widest">Estado: Operativo</span>
+            <div class="p-10 space-y-8">
+                <!-- Header Card: ID + Status + Specs -->
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden grid grid-cols-1 lg:grid-cols-3">
+                    <div class="bg-uccDark text-white p-10 flex flex-col justify-center">
+                        <p class="text-xs uppercase tracking-widest text-uccLight font-bold mb-2">ID de Inventario</p>
+                        <h3 id="technicalSheetId" class="text-5xl font-black mb-6">---</h3>
+                        <div id="technicalSheetStatusPill" class="inline-flex items-center gap-2 bg-green-500/20 text-green-300 px-4 py-2 rounded-full w-fit text-sm font-bold">● Operativo</div>
+                    </div>
+
+                    <div class="lg:col-span-2 p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xs font-black text-slate-600 uppercase mb-4">Especificaciones Técnicas</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Marca</p>
+                                    <p id="technicalSheetBrand" class="font-black text-uccDark">---</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Modelo</p>
+                                    <p id="technicalSheetModel" class="font-black text-uccDark">---</p>
+                                </div>
+                                <div class="col-span-2">
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Número de Serie</p>
+                                    <p id="technicalSheetSerialNumber" class="font-black text-uccDark">---</p>
+                                </div>
+                                <div class="col-span-2">
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Tipo de Equipo</p>
+                                    <p id="technicalSheetType" class="font-black text-uccDark">---</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="p-12 md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-10">
-                            <div class="space-y-6">
-                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b pb-2">Especificaciones Técnicas</h4>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Marca / Fabricante</p>
-                                        <p id="technicalSheetBrand" class="text-sm font-black text-uccDark">YORK</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Modelo Comercial</p>
-                                        <p id="technicalSheetModel" class="text-sm font-black text-uccDark">HCH45P17C</p>
-                                    </div>
-                                    <div class="col-span-2">
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Referencia de Catálogo</p>
-                                        <p id="technicalSheetReference" class="text-sm font-black text-uccDark">Split Piso Techo High Efficiency</p>
-                                    </div>
+                        <div>
+                            <h4 class="text-xs font-black text-slate-600 uppercase mb-4">Parámetros Operacionales</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Potencia</p>
+                                    <p id="technicalSheetBtu" class="font-black text-uccDark">---</p>
                                 </div>
-                            </div>
-
-                            <div class="space-y-6">
-                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b pb-2">Capacidad Termodinámica</h4>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Potencia (BTU)</p>
-                                        <p id="technicalSheetBtu" class="text-sm font-black text-uccDark italic">43,000 BTU/h</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Tonelaje (TR)</p>
-                                        <p id="technicalSheetTr" class="text-sm font-black text-uccDark italic">3.58 TR</p>
-                                    </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Tonelaje</p>
+                                    <p id="technicalSheetTr" class="font-black text-uccDark">---</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Voltaje</p>
+                                    <p id="technicalSheetVoltage" class="font-black text-uccDark">---</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase font-bold">Refrigerante</p>
+                                    <p id="technicalSheetRefrigerant" class="font-black text-uccDark">---</p>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-                            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 italic"><i class="fas fa-map-marker-alt mr-2 text-uccLight"></i> Ubicación Técnica</h3>
-                            <div class="space-y-4">
-                                <div class="flex justify-between border-b border-slate-50 pb-2">
-                                    <span class="text-xs font-bold text-slate-500">Bloque:</span>
-                                    <span id="technicalSheetBlock" class="text-xs font-black text-uccDark uppercase">Multidisciplinario</span>
-                                </div>
-                                <div class="flex justify-between border-b border-slate-50 pb-2">
-                                    <span class="text-xs font-bold text-slate-500">Piso / Nivel:</span>
-                                    <span id="technicalSheetFloor" class="text-xs font-black text-uccDark uppercase">Cuarto Piso</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-xs font-bold text-slate-500">Espacio Académico:</span>
-                                    <span id="technicalSheetSpace" class="text-xs font-black text-uccDark uppercase">Aula 407</span>
-                                </div>
+                <!-- Three Info Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h5 class="text-xs font-black text-slate-600 uppercase mb-5">📍 Ubicación Técnica</h5>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between border-b border-slate-100 pb-2">
+                                <span class="text-xs text-slate-600">Bloque:</span>
+                                <span id="technicalSheetBlock" class="font-black text-uccDark">---</span>
                             </div>
-                        </div>
-
-                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-                            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 italic"><i class="fas fa-calendar-alt mr-2 text-uccLight"></i> Ciclo de Vida</h3>
-                            <div class="space-y-4">
-                                <div class="flex justify-between border-b border-slate-50 pb-2">
-                                    <span class="text-xs font-bold text-slate-500">Fecha Instalación:</span>
-                                    <span id="technicalSheetInstallDate" class="text-xs font-black text-uccDark tracking-tighter">12 / 05 / 2023</span>
-                                </div>
-                                <div class="flex justify-between border-b border-slate-50 pb-2">
-                                    <span class="text-xs font-bold text-slate-500">Último Servicio:</span>
-                                    <span id="technicalSheetLastService" class="text-xs font-black text-uccDark tracking-tighter">15 / MAR / 2026</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-xs font-bold text-slate-500">Garantía Proveedor:</span>
-                                    <span id="technicalSheetWarranty" class="text-xs font-black text-green-600 uppercase">Vigente</span>
-                                </div>
+                            <div class="flex justify-between border-b border-slate-100 pb-2">
+                                <span class="text-xs text-slate-600">Piso:</span>
+                                <span id="technicalSheetFloor" class="font-black text-uccDark">---</span>
                             </div>
-                        </div>
-
-                        <div class="bg-uccLight p-8 rounded-3xl shadow-xl shadow-uccLight/20 text-white flex flex-col justify-between">
-                            <p class="text-[9px] font-black uppercase tracking-[0.2em] opacity-70 italic">Planificación Preventiva</p>
-                            <div>
-                                <p class="text-[10px] font-bold text-white/80 uppercase">Próximo Mantenimiento</p>
-                                <h3 id="technicalSheetNextMaintenance" class="text-3xl font-black tracking-tighter mt-1">20 / JUN / 2026</h3>
-                            </div>
-                            <div class="mt-4 pt-4 border-t border-white/20">
-                                <p id="technicalSheetCountdown" class="text-[9px] font-bold italic opacity-60">Faltan 38 días para la intervención reglamentaria.</p>
+                            <div class="flex justify-between">
+                                <span class="text-xs text-slate-600">Espacio:</span>
+                                <span id="technicalSheetSpace" class="font-black text-uccDark">---</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="px-10 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                            <h3 class="text-xs font-black text-uccDark uppercase tracking-widest italic">Historial de Intervenciones Técnicas</h3>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="bg-white text-[9px] font-black text-slate-400 uppercase tracking-widest border-b">
-                                    <tr>
-                                        <th class="px-10 py-4">Fecha</th>
-                                        <th class="px-10 py-4">Técnico Responsable</th>
-                                        <th class="px-10 py-4">Tipo</th>
-                                        <th class="px-10 py-4">Observaciones del Servicio</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="technicalSheetHistory" class="divide-y divide-slate-50 text-xs"></tbody>
-                            </table>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h5 class="text-xs font-black text-slate-600 uppercase mb-5">📅 Ciclo de Vida</h5>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between border-b border-slate-100 pb-2">
+                                <span class="text-xs text-slate-600">Instalación:</span>
+                                <span id="technicalSheetInstallDate" class="font-black text-uccDark">---</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-100 pb-2">
+                                <span class="text-xs text-slate-600">Último Servicio:</span>
+                                <span id="technicalSheetLastService" class="font-black text-uccDark">---</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-xs text-slate-600">Garantía:</span>
+                                <span id="technicalSheetWarranty" class="font-black text-green-600">---</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex flex-col md:flex-row gap-4 justify-end pb-2">
-                        <button onclick="editTechnicalSheet()" class="bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-pen"></i>
-                            <span>Editar</span>
-                        </button>
-                        <button onclick="decommissionTechnicalSheet()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-triangle-exclamation"></i>
-                            <span>Dar de Baja de la Institución</span>
-                        </button>
-                        <button onclick="closeTechnicalSheetModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2">
-                            <i class="fas fa-times"></i>
-                            <span>Cerrar Ventana</span>
-                        </button>
+                    <div class="bg-uccLight text-white p-6 rounded-2xl shadow-lg">
+                        <h5 class="text-xs font-black uppercase mb-4">🔧 Próximo Mantenimiento</h5>
+                        <h4 id="technicalSheetNextMaintenance" class="text-4xl font-black mb-3">---</h4>
+                        <p id="technicalSheetCountdown" class="text-xs opacity-80">---</p>
                     </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-8 py-4 bg-slate-50 border-b font-black text-slate-700 uppercase text-xs">Historial de Intervenciones</div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 text-xs text-slate-600 uppercase border-b">
+                                <tr>
+                                    <th class="px-6 py-3 text-left font-bold">Fecha</th>
+                                    <th class="px-6 py-3 text-left font-bold">Técnico</th>
+                                    <th class="px-6 py-3 text-left font-bold">Tipo</th>
+                                    <th class="px-6 py-3 text-left font-bold">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="technicalSheetHistory" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-end gap-3 pt-4 border-t">
+                    <button onclick="editTechnicalSheet()" class="bg-uccDark text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 flex items-center gap-2"><i class="fas fa-pen-to-square"></i> Editar Equipo</button>
+                    <button onclick="decommissionTechnicalSheet()" class="bg-red-600 text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 flex items-center gap-2"><i class="fas fa-power-off"></i> Dar de Baja</button>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <script src="js/config.js" defer></script>
-    <script src="js/api.js" defer></script>
-    <script src="js/sidebar.js" defer></script>
-    <script src="js/inventory-loader.js" defer></script>
-
+<script src="js/inventory-loader.js"></script>
 </body>
 </html>
