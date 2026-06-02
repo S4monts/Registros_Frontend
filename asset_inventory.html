@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <script src="js/auth_guard.js"></script>
@@ -99,57 +99,49 @@
             <div class="p-10">
                 <!-- Encabezado de Sección -->
                 <div class="mb-10">
-                    <div class="flex justify-between items-center">
+                    <!-- Título y Botones -->
+                    <div class="flex justify-between items-center mb-6">
                         <div>
                             <h1 class="text-4xl font-black text-uccDark tracking-tighter">Inventario Técnico</h1>
                             <p class="text-slate-500 font-medium mt-2">Base de datos de activos instalados en campus Montería</p>
                         </div>
-                        <button id="btn-registrar-activo" onclick="openCrearActivoModal()" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
-                            <i class="fas fa-plus"></i>
-                            <span>Registrar Nuevo Activo</span>
-                        </button>
-                        <button id="btn-registrar-espacio" onclick="openCrearEspacioModal()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
-                            <i class="fas fa-door-open"></i>
-                            <span>+ Nuevo Espacio</span>
-                        </button>
+                        <div class="flex gap-3">
+                            <button id="btn-registrar-activo" onclick="openCrearActivoModal()" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                <span>Registrar Nuevo Activo</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Filtros y Búsqueda -->
-                <div class="grid grid-cols-4 gap-4 mb-8">
-                    <div>
-                        <label for="spacePredictiveFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Espacio / Aula</label>
-                        <input id="spacePredictiveFilter" list="lista-espacios" type="text" placeholder="Ej: Aula 204" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
-                        <datalist id="lista-espacios"></datalist>
-                    </div>
-                    <div>
-                        <label for="assetStateFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Estado</label>
-                        <select id="assetStateFilter" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
-                            <option>Todos</option>
-                            <option>Operativo</option>
-                            <option>En reparacion</option>
-                            <option>Inactivo</option>
-                            <option>Dado de baja</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="assetBlockFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Bloque</label>
-                        <select id="assetBlockFilter" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
-                            <option>Todos</option>
-                            <option>Bloque A</option>
-                            <option>Bloque B</option>
-                            <option>Bloque Administrativo</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="assetFloorFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Piso</label>
-                        <select id="assetFloorFilter" class="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
-                            <option>Todos</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                        </select>
+                    <!-- Tarjeta de Filtros Integrada -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex gap-4 items-end">
+                            <!-- Input de Búsqueda (50% ancho) -->
+                            <div class="flex-1">
+                                <label for="input-busqueda" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Búsqueda Global</label>
+                                <input id="input-busqueda" type="text" placeholder="Buscar por Código Activo o Ubicación (ej: Aula 204)" class="w-full px-5 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-uccLight">
+                            </div>
+                            <!-- Selector de Estado -->
+                            <div class="w-64">
+                                <label for="assetStateFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Estado Operativo</label>
+                                <select id="assetStateFilter" class="w-full px-5 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
+                                    <option>Todos</option>
+                                    <option>Operativo</option>
+                                    <option>En reparacion</option>
+                                    <option>Inactivo</option>
+                                    <option>Dado de baja</option>
+                                </select>
+                            </div>
+                            <!-- Selector de Bloque -->
+                            <div class="w-64">
+                                <label for="assetBlockFilter" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Bloque</label>
+                                <select id="assetBlockFilter" class="w-full px-5 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white appearance-none">
+                                    <option>Todos</option>
+                                    <option>Bloque A</option>
+                                    <option>Bloque B</option>
+                                    <option>Bloque Administrativo</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -244,14 +236,18 @@
                 </div>
 
                 <!-- Paginación -->
-                <div class="mt-8 flex items-center justify-between">
-                    <p class="text-xs text-slate-600 font-medium">Mostrando <strong>3</strong> de <strong>142</strong> equipos</p>
-                    <div class="flex gap-2">
-                        <button class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50 transition">← Anterior</button>
-                        <button class="px-3 py-2 bg-uccLight text-white rounded-lg text-sm font-bold">1</button>
-                        <button class="px-3 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">2</button>
-                        <button class="px-3 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">3</button>
-                        <button class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Siguiente →</button>
+                <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p id="texto-paginacion-equipos" class="text-xs text-slate-600 font-medium">Cargando resultados...</p>
+                    <div class="flex gap-2 items-center">
+                        <button type="button" id="btn-pagina-anterior" onclick="irPaginaAnterior()"
+                            class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent">
+                            ← Anterior
+                        </button>
+                        <span id="indicador-pagina-actual" class="text-xs font-bold text-slate-600 min-w-[5.5rem] text-center">Página 1</span>
+                        <button type="button" id="btn-pagina-siguiente" onclick="irPaginaSiguiente()"
+                            class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent">
+                            Siguiente →
+                        </button>
                     </div>
                 </div>
             </div>
@@ -266,7 +262,7 @@
                     <img src="img/ucc.png" alt="Logo UCC" class="h-12 object-contain">
                     <div class="h-8 w-px bg-slate-200"></div>
                     <div>
-                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Registrar Nuevo Equipo</span>
+                        <span id="titulo-modal-activo" class="text-uccDark font-black text-sm tracking-widest uppercase">Registrar Nuevo Equipo</span>
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Sistema de Gestión de Aires</p>
                     </div>
                 </div>
@@ -282,21 +278,35 @@
                          </div>
                          <div>
                              <label for="select-marca" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Marca del Aire</label>
-                             <select id="select-marca" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
-                                 <option value="">Cargando marcas...</option>
-                             </select>
+                             <div class="flex gap-2 items-stretch">
+                                 <select id="select-marca" required class="flex-1 w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
+                                     <option value="">Cargando marcas...</option>
+                                 </select>
+                                 <button type="button" onclick="openGestionMarcasModal()" title="Gestionar marcas" class="shrink-0 px-3 py-3 bg-uccDark hover:bg-slate-800 text-white rounded-xl shadow-sm transition-all flex items-center justify-center">
+                                     <i class="fas fa-cog"></i>
+                                 </button>
+                             </div>
                          </div>
                          <div>
                              <label for="select-espacio-equipo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Ubicación (Espacio/Aula)</label>
-                             <select id="select-espacio-equipo" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
-                                 <option value="">Cargando espacios...</option>
-                             </select>
+                             <div class="flex gap-2 items-stretch">
+                                 <select id="select-espacio-equipo" required class="flex-1 w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
+                                     <option value="">Cargando espacios...</option>
+                                 </select>
+                                 <button type="button" onclick="openGestionEspaciosModal()" title="Gestionar espacios" class="shrink-0 px-3 py-3 bg-uccDark hover:bg-slate-800 text-white rounded-xl shadow-sm transition-all flex items-center justify-center">
+                                     <i class="fas fa-cog"></i>
+                                 </button>
+                             </div>
                          </div>
                          <div>
                              <label for="select-tipo-equipo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Tipo de Equipo</label>
                              <select id="select-tipo-equipo" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
                                  <option value="">Cargando tipos de equipo...</option>
                              </select>
+                         </div>
+                         <div>
+                             <label for="input-modelo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Modelo</label>
+                             <input id="input-modelo" type="text" placeholder="Ej: Mini Split 12000 BTU" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
                          </div>
                          <div>
                              <label for="selectCapacidad" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Capacidad en BTUs</label>
@@ -342,12 +352,102 @@
                             <i class="fas fa-times"></i>
                             <span>Cancelar</span>
                         </button>
-                        <button type="submit" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                        <button type="submit" id="btn-submit-activo" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
                             <i class="fas fa-check"></i>
-                            <span>Registrar Activo</span>
+                            <span id="texto-btn-submit-activo">Registrar Activo</span>
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gestión de Marcas -->
+    <div id="modal-gestion-marcas" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-white max-w-md w-full rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="shrink-0 px-6 py-5 border-b border-slate-100 flex items-center justify-between gap-3 bg-white">
+                <div class="min-w-0">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-uccLight mb-0.5">Catálogo</p>
+                    <h3 class="text-slate-800 font-extrabold text-xl leading-tight truncate">Gestión de Marcas</h3>
+                </div>
+                <button type="button" onclick="closeGestionMarcasModal()" class="shrink-0 w-9 h-9 rounded-lg border border-slate-200 text-slate-400 hover:text-uccLight hover:bg-cyan-50/60 flex items-center justify-center transition-all" aria-label="Cerrar">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            <div class="px-6 py-4 border-b border-slate-50 shrink-0 bg-white">
+                <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+                    <div class="flex-1 min-w-0">
+                        <label for="input-nueva-marca" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Nombre de la marca</label>
+                        <input id="input-nueva-marca" type="text" maxlength="20" placeholder="Ej: Samsung"
+                            class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50 rounded-xl px-3 py-2.5 text-sm bg-slate-50/50 transition-all text-slate-700 placeholder-slate-400">
+                    </div>
+                    <button type="button" onclick="submitCrearMarca()"
+                        class="shrink-0 bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm whitespace-nowrap">
+                        <i class="fas fa-plus text-xs"></i>
+                        <span>Agregar</span>
+                    </button>
+                </div>
+            </div>
+            <div class="px-6 py-4 flex-1 min-h-0 overflow-hidden flex flex-col bg-white">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 shrink-0">Marcas registradas</p>
+                <div id="lista-marcas-gestion" class="max-h-[50vh] overflow-y-auto pr-2 flex-1">
+                    <p class="text-sm text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-2 text-uccLight"></i>Cargando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gestión de Espacios -->
+    <div id="modal-gestion-espacios" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-white max-w-2xl w-full rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="shrink-0 px-6 py-5 border-b border-slate-100 flex items-center justify-between gap-3 bg-white">
+                <div class="min-w-0">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-uccLight mb-0.5">Ubicaciones</p>
+                    <h3 class="text-slate-800 font-extrabold text-xl leading-tight">Gestión de Espacios del Campus</h3>
+                </div>
+                <button type="button" onclick="closeGestionEspaciosModal()" class="shrink-0 w-9 h-9 rounded-lg border border-slate-200 text-slate-400 hover:text-uccLight hover:bg-cyan-50/60 flex items-center justify-center transition-all" aria-label="Cerrar">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            <div class="flex-1 min-h-0 overflow-y-auto max-h-[60vh] px-6 py-4 pr-4">
+                <section class="mb-5">
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Nuevo espacio</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="input-nuevo-espacio-codigo" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Código del espacio</label>
+                            <input id="input-nuevo-espacio-codigo" type="text" maxlength="20" placeholder="Ej: A-204"
+                                class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50 rounded-xl px-3 py-2.5 text-sm bg-slate-50/50 transition-all text-slate-700 placeholder-slate-400">
+                        </div>
+                        <div>
+                            <label for="input-nuevo-espacio-nombre" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Nombre del salón</label>
+                            <input id="input-nuevo-espacio-nombre" type="text" maxlength="65" placeholder="Ej: Aula 204"
+                                class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50 rounded-xl px-3 py-2.5 text-sm bg-slate-50/50 transition-all text-slate-700 placeholder-slate-400">
+                        </div>
+                        <div>
+                            <label for="input-nuevo-espacio-piso" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Piso</label>
+                            <input id="input-nuevo-espacio-piso" type="number" min="0" max="20" value="1" placeholder="1"
+                                class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50 rounded-xl px-3 py-2.5 text-sm bg-slate-50/50 transition-all text-slate-700 placeholder-slate-400">
+                        </div>
+                        <div>
+                            <label for="select-gestion-espacio-bloque" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Bloque</label>
+                            <select id="select-gestion-espacio-bloque"
+                                class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50 rounded-xl px-3 py-2.5 text-sm bg-slate-50/50 transition-all text-slate-700 appearance-none">
+                                <option value="">Selecciona bloque...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" onclick="submitCrearEspacioGestion()"
+                        class="w-full bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm">
+                        <i class="fas fa-plus text-xs"></i>
+                        <span>Agregar espacio</span>
+                    </button>
+                </section>
+                <section>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Espacios registrados</p>
+                    <div id="lista-espacios-gestion">
+                        <p class="text-sm text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-2 text-uccLight"></i>Cargando...</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
@@ -566,6 +666,7 @@
 
                 <!-- Actions -->
                 <div class="flex justify-end gap-3 pt-4 border-t">
+                    <button id="btn-activar-equipo" onclick="activateTechnicalSheet()" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 flex items-center gap-2 hidden"><i class="fas fa-play"></i> Activar Equipo</button>
                     <button onclick="editTechnicalSheet()" class="bg-uccDark text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 flex items-center gap-2"><i class="fas fa-pen-to-square"></i> Editar Equipo</button>
                     <button onclick="decommissionTechnicalSheet()" class="bg-red-600 text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 flex items-center gap-2"><i class="fas fa-power-off"></i> Dar de Baja</button>
                 </div>
@@ -573,6 +674,7 @@
         </div>
     </div>
 
+<script src="js/sidebar.js"></script>
 <script src="js/inventory-loader.js"></script>
 </body>
 </html>
