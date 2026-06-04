@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <script src="js/auth_guard.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AiresFlow - Programación de Mantenimientos</title>
@@ -26,12 +27,9 @@
 
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
 
-    <!-- Overlay para cerrar sidebar en móvil -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden backdrop-blur-sm transition-opacity"></div>
 
-    <!-- Sidebar Unificado -->
     <aside id="main-sidebar" class="w-64 bg-white flex flex-col shadow-2xl overflow-y-auto fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
-        <!-- Cabecera Blanca con Logo -->
         <div class="p-6 relative flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
             <button id="btn-close-sidebar" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
             <img src="img/ucc.png" alt="UCC Logo" class="h-24 object-contain mb-2">
@@ -67,105 +65,83 @@
                 <div class="mb-10 flex justify-between items-start">
                     <div>
                         <h1 class="text-4xl font-black text-uccDark tracking-tighter mb-2">Programación de Mantenimientos</h1>
-                        <p class="text-slate-600 font-medium">Calendario técnico de intervenciones preventivas y correctivas</p>
+                        <p class="text-slate-600 font-medium">Gestión operativa de órdenes del campus</p>
                     </div>
-                    <button onclick="openProgramarMantenimientoModal()" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                    <button type="button" onclick="openProgramarMantenimientoModal()" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
                         <i class="fas fa-plus"></i>
                         <span>Programar Mantenimiento</span>
                     </button>
                 </div>
 
-                <!-- Filtros -->
-                <div class="grid grid-cols-4 gap-4 mb-8">
-                    <div>
-                        <label for="filterEstado" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Estado</label>
-                        <select id="filterEstado" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight focus:border-transparent bg-white appearance-none cursor-pointer shadow-sm hover:border-slate-400 transition">
-                            <option>Todos</option>
-                            <option>Pendiente</option>
-                            <option>Completado</option>
-                            <option>Vencido</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="filterTipo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Tipo</label>
-                        <select id="filterTipo" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight focus:border-transparent bg-white appearance-none cursor-pointer shadow-sm hover:border-slate-400 transition">
-                            <option>Todos</option>
-                            <option>Preventivo</option>
-                            <option>Correctivo</option>
-                            <option>Inspección</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="filterDesde" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Desde</label>
-                        <input id="filterDesde" type="date" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight focus:border-transparent shadow-sm hover:border-slate-400 transition">
-                    </div>
-                    <div class="flex items-end">
-                        <button type="button" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fas fa-filter"></i> Filtrar
-                        </button>
+                <!-- Barra de herramientas: búsqueda + filtros -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+                        <div class="lg:col-span-4">
+                            <label for="input-busqueda-mantenimiento" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Buscar por aula o técnico</label>
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                                <input id="input-busqueda-mantenimiento" type="search" placeholder="Ej: Aula 204, Laboratorio de Sistemas…" autocomplete="off" class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl pl-11 pr-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all">
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <label for="filterEstado" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Estado</label>
+                            <select id="filterEstado" class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all appearance-none cursor-pointer">
+                                <option value="">Todos</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="En progreso">En progreso</option>
+                                <option value="Completado">Completado</option>
+                                <option value="Cancelado">Cancelado</option>
+                                <option value="Vencido">Vencido</option>
+                            </select>
+                        </div>
+                        <div class="lg:col-span-3">
+                            <label for="filterFechaDesde" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Fecha desde</label>
+                            <input id="filterFechaDesde" type="date" class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all">
+                        </div>
+                        <div class="lg:col-span-3">
+                            <label for="filterFechaHasta" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Fecha hasta</label>
+                            <input id="filterFechaHasta" type="date" class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Tabla de Programación -->
-                <div class="bg-white rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-2xl shadow-sm border border-slate-200 overflow-visible">
-                    <table class="w-full text-sm">
-                        <thead class="bg-slate-50 border-b border-slate-200">
-                            <tr class="text-xs font-black uppercase tracking-widest text-slate-500">
-                                <th class="px-8 py-5 text-left">Equipo</th>
-                                <th class="px-8 py-5 text-left">Ubicación</th>
-                                <th class="px-8 py-5 text-left">Tipo</th>
-                                <th class="px-8 py-5 text-left">Fecha Programada</th>
-                                <th class="px-8 py-5 text-left">Técnico</th>
-                                <th class="px-8 py-5 text-left">Estado</th>
-                                <th class="px-8 py-5 text-center">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50/50 transition">
-                                <td class="px-8 py-5 font-bold text-uccDark">69911</td>
-                                <td class="px-8 py-5 text-slate-600">Bloque A - Aula 204</td>
-                                <td class="px-8 py-5"><span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Preventivo</span></td>
-                                <td class="px-8 py-5 font-semibold text-slate-700">15/06/2024</td>
-                                <td class="px-8 py-5 text-slate-600">Juan Martínez</td>
-                                <td class="px-8 py-5"><span class="inline-flex items-center gap-1 bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-clock w-3"></i> Pendiente</span></td>
-                                <td class="px-8 py-5 text-center"><button onclick="openDetalleOrdenModal(69911)" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition" title="Ver detalles de la orden">
-                                        <i class="fas fa-eye text-[#00acc9]"></i>
-                                        <span class="ml-2">Ver Ficha</span>
-                                    </button></td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/50 transition">
-                                <td class="px-8 py-5 font-bold text-uccDark">69912</td>
-                                <td class="px-8 py-5 text-slate-600">Bloque B - Lab 101</td>
-                                <td class="px-8 py-5"><span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Correctivo</span></td>
-                                <td class="px-8 py-5 font-semibold text-slate-700">10/06/2024</td>
-                                <td class="px-8 py-5 text-slate-600">Carlos Peña</td>
-                                <td class="px-8 py-5"><span class="inline-flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-exclamation w-3"></i> Vencido</span></td>
-                                <td class="px-8 py-5 text-center"><button onclick="openDetalleOrdenModal(69912)" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition" title="Ver detalles de la orden">
-                                        <i class="fas fa-eye text-[#00acc9]"></i>
-                                        <span class="ml-2">Ver Ficha</span>
-                                    </button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <!-- Tabla de órdenes -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 border-b border-slate-200">
+                                <tr class="text-xs font-black uppercase tracking-widest text-slate-500">
+                                    <th class="px-8 py-5 text-left">Equipo</th>
+                                    <th class="px-8 py-5 text-left">Aula / Espacio</th>
+                                    <th class="px-8 py-5 text-left">Tipo</th>
+                                    <th class="px-8 py-5 text-left">Fecha</th>
+                                    <th class="px-8 py-5 text-left">Técnico</th>
+                                    <th class="px-8 py-5 text-left">Estado</th>
+                                    <th class="px-8 py-5 text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-mantenimientos-body" class="divide-y divide-slate-100">
+                                <tr id="fila-cargando">
+                                    <td colspan="7" class="px-8 py-12 text-center text-slate-500">
+                                        <i class="fas fa-spinner fa-spin text-uccLight text-2xl mb-3"></i>
+                                        <p class="font-medium">Cargando órdenes desde el servidor…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                <!-- Estadísticas -->
-                <div class="grid grid-cols-4 gap-6 mt-10">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Programados</p>
-                        <h3 class="text-4xl font-black text-uccLight">28</h3>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Completados</p>
-                        <h3 class="text-4xl font-black text-green-600">24</h3>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 border-l-4 border-l-amber-500">
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Pendientes</p>
-                        <h3 class="text-4xl font-black text-amber-600">2</h3>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 border-l-4 border-l-red-500">
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Vencidos</p>
-                        <h3 class="text-4xl font-black text-red-600">2</h3>
+                    <!-- Paginación -->
+                    <div class="px-8 py-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50/50">
+                        <p id="paginacion-texto" class="text-sm text-slate-600 font-medium">Mostrando 0 a 0 de 0 órdenes en total</p>
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-pagina-anterior" disabled class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-white border border-slate-200 text-slate-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50">
+                                <i class="fas fa-chevron-left mr-1"></i> Anterior
+                            </button>
+                            <button type="button" id="btn-pagina-siguiente" disabled class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-white border border-slate-200 text-slate-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50">
+                                Siguiente <i class="fas fa-chevron-right ml-1"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -173,246 +149,113 @@
     </main>
 
     <!-- Modal Programar Mantenimiento -->
-    <div id="modal-programar-mantenimiento" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-50 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
-            <div class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm sticky top-0 z-10">
-                <div class="flex items-center gap-4">
-                    <img src="img/ucc.png" alt="Logo UCC" class="h-12 object-contain">
-                    <div class="h-8 w-px bg-slate-200"></div>
-                    <div>
-                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Programar Mantenimiento</span>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Crear nueva orden de servicio</p>
-                    </div>
+    <div id="modal-programar-mantenimiento" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <h2 class="text-lg font-black text-uccDark tracking-tight">Programar Mantenimiento</h2>
+                    <p class="text-xs text-slate-500 font-medium mt-1">Nueva orden de servicio</p>
                 </div>
-                <button onclick="closeProgramarMantenimientoModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+                <button type="button" onclick="closeProgramarMantenimientoModal()" class="text-slate-400 hover:text-slate-700 transition p-1" aria-label="Cerrar">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
-
-            <div class="p-10 overflow-y-auto max-h-[85vh]">
-                <form onsubmit="submitProgramarMantenimiento(event)" class="space-y-6">
-                    <div>
-                        <label for="selectActivo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Selección de Activo</label>
-                        <select id="selectActivo" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
-                            <option value="">Selecciona un equipo</option>
-                            <option value="69911">69911 - Bloque A, Aula 204</option>
-                            <option value="69912">69912 - Bloque B, Lab 101</option>
-                            <option value="69913">69913 - Bloque Administrativo, Oficina</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="inputFechaPlanificada" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Fecha Planificada</label>
-                        <input id="inputFechaPlanificada" type="date" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm">
-                    </div>
-
-                    <div>
-                        <label for="selectTecnico" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Técnico Responsable</label>
-                        <select id="selectTecnico" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
-                            <option value="">Selecciona un técnico</option>
-                            <option value="juan">Juan Martínez</option>
-                            <option value="carlos">Carlos Peña</option>
-                            <option value="andy">Andrés Felipe Ruiz</option>
-                            <option value="maria">María Fernanda Pineda</option>
-                            <option value="laura">Laura Herrera</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="selectTipo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Tipo de Intervención</label>
-                        <select id="selectTipo" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
-                            <option value="">Selecciona el tipo</option>
-                            <option value="preventivo">Mantenimiento Preventivo</option>
-                            <option value="correctivo">Mantenimiento Correctivo</option>
-                        </select>
-                    </div>
-
-                    <div class="flex flex-col md:flex-row gap-4 justify-end pt-6 border-t border-slate-200">
-                        <button type="button" onclick="closeProgramarMantenimientoModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2">
-                            <i class="fas fa-times"></i>
-                            <span>Cancelar</span>
-                        </button>
-                        <button type="submit" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-check"></i>
-                            <span>Programar</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+            <form onsubmit="submitProgramarMantenimiento(event)" class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                <div class="md:col-span-2">
+                    <label for="selectActivo" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Equipo / Ubicación</label>
+                    <select id="selectActivo" required class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all appearance-none cursor-pointer">
+                        <option value="">Cargando equipos…</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="inputFechaPlanificada" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Fecha planificada</label>
+                    <input id="inputFechaPlanificada" type="date" required class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all">
+                </div>
+                <div>
+                    <label for="selectTecnico" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Técnico responsable</label>
+                    <select id="selectTecnico" required class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all appearance-none cursor-pointer">
+                        <option value="">Cargando técnicos…</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="selectTipo" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tipo de intervención</label>
+                    <select id="selectTipo" required class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all appearance-none cursor-pointer">
+                        <option value="">Selecciona el tipo</option>
+                        <option value="1">Preventivo</option>
+                        <option value="2">Correctivo</option>
+                        <option value="3">Inspección</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2 flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeProgramarMantenimientoModal()" class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">Cancelar</button>
+                    <button type="submit" id="btn-submit-programar" class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-uccLight hover:bg-[#00b8d4] text-white shadow-md transition-all">Programar</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- Modal Detalle de Orden -->
-    <div id="modal-detalle-orden" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-50 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
-            <div class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm sticky top-0 z-10">
-                <div class="flex items-center gap-4">
-                    <img src="img/ucc.png" alt="Logo UCC" class="h-12 object-contain">
-                    <div class="h-8 w-px bg-slate-200"></div>
-                    <div>
-                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Ficha de Inspección</span>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Detalles y reasignación de orden</p>
-                    </div>
+    <div id="modal-detalle-orden" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white max-w-2xl w-full rounded-3xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <h2 class="text-lg font-black text-uccDark tracking-tight">Ficha de Inspección</h2>
+                    <p class="text-xs text-slate-500 font-medium mt-1">Detalles y reasignación de orden</p>
                 </div>
-                <button onclick="closeDetalleOrdenModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+                <button type="button" onclick="closeDetalleOrdenModal()" class="text-slate-400 hover:text-slate-700 transition p-1" aria-label="Cerrar">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
 
-            <div class="p-10 overflow-y-auto max-h-[85vh]">
-                <div class="space-y-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Resumen de la Orden</h3>
-                        <div class="space-y-4">
-                            <div class="flex justify-between border-b border-slate-100 pb-3">
-                                <span class="text-xs font-bold text-slate-500">ID Orden:</span>
-                                <span id="detalleOrderId" class="text-sm font-black text-uccDark">ORD-001</span>
-                            </div>
-                            <div class="flex justify-between border-b border-slate-100 pb-3">
-                                <span class="text-xs font-bold text-slate-500">Equipo Asociado:</span>
-                                <span id="detalleEquipo" class="text-sm font-black text-uccDark">69911 - LG AS-W12GQLDG0</span>
-                            </div>
-                            <div class="flex justify-between border-b border-slate-100 pb-3">
-                                <span class="text-xs font-bold text-slate-500">Fecha Pactada:</span>
-                                <span id="detalleDate" class="text-sm font-black text-uccDark">15/06/2024</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-xs font-bold text-slate-500">Tipo de Servicio:</span>
-                                <span id="detalleTipo" class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">Preventivo</span>
-                            </div>
-                        </div>
-                    </div>
+            <input type="hidden" id="detalleMantenimientoId" value="">
 
-                    <div>
-                        <label for="selectTecnicoReasignar" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-3">Reasignar Operario Técnico</label>
-                        <select id="selectTecnicoReasignar" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#00acc9] transition-all shadow-sm appearance-none">
-                            <option value="juan">Juan Martínez</option>
-                            <option value="carlos">Carlos Peña</option>
-                            <option value="andy">Andrés Felipe Ruiz</option>
-                            <option value="maria">María Fernanda Pineda</option>
-                            <option value="laura">Laura Herrera</option>
-                        </select>
-                    </div>
-
-                    <div class="flex flex-col md:flex-row gap-4 justify-end pt-6 border-t border-slate-200">
-                        <button onclick="closeDetalleOrdenModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2">
-                            <i class="fas fa-times"></i>
-                            <span>Cerrar</span>
-                        </button>
-                        <button onclick="cancelarMantenimiento()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-trash"></i>
-                            <span>Cancelar Mantenimiento</span>
-                        </button>
-                        <button onclick="guardarCambiosOrden()" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-check"></i>
-                            <span>Guardar Cambios</span>
-                        </button>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                <div>
+                    <label for="detalleOrderId" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">ID Orden</label>
+                    <input id="detalleOrderId" type="text" readonly class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700">
                 </div>
+                <div>
+                    <label for="detalleEquipo" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Equipo</label>
+                    <input id="detalleEquipo" type="text" readonly class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700">
+                </div>
+                <div>
+                    <label for="detalleAula" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Aula / Espacio</label>
+                    <input id="detalleAula" type="text" readonly class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700">
+                </div>
+                <div>
+                    <label for="detalleDate" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Fecha</label>
+                    <input id="detalleDate" type="date" class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all">
+                </div>
+                <div>
+                    <label for="detalleTipo" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tipo de servicio</label>
+                    <input id="detalleTipo" type="text" readonly class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700">
+                </div>
+                <div>
+                    <label for="detalleEstado" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Estado</label>
+                    <input id="detalleEstado" type="text" readonly class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700">
+                </div>
+                <div class="md:col-span-2">
+                    <label for="selectTecnicoReasignar" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Reasignar técnico</label>
+                    <select id="selectTecnicoReasignar" class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all appearance-none cursor-pointer">
+                        <option value="">Cargando…</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeDetalleOrdenModal()" class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">Cerrar</button>
+                <button type="button" id="btn-cancelar-mantenimiento" onclick="cancelarMantenimiento()" class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white shadow-md transition-all">Cancelar orden</button>
+                <button type="button" id="btn-guardar-orden" onclick="guardarCambiosOrden()" class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-uccLight hover:bg-[#00b8d4] text-white shadow-md transition-all">Guardar cambios</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // Funciones del Modal de Programar Mantenimiento
-        function openProgramarMantenimientoModal() {
-            document.getElementById('modal-programar-mantenimiento').classList.remove('hidden');
-        }
+    <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none" aria-live="polite"></div>
 
-        function closeProgramarMantenimientoModal() {
-            document.getElementById('modal-programar-mantenimiento').classList.add('hidden');
-            document.getElementById('selectActivo').value = '';
-            document.getElementById('inputFechaPlanificada').value = '';
-            document.getElementById('selectTecnico').value = '';
-            document.getElementById('selectTipo').value = '';
-        }
-
-        function submitProgramarMantenimiento(event) {
-            event.preventDefault();
-            const activo = document.getElementById('selectActivo').value;
-            const fecha = document.getElementById('inputFechaPlanificada').value;
-            const tecnico = document.getElementById('selectTecnico').value;
-            const tipo = document.getElementById('selectTipo').value;
-
-            alert(`Mantenimiento programado exitosamente:\nActivo: ${activo}\nFecha: ${fecha}\nTécnico: ${tecnico}\nTipo: ${tipo}`);
-            closeProgramarMantenimientoModal();
-        }
-
-        document.getElementById('modal-programar-mantenimiento').addEventListener('click', function (event) {
-            if (event.target === this) closeProgramarMantenimientoModal();
-        });
-
-        // Funciones del Modal de Detalle de Orden
-        let currentOrderId = null;
-
-        function openDetalleOrdenModal(orderId) {
-            currentOrderId = orderId;
-            // Aquí en una aplicación real se cargarían los datos desde el backend
-            document.getElementById('detalleOrderId').textContent = `ORD-${String(orderId).padStart(3, '0')}`;
-            document.getElementById('modal-detalle-orden').classList.remove('hidden');
-        }
-
-        function closeDetalleOrdenModal() {
-            document.getElementById('modal-detalle-orden').classList.add('hidden');
-        }
-
-        const tecnicosPorId = {
-            juan: 1,
-            carlos: 2,
-            andy: 3,
-            maria: 4,
-            laura: 5
-        };
-
-        const ordenesProgramadas = {
-            69911: {
-                fecha_programada: '2024-06-15',
-                tipo_mantenimiento_id: 1,
-                encargado_id: 1
-            },
-            69912: {
-                fecha_programada: '2024-06-10',
-                tipo_mantenimiento_id: 2,
-                encargado_id: 2
-            }
-        };
-
-        async function guardarCambiosOrden() {
-            const tecnico = document.getElementById('selectTecnicoReasignar').value;
-            const ordenBase = ordenesProgramadas[currentOrderId];
-
-            if (!ordenBase) {
-                alert('No se encontró información base de la orden seleccionada.');
-                return;
-            }
-
-            const objetoDatos = {
-                fecha_programada: ordenBase.fecha_programada,
-                equipo_id: currentOrderId,
-                encargado_id: tecnicosPorId[tecnico] ?? ordenBase.encargado_id,
-                tipo_mantenimiento_id: ordenBase.tipo_mantenimiento_id
-            };
-
-            try {
-                await API.post('/programaciones/', objetoDatos);
-                alert('Cambios de planificación guardados correctamente.');
-                closeDetalleOrdenModal();
-            } catch (error) {
-                alert(`Error al guardar los cambios de la orden: ${error.message || error}`);
-            }
-        }
-
-        function cancelarMantenimiento() {
-            if (confirm('¿Está seguro de que desea cancelar este mantenimiento? Esta acción no se puede deshacer.')) {
-                alert(`Mantenimiento ORD-${String(currentOrderId).padStart(3, '0')} cancelado correctamente.`);
-                closeDetalleOrdenModal();
-            }
-        }
-
-        document.getElementById('modal-detalle-orden').addEventListener('click', function (event) {
-            if (event.target === this) closeDetalleOrdenModal();
-        });
-    </script>
-
+    <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/sidebar.js"></script>
+    <script src="js/maintenance-loader.js"></script>
 
 </body>
 </html>
-
