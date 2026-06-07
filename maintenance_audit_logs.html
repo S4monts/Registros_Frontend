@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <script src="js/auth_guard.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AiresFlow - Auditoría de Mantenimientos</title>
@@ -26,12 +27,9 @@
 
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
 
-    <!-- Overlay para cerrar sidebar en móvil -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden backdrop-blur-sm transition-opacity"></div>
 
-    <!-- Sidebar -->
     <aside id="main-sidebar" class="w-64 bg-white flex flex-col shadow-2xl overflow-y-auto fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
-        <!-- Cabecera Blanca con Logo -->
         <div class="p-6 relative flex flex-col items-center justify-center border-b border-slate-200 min-h-40">
             <button id="btn-close-sidebar" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
             <img src="img/ucc.png" alt="UCC Logo" class="h-24 object-contain mb-2">
@@ -66,281 +64,127 @@
             <div class="p-10">
                 <div class="mb-10">
                     <h1 class="text-4xl font-black text-uccDark tracking-tighter mb-2">Auditoría de Mantenimientos</h1>
-                    <p class="text-slate-600 font-medium">Registro histórico de todas las intervenciones técnicas realizadas - Trazabilidad completa</p>
+                    <p class="text-slate-600 font-medium">Trazabilidad inmutable de cambios en PostgreSQL — tabla <span class="font-bold">auditoria</span></p>
                 </div>
 
-                <!-- Filtros -->
-                <div class="grid grid-cols-5 gap-4 mb-8">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
                     <div>
-                        <label for="filterTipo" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Tipo</label>
-                        <select id="filterTipo" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight focus:border-transparent bg-white appearance-none cursor-pointer shadow-sm hover:border-slate-400 transition">
-                            <option>Todos</option>
-                            <option>Preventivo</option>
-                            <option>Correctivo</option>
-                            <option>Inspección</option>
-                        </select>
+                        <label for="filterTabla" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Tabla afectada</label>
+                        <input id="filterTabla" type="search" placeholder="Ej: mantenimientos, equipos…" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white shadow-sm">
                     </div>
                     <div>
                         <label for="filterDesde" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Desde</label>
-                        <input id="filterDesde" type="date" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight focus:border-transparent shadow-sm hover:border-slate-400 transition">
+                        <input id="filterDesde" type="date" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white shadow-sm">
                     </div>
                     <div>
                         <label for="filterHasta" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Hasta</label>
-                        <input id="filterHasta" type="date" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight focus:border-transparent shadow-sm hover:border-slate-400 transition">
+                        <input id="filterHasta" type="date" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white shadow-sm">
                     </div>
                     <div>
-                        <label for="filterTecnico" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Técnico</label>
-                        <select id="filterTecnico" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight focus:border-transparent bg-white appearance-none cursor-pointer shadow-sm hover:border-slate-400 transition">
-                            <option>Todos</option>
-                            <option>Juan Martínez</option>
-                            <option>Carlos Peña</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="button" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fas fa-download"></i> Descargar
-                        </button>
+                        <label for="filterOperario" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">Operario ID</label>
+                        <input id="filterOperario" type="number" min="1" placeholder="Ej: 3" class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-uccLight bg-white shadow-sm">
                     </div>
                 </div>
 
-                <!-- Tabla de Auditoría -->
-                <div class="bg-white rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-2xl shadow-sm border border-slate-200 overflow-visible">
-                    <table class="w-full text-sm">
-                        <thead class="bg-slate-50 border-b border-slate-200">
-                            <tr class="text-xs font-black uppercase tracking-widest text-slate-500">
-                                <th class="px-8 py-5 text-left">Fecha</th>
-                                <th class="px-8 py-5 text-left">Equipo</th>
-                                <th class="px-8 py-5 text-left">Tipo</th>
-                                <th class="px-8 py-5 text-left">Descripción</th>
-                                <th class="px-8 py-5 text-left">Técnico</th>
-                                <th class="px-8 py-5 text-left">Horas</th>
-                                <th class="px-8 py-5 text-center">Detalles</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50/50 transition text-xs">
-                                <td class="px-8 py-5 font-bold text-slate-800">24/02/2024</td>
-                                <td class="px-8 py-5 font-bold text-uccDark">69911</td>
-                                <td class="px-8 py-5"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-bold">Inspección</span></td>
-                                <td class="px-8 py-5 text-slate-600">Revisión técnica anual completa</td>
-                                <td class="px-8 py-5 text-slate-600">Carlos Peña</td>
-                                <td class="px-8 py-5 font-semibold text-slate-700">1.5</td>
-                                <td class="px-8 py-5 text-center"><button onclick="openDetalleLogModal(1)" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition" title="Ver metadatos de seguridad">
-                                        <i class="fas fa-eye text-[#00acc9]"></i>
-                                        <span class="ml-2">Ver Traza</span>
-                                    </button></td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/50 transition text-xs">
-                                <td class="px-8 py-5 font-bold text-slate-800">18/11/2023</td>
-                                <td class="px-8 py-5 font-bold text-uccDark">69911</td>
-                                <td class="px-8 py-5"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">Preventivo</span></td>
-                                <td class="px-8 py-5 text-slate-600">Limpieza de filtros, recarga refrigerante</td>
-                                <td class="px-8 py-5 text-slate-600">Juan Martínez</td>
-                                <td class="px-8 py-5 font-semibold text-slate-700">2.5</td>
-                                <td class="px-8 py-5 text-center"><button onclick="openDetalleLogModal(2)" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition" title="Ver metadatos de seguridad">
-                                        <i class="fas fa-eye text-[#00acc9]"></i>
-                                        <span class="ml-2">Ver Traza</span>
-                                    </button></td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/50 transition text-xs">
-                                <td class="px-8 py-5 font-bold text-slate-800">12/05/2023</td>
-                                <td class="px-8 py-5 font-bold text-uccDark">69911</td>
-                                <td class="px-8 py-5"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-bold">Instalación</span></td>
-                                <td class="px-8 py-5 text-slate-600">Instalación inicial del equipo</td>
-                                <td class="px-8 py-5 text-slate-600">Carlos Peña</td>
-                                <td class="px-8 py-5 font-semibold text-slate-700">3.0</td>
-                                <td class="px-8 py-5 text-center"><button onclick="openDetalleLogModal(3)" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition" title="Ver metadatos de seguridad">
-                                        <i class="fas fa-eye text-[#00acc9]"></i>
-                                        <span class="ml-2">Ver Traza</span>
-                                    </button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Resumen de Estadísticas -->
-                <div class="grid grid-cols-4 gap-6 mt-10">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Total Intervenciones</p>
-                        <h3 class="text-4xl font-black text-uccDark">142</h3>
-                        <p class="text-xs text-slate-500 mt-2">Este año</p>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm min-w-[1100px]">
+                            <thead class="bg-slate-50 border-b border-slate-200">
+                                <tr class="text-xs font-black uppercase tracking-widest text-slate-500">
+                                    <th class="px-6 py-5 text-left">ID</th>
+                                    <th class="px-6 py-5 text-left">Tabla Afectada</th>
+                                    <th class="px-6 py-5 text-left">Registro ID</th>
+                                    <th class="px-6 py-5 text-left">Campo Modificado</th>
+                                    <th class="px-6 py-5 text-left">Valor Anterior</th>
+                                    <th class="px-6 py-5 text-left">Valor Nuevo</th>
+                                    <th class="px-6 py-5 text-left">Operario ID</th>
+                                    <th class="px-6 py-5 text-left">Fecha de Cambio</th>
+                                    <th class="px-6 py-5 text-center">Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-auditoria-body" class="divide-y divide-slate-100">
+                                <tr>
+                                    <td colspan="9" class="px-8 py-12 text-center text-slate-500">
+                                        <i class="fas fa-spinner fa-spin text-uccLight text-2xl mb-3"></i>
+                                        <p class="font-medium">Cargando bitácora desde el servidor…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 border-l-4 border-l-green-500">
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Horas Realizadas</p>
-                        <h3 class="text-4xl font-black text-green-600">384.5</h3>
-                        <p class="text-xs text-slate-500 mt-2">Técnico-hora</p>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Técnicos Activos</p>
-                        <h3 class="text-4xl font-black text-uccLight">12</h3>
-                        <p class="text-xs text-slate-500 mt-2">Personal capacitado</p>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 border-l-4 border-l-blue-500">
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Tasa Éxito</p>
-                        <h3 class="text-4xl font-black text-blue-600">97.8%</h3>
-                        <p class="text-xs text-slate-500 mt-2">Intervenciones exitosas</p>
+                    <div class="px-8 py-4 border-t border-slate-100 bg-slate-50/50">
+                        <p id="auditoria-resumen" class="text-sm text-slate-600 font-medium">0 registro(s) visibles</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Modal Detalle de Log / Metadatos de Seguridad -->
     <div id="modal-detalle-log" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
         <div class="bg-slate-50 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden">
-            <div class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm sticky top-0 z-10">
+            <div class="bg-white border-b border-slate-200 px-10 py-5 flex items-center justify-between shadow-sm">
                 <div class="flex items-center gap-4">
                     <i class="fas fa-shield-alt text-uccLight text-2xl"></i>
                     <div>
-                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Metadatos de Seguridad</span>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Trazabilidad completa de la operación</p>
+                        <span class="text-uccDark font-black text-sm tracking-widest uppercase">Detalle de Auditoría</span>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Registro #<span id="logId">—</span></p>
                     </div>
                 </div>
-                <button onclick="closeDetalleLogModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none">×</button>
+                <button type="button" onclick="closeDetalleLogModal()" class="text-slate-500 hover:text-uccDark text-2xl font-black leading-none" aria-label="Cerrar">×</button>
             </div>
 
-            <div class="p-10 overflow-y-auto max-h-[85vh]">
-                <div class="space-y-8">
-                    <!-- Grid de Datos del Log -->
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="bg-white rounded-xl border border-slate-200 p-6">
-                            <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Estampa de Tiempo</p>
-                            <p id="logTimestamp" class="text-sm font-bold text-uccDark">24/02/2024 14:35:22</p>
-                        </div>
-                        <div class="bg-white rounded-xl border border-slate-200 p-6">
-                            <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Dirección IP de Origen</p>
-                            <p id="logIp" class="text-sm font-mono text-slate-700 bg-slate-50 px-3 py-2 rounded border border-slate-200">192.168.1.42</p>
-                        </div>
-                        <div class="bg-white rounded-xl border border-slate-200 p-6">
-                            <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Usuario Responsable</p>
-                            <p id="logUsuario" class="text-sm font-bold text-uccDark">Carlos Peña</p>
-                        </div>
-                        <div class="bg-white rounded-xl border border-slate-200 p-6">
-                            <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Tipo de Evento</p>
-                            <span id="logTipo" class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">CREAR</span>
-                        </div>
-                        <div class="col-span-2 bg-white rounded-xl border border-slate-200 p-6">
-                            <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Objeto o Módulo Afectado</p>
-                            <p id="logModulo" class="text-sm font-bold text-uccDark">Orden de Mantenimiento #ORD-001</p>
-                        </div>
+            <div class="p-10 overflow-y-auto max-h-[85vh] space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Tabla Afectada</p>
+                        <p id="logTabla" class="text-sm font-bold text-uccDark">—</p>
                     </div>
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Registro ID</p>
+                        <p id="logRegistroId" class="text-sm font-bold text-uccDark">—</p>
+                    </div>
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Campo Modificado</p>
+                        <p id="logCampo" class="text-sm font-bold text-uccDark">—</p>
+                    </div>
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Operario ID</p>
+                        <p id="logOperario" class="text-sm font-bold text-uccDark">—</p>
+                    </div>
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Valor Anterior</p>
+                        <p id="logValorAnterior" class="text-sm text-slate-700 break-words">—</p>
+                    </div>
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Valor Nuevo</p>
+                        <p id="logValorNuevo" class="text-sm text-slate-700 break-words">—</p>
+                    </div>
+                    <div class="md:col-span-2 bg-white rounded-xl border border-slate-200 p-6">
+                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Fecha de Cambio</p>
+                        <p id="logFecha" class="text-sm font-bold text-uccDark">—</p>
+                    </div>
+                </div>
 
-                    <!-- Bloque de Payload / Consola -->
-                    <div>
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Payload Extendida - Descripción Técnica</p>
-                        <div id="logPayload" class="w-full bg-slate-900 text-emerald-400 p-4 rounded-xl font-mono text-xs leading-relaxed border border-slate-800 shadow-inner min-h-24 overflow-y-auto">
-> Inicializando operación de actualización...
-> Verificando permisos de usuario: admin
-> Validando esquema de datos... OK
-> Aplicando cambios a registro ID: 69911
-> Campos modificados: status=preventivo, fecha=2024-02-24
-> Registrando bitácora de auditoría... OK
-> Sincronizando con backend... OK
-> Operación completada exitosamente
-                        </div>
+                <div>
+                    <p class="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Resumen para supervisión</p>
+                    <div id="logResumenHumano" class="w-full bg-white border border-slate-200 text-slate-700 p-6 rounded-xl text-sm leading-relaxed shadow-sm">
+                        —
                     </div>
+                </div>
 
-                    <!-- Pie del Modal -->
-                    <div class="flex justify-end pt-6 border-t border-slate-200">
-                        <button onclick="closeDetalleLogModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2">
-                            <i class="fas fa-check"></i>
-                            <span>Entendido, Cerrar</span>
-                        </button>
-                    </div>
+                <div class="flex justify-end pt-2 border-t border-slate-200">
+                    <button type="button" onclick="closeDetalleLogModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fas fa-check"></i>
+                        <span>Entendido, Cerrar</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Datos de logs para cada registro de auditoría
-        const logData = {
-            1: {
-                timestamp: '24/02/2024 14:35:22',
-                ip: '192.168.1.42',
-                usuario: 'Carlos Peña',
-                tipo: 'INSPECCIÓN',
-                tipoClass: 'bg-blue-100 text-blue-700',
-                modulo: 'Revisión Técnica - Equipo 69911',
-                payload: `> Iniciando inspección técnica anual...
-> Verificando permisos: técnico_senior
-> Validando equipo: LG AS-W12GQLDG0
-> Estado actual: Operativo
-> Presiones: OK | Refrigerante: OK | Componentes: OK
-> Registrando resultados en base de datos...
-> Generando reporte PDF automático... OK
-> Notificando al administrador... OK
-> Inspección completada exitosamente`
-            },
-            2: {
-                timestamp: '18/11/2023 09:15:47',
-                ip: '192.168.1.38',
-                usuario: 'Juan Martínez',
-                tipo: 'MODIFICAR',
-                tipoClass: 'bg-cyan-100 text-cyan-700',
-                modulo: 'Mantenimiento Preventivo - Equipo 69911',
-                payload: `> Iniciando mantenimiento preventivo...
-> Authenticando técnico: juan_martinez
-> Validando orden de trabajo: ORD-2023-1847
-> Desmontando filtros salidos del equipo...
-> Realizando limpieza química de serpentines...
-> Realizando recarga de refrigerante R410A (2.5kg)...
-> Midiendo presiones post-servicio...
-> Prueba de funcionamiento: EXITOSA
-> Actualizando registro en sistema... OK`
-            },
-            3: {
-                timestamp: '12/05/2023 11:20:15',
-                ip: '192.168.1.50',
-                usuario: 'Carlos Peña',
-                tipo: 'CREAR',
-                tipoClass: 'bg-green-100 text-green-700',
-                modulo: 'Instalación Inicial - Equipo 69911',
-                payload: `> Registrando nuevo equipo en inventario...
-> Asignando ID: 69911
-> Modelo: LG AS-W12GQLDG0
-> Capacidad: 43000 BTU/h
-> Ubicación: Bloque A - Aula 204
-> Realizando instalación técnica...
-> Conexiones eléctricas: OK
-> Presurización del circuito: OK
-> Prueba inicial: OK
-> Equipo operativo y listo en servicio`
-            }
-        };
-
-        let currentLogId = null;
-
-        function openDetalleLogModal(logId) {
-            currentLogId = logId;
-            const data = logData[logId] || logData[1];
-
-            document.getElementById('logTimestamp').textContent = data.timestamp;
-            document.getElementById('logIp').textContent = data.ip;
-            document.getElementById('logUsuario').textContent = data.usuario;
-
-            const tipoElement = document.getElementById('logTipo');
-            tipoElement.textContent = data.tipo;
-            tipoElement.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${data.tipoClass}`;
-
-            document.getElementById('logModulo').textContent = data.modulo;
-            document.getElementById('logPayload').textContent = data.payload;
-
-            document.getElementById('modal-detalle-log').classList.remove('hidden');
-        }
-
-        function closeDetalleLogModal() {
-            document.getElementById('modal-detalle-log').classList.add('hidden');
-        }
-
-        document.getElementById('modal-detalle-log').addEventListener('click', function (event) {
-            if (event.target === this) closeDetalleLogModal();
-        });
-    </script>
-
+    <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/sidebar.js"></script>
-
+    <script src="js/audit-logs-loader.js"></script>
 </body>
 </html>
-

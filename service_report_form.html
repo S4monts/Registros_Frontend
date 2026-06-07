@@ -86,6 +86,7 @@
 
         <div class="flex-1 overflow-y-auto p-10 max-w-4xl w-full mx-auto">
             <form id="reporteForm" class="space-y-8 bg-white p-8 border border-slate-200 rounded-3xl shadow-sm">
+                <input type="hidden" id="equipoId" value="">
 
                 <div class="border-b border-slate-100 pb-4">
                     <h2 class="text-xl font-black text-uccDark">Registrar Intervención Técnica</h2>
@@ -179,65 +180,23 @@
                     </div>
                 </div>
 
-                <div class="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm">
-                    <label for="costo_servicio" class="block text-xs font-black uppercase tracking-widest text-slate-600 mb-2">
-                        <i class="fas fa-hand-holding-usd text-uccLight mr-2"></i>Costo del Servicio Técnico (Mano de Obra) <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative max-w-xs">
-                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 font-black">$</span>
-                        <input type="number" id="costo_servicio" name="costo_servicio" required step="100" min="0" placeholder="Ej: 80000" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-uccLight focus:border-transparent focus:outline-none transition">
+                <div class="p-6 bg-blue-50 border border-blue-200 rounded-2xl space-y-4">
+                    <div>
+                        <h3 class="text-sm font-black text-uccDark uppercase tracking-wider">
+                            <i class="fas fa-toolbox text-uccLight mr-2"></i>Materiales e Insumos Consumidos
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-1 font-medium">Marque los repuestos utilizados e indique cantidad y valor unitario.</p>
                     </div>
-                    <p class="text-xs text-slate-400 mt-2 font-medium">* Ingrese 0 si el servicio está cubierto por garantía institucional. No dejar vacío.</p>
-                </div>
-
-                <div class="p-6 bg-blue-50 border border-blue-200 rounded-2xl">
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-4">
-                        <i class="fas fa-toolbox text-uccLight mr-2"></i>Componentes Utilizados en el Servicio
-                    </label>
                     <div id="contenedor-componentes" class="space-y-3">
                         <div class="text-center text-slate-400 py-4">
                             <i class="fas fa-spinner text-2xl animate-spin"></i>
                             <p class="text-sm mt-2">Cargando componentes disponibles...</p>
                         </div>
                     </div>
-                </div>
-
-                <div class="border-t border-slate-200 pt-6">
-                    <h3 class="text-lg font-black text-uccDark mb-4">
-                        <i class="fas fa-tools text-uccLight mr-2"></i>Repuestos Adicionales Utilizados en Campo
-                    </h3>
-
-                    <div id="contenedor-repuestos" class="space-y-4">
-                        <div class="flex flex-col md:flex-row gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl repuesto-item relative">
-                            <div class="flex-1">
-                                <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Repuesto / Insumo <span class="text-red-500">*</span></label>
-                                <select name="repuesto_id" required class="w-full bg-white px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
-                                    <option value="" disabled selected>Seleccione un componente...</option>
-                                    <option value="1">Gas Refrigerante R-410A</option>
-                                    <option value="2">Capacitor 45uF</option>
-                                    <option value="3">Filtro de Aire</option>
-                                    <option value="0">Ninguno (Solo Mano de Obra)</option>
-                                </select>
-                            </div>
-                            <div class="w-full md:w-32">
-                                <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Cantidad <span class="text-red-500">*</span></label>
-                                <input type="number" name="cantidad" required step="0.1" min="0" value="0" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
-                            </div>
-                            <div class="w-full md:w-40">
-                                <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Costo Unit. ($) <span class="text-red-500">*</span></label>
-                                <input type="number" name="precio_unitario" required step="100" min="0" value="0" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
-                            </div>
-                            <div class="flex items-end">
-                                <button type="button" class="btn-eliminar-repuesto px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition" title="Quitar repuesto">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
+                    <div class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl">
+                        <span class="text-xs font-black uppercase tracking-widest text-slate-600">Total materiales</span>
+                        <span class="text-lg font-black text-uccDark">$ <span id="total-materiales">0</span></span>
                     </div>
-
-                    <button type="button" id="btn-agregar-repuesto" class="mt-4 px-4 py-2 text-sm font-bold text-uccLight hover:bg-slate-100 rounded-lg transition flex items-center gap-2">
-                        <i class="fas fa-plus-circle"></i> Agregar otro repuesto
-                    </button>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-200">
@@ -269,237 +228,12 @@
         </div>
     </div>
 
-    <script>
-        // ==========================================
-        // Inicialización del Formulario de Reporte
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            // Leer el nombre del usuario desde localStorage (guardado por login.js)
-            const nombreUsuario = localStorage.getItem('usuario_nombre') || 'TÉCNICO DE INFRAESTRUCTURA';
+    <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none" aria-live="polite"></div>
 
-            // Rellenar el campo del técnico responsable (bloqueado para trazabilidad)
-            const inputTecnico = document.getElementById('nombreTecnico');
-            if (inputTecnico) {
-                inputTecnico.value = nombreUsuario.toUpperCase();
-                inputTecnico.readOnly = true; // Bloqueo de seguridad definitivo
-            }
-
-            // Auto-llenar la fecha actual
-            const inputFecha = document.getElementById('fechaMantenimiento');
-            if (inputFecha) {
-                inputFecha.value = new Date().toISOString().split('T')[0];
-            }
-        });
-
-        // Simulación de Base de Datos para el Modal
-        const activosMaestros = [
-            { id: "AC-MON-101", ubicacion: "Bloque A - Aula 102 (Sistemas)", marca: "LG Eco" },
-            { id: "AC-MON-102", ubicacion: "Bloque A - Sala de Servidores", marca: "Carrier Ind" },
-            { id: "AC-MON-103", ubicacion: "Bloque B - Biblioteca Central", marca: "Trane High" }
-        ];
-
-        function openBuscarActivoModal() {
-            document.getElementById('modal-buscar-activo').classList.remove('hidden');
-            renderizarActivosList(activosMaestros);
-        }
-
-        function closeBuscarActivoModal() {
-            document.getElementById('modal-buscar-activo').classList.add('hidden');
-        }
-
-        function renderizarActivosList(lista) {
-            const contenedor = document.getElementById("listaActivos");
-            if (!contenedor) return;
-            if (lista.length === 0) {
-                contenedor.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No se encontraron activos.</p>`;
-                return;
-            }
-            contenedor.innerHTML = lista.map(activo => `
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center hover:border-uccLight transition">
-                    <div>
-                        <p class="text-sm font-black text-uccDark">${activo.id}</p>
-                        <p class="text-xs text-slate-500 mt-0.5 font-medium"><i class="fas fa-map-marker-alt text-uccLight mr-1"></i>${activo.ubicacion}</p>
-                    </div>
-                    <button type="button" onclick="seleccionarEquipoCompleto('${activo.id}', '${activo.ubicacion}')" class="bg-uccLight hover:bg-opacity-90 text-white font-bold px-4 py-2 rounded-xl text-xs shadow transition">
-                        Seleccionar
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function seleccionarEquipoCompleto(id, ubicacion) {
-            document.getElementById('codigoActivo').value = id;
-            document.getElementById('ubicacion').value = ubicacion;
-            closeBuscarActivoModal();
-        }
-
-        document.getElementById("buscarActivoInput")?.addEventListener("input", (e) => {
-            const busqueda = e.target.value.toLowerCase().trim();
-            const filtrados = activosMaestros.filter(a =>
-                a.id.toLowerCase().includes(busqueda) ||
-                a.ubicacion.toLowerCase().includes(busqueda)
-            );
-            renderizarActivosList(filtrados);
-        });
-
-        // 3. Gestión de la Tabla Dinámica de Repuestos
-        document.getElementById("btn-agregar-repuesto")?.addEventListener("click", () => {
-            const contenedor = document.getElementById("contenedor-repuestos");
-            const nuevaFila = document.createElement("div");
-            nuevaFila.className = "flex flex-col md:flex-row gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl repuesto-item relative";
-            nuevaFila.innerHTML = `
-                <div class="flex-1">
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Repuesto / Insumo <span class="text-red-500">*</span></label>
-                    <select name="repuesto_id" required class="w-full bg-white px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
-                        <option value="" disabled selected>Seleccione un componente...</option>
-                        <option value="1">Gas Refrigerante R-410A</option>
-                        <option value="2">Capacitor 45uF</option>
-                        <option value="3">Filtro de Aire</option>
-                        <option value="0">Ninguno (Solo Mano de Obra)</option>
-                    </select>
-                </div>
-                <div class="w-full md:w-32">
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Cantidad <span class="text-red-500">*</span></label>
-                    <input type="number" name="cantidad" required step="0.1" min="0" value="0" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
-                </div>
-                <div class="w-full md:w-40">
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Costo Unit. ($) <span class="text-red-500">*</span></label>
-                    <input type="number" name="precio_unitario" required step="100" min="0" value="0" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-uccLight focus:outline-none">
-                </div>
-                <div class="flex items-end">
-                    <button type="button" class="btn-eliminar-repuesto px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition" title="Quitar repuesto">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            contenedor.appendChild(nuevaFila);
-        });
-
-        document.getElementById("contenedor-repuestos")?.addEventListener("click", (e) => {
-            const boton = e.target.closest(".btn-eliminar-repuesto");
-            if (boton) {
-                const filas = document.querySelectorAll(".repuesto-item");
-                if (filas.length > 1) {
-                    boton.closest(".repuesto-item").remove();
-                } else {
-                    alert("El reporte debe mantener al menos una fila. Si no usó repuestos, seleccione 'Ninguno' y deje los valores en 0.");
-                }
-            }
-        });
-
-        document.getElementById("btn-cerrar-sesion")?.addEventListener("click", () => {
-            localStorage.clear();
-            window.location.href = "/";
-        });
-
-        // 5. Intercepción del Submit con Bloqueo de Validación Estricto
-        document.getElementById("reporteForm")?.addEventListener("submit", async function(e) {
-            e.preventDefault(); // Detenemos la recarga de página por defecto
-
-            // 🔒 ESTRICTO: Si el formulario no pasa la validación de campos vacíos, frena la ejecución
-            if (!this.checkValidity()) {
-                this.reportValidity(); // Llama al globo nativo del navegador indicando el campo vacío
-                return;
-            }
-
-            const payloadMantenimiento = {
-                fecha_mantenimiento: document.getElementById("fechaMantenimiento").value,
-                codigo_activo: document.getElementById("codigoActivo").value,
-                tipo_mantenimiento_id: parseInt(document.getElementById("tipoMantenimiento").value),
-                detalle_mantenimiento: document.getElementById("descripcionTrabajo").value,
-
-                // Nuevos campos mapeados
-                problemas_encontrados: document.getElementById("problemas_encontrados").value,
-                acciones_recomendadas: document.getElementById("acciones_recomendadas").value,
-
-                estado_equipo: document.querySelector('input[name="estado"]:checked').value,
-                costo_servicio: parseFloat(document.getElementById("costo_servicio").value) || 0.0,
-                componentes_usados: []
-            };
-
-            const filasRepuestos = document.querySelectorAll(".repuesto-item");
-            filasRepuestos.forEach(fila => {
-                const id = fila.querySelector('select[name="repuesto_id"]').value;
-                const cant = fila.querySelector('input[name="cantidad"]').value;
-                const precio = fila.querySelector('input[name="precio_unitario"]').value;
-
-                if (id && parseInt(id) !== 0) { // Ignorar si seleccionó "Ninguno"
-                    payloadMantenimiento.componentes_usados.push({
-                        repuesto_utilizado_id: parseInt(id),
-                        cantidad: parseFloat(cant),
-                        precio_unitario: parseFloat(precio)
-                    });
-                }
-            });
-
-            // 🚀 Enviar el Payload al Backend mediante POST
-            try {
-                // 1. Mostrar estado de carga (opcional pero recomendado)
-                const btnGuardar = document.querySelector('button[type="submit"]');
-                const textoOriginal = btnGuardar.innerHTML;
-                btnGuardar.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Guardando...';
-                btnGuardar.disabled = true;
-
-                // 2. Hacer la petición a FastAPI
-                const response = await fetch("http://127.0.0.1:8000/api/v1/mantenimientos/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(payloadMantenimiento)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || "Error interno del servidor al guardar.");
-                }
-
-                const dataGuardada = await response.json();
-
-                // 3. Éxito
-                alert("✅ Reporte de mantenimiento guardado exitosamente en la base de datos.");
-
-                // 4. Limpiar el formulario después de guardar
-                document.getElementById("reporteForm").reset();
-                // Volver a ocultar los campos de los componentes
-                document.querySelectorAll(".inputs-detalle").forEach(div => div.classList.add("d-none"));
-
-                // Restaurar botón
-                btnGuardar.innerHTML = textoOriginal;
-                btnGuardar.disabled = false;
-
-            } catch (error) {
-                console.error("Error al enviar el reporte:", error);
-                alert(`❌ Ocurrió un error al guardar: ${error.message}`);
-
-                // Restaurar botón en caso de error
-                const btnGuardar = document.querySelector('button[type="submit"]');
-                btnGuardar.innerHTML = '<i class="fas fa-save mr-2"></i> Guardar Reporte';
-                btnGuardar.disabled = false;
-            }
-        });
-
-        // Botón Limpiar Todo - restaura formulario y campos de trazabilidad
-        document.getElementById("btn-limpiar-formulario")?.addEventListener("click", () => {
-            if (confirm("¿Está seguro de limpiar todo? Se perderán los datos ingresados.")) {
-                document.getElementById("reporteForm").reset();
-
-                // Restaurar nombre del técnico y fecha
-                const nombreUsuario = localStorage.getItem('usuario_nombre') || 'TÉCNICO DE INFRAESTRUCTURA';
-                const inputTecnico = document.getElementById('nombreTecnico');
-                if (inputTecnico) {
-                    inputTecnico.value = nombreUsuario.toUpperCase();
-                    inputTecnico.readOnly = true;
-                }
-
-                const inputFecha = document.getElementById('fechaMantenimiento');
-                if (inputFecha) inputFecha.value = new Date().toISOString().split('T')[0];
-            }
-        });
-    </script>
+    <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/sidebar.js"></script>
-    <script src="js/service_report_form.js" defer></script>
+    <script src="js/service_report_form.js"></script>
 
 </body>
 </html>
