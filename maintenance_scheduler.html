@@ -67,10 +67,16 @@
                         <h1 class="text-4xl font-black text-uccDark tracking-tighter mb-2">Programación de Mantenimientos</h1>
                         <p class="text-slate-600 font-medium">Gestión operativa de órdenes del campus</p>
                     </div>
-                    <button type="button" onclick="openProgramarMantenimientoModal()" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
-                        <i class="fas fa-plus"></i>
-                        <span>Programar Mantenimiento</span>
-                    </button>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button type="button" id="btn-gestion-tipos-mantenimiento" onclick="openGestionTiposMantenimientoModal()" title="Gestionar tipos de mantenimiento" class="hidden bg-uccDark hover:bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Tipos de Mantenimiento</span>
+                        </button>
+                        <button type="button" onclick="openProgramarMantenimientoModal()" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Programar Mantenimiento</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Barra de herramientas: búsqueda + filtros -->
@@ -180,9 +186,7 @@
                 <div class="md:col-span-2">
                     <label for="selectTipo" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tipo de intervención</label>
                     <select id="selectTipo" required class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50/50 rounded-xl px-4 py-2.5 text-sm bg-slate-50/50 text-slate-700 transition-all appearance-none cursor-pointer">
-                        <option value="">Selecciona el tipo</option>
-                        <option value="1">Preventivo</option>
-                        <option value="2">Correctivo</option>
+                        <option value="">Cargando tipos…</option>
                     </select>
                 </div>
                 <div class="md:col-span-2 flex justify-end gap-3 pt-4 border-t border-slate-100">
@@ -245,6 +249,46 @@
                 <button type="button" onclick="closeDetalleOrdenModal()" class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">Cerrar</button>
                 <button type="button" id="btn-cancelar-mantenimiento" onclick="cancelarMantenimiento()" class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white shadow-md transition-all">Cancelar orden</button>
                 <button type="button" id="btn-guardar-orden" onclick="guardarCambiosOrden()" class="rounded-xl text-sm font-semibold px-5 py-2.5 bg-uccLight hover:bg-[#00b8d4] text-white shadow-md transition-all">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gestión de Tipos de Mantenimiento -->
+    <div id="modal-gestion-tipos-mantenimiento" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-white max-w-lg w-full rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="shrink-0 px-6 py-5 border-b border-slate-100 flex items-center justify-between gap-3 bg-white">
+                <div class="min-w-0">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-uccLight mb-0.5">Catálogo</p>
+                    <h3 class="text-slate-800 font-extrabold text-xl leading-tight truncate">Gestión de Tipos de Mantenimiento</h3>
+                </div>
+                <button type="button" onclick="closeGestionTiposMantenimientoModal()" class="shrink-0 w-9 h-9 rounded-lg border border-slate-200 text-slate-400 hover:text-uccLight hover:bg-cyan-50/60 flex items-center justify-center transition-all" aria-label="Cerrar">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            <div class="px-6 py-4 border-b border-slate-50 shrink-0 bg-white space-y-3">
+                <div>
+                    <label for="input-nuevo-tipo-mantenimiento" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Nombre del tipo</label>
+                    <input id="input-nuevo-tipo-mantenimiento" type="text" maxlength="30" placeholder="Ej: Preventivo"
+                        class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50 rounded-xl px-3 py-2.5 text-sm bg-slate-50/50 transition-all text-slate-700 placeholder-slate-400">
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+                    <div class="flex-1 min-w-0">
+                        <label for="input-nuevo-frecuencia-mantenimiento" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Frecuencia (días)</label>
+                        <input id="input-nuevo-frecuencia-mantenimiento" type="number" min="0" step="1" placeholder="Ej: 90 (opcional)"
+                            class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50 rounded-xl px-3 py-2.5 text-sm bg-slate-50/50 transition-all text-slate-700 placeholder-slate-400">
+                    </div>
+                    <button type="button" onclick="submitCrearTipoMantenimiento()"
+                        class="shrink-0 bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm whitespace-nowrap">
+                        <i class="fas fa-plus text-xs"></i>
+                        <span>Agregar</span>
+                    </button>
+                </div>
+            </div>
+            <div class="px-6 py-4 flex-1 min-h-0 overflow-hidden flex flex-col bg-white">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 shrink-0">Tipos registrados</p>
+                <div id="lista-tipos-mantenimiento-gestion" class="max-h-[50vh] overflow-y-auto pr-2 flex-1">
+                    <p class="text-sm text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-2 text-uccLight"></i>Cargando...</p>
+                </div>
             </div>
         </div>
     </div>

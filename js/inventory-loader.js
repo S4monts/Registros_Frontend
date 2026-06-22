@@ -7,6 +7,8 @@ const API_BASE_URL = "http://127.0.0.1:8000/api/v1";
 let paginaActual = 1;
 const registrosPorPagina = 10;
 let equiposCargadosGlobal = [];
+let espaciosCatalogGlobal = [];
+let bloquesCatalogGlobal = [];
 let modoEdicionEquipo = false;
 let equipoEnEdicionId = null;
 
@@ -89,6 +91,28 @@ function cargarSelectoresFormularios() {
             if (select) select.innerHTML = '<option value="">Error al cargar bloques</option>';
         });
 
+    // Cargar Tipos de Espacio en selector del formulario principal de espacio
+    fetch(`${API_BASE_URL}/tipos-espacios/`)
+        .then(r => r.json())
+        .then(tiposEspacio => {
+            const select = document.getElementById("select-tipo-espacio");
+            if (select) {
+                select.innerHTML = '<option value="">Selecciona tipo de espacio</option>';
+                tiposEspacio.forEach(tipo => {
+                    const option = document.createElement("option");
+                    option.value = tipo.id;
+                    option.textContent = tipo.nombre;
+                    select.appendChild(option);
+                });
+            }
+            console.log(`✅ Cargados ${tiposEspacio.length} tipos de espacio`);
+        })
+        .catch(err => {
+            console.error("❌ Error al cargar tipos de espacio:", err);
+            const select = document.getElementById("select-tipo-espacio");
+            if (select) select.innerHTML = '<option value="">Error al cargar tipos</option>';
+        });
+
     // Cargar Tipos de Equipo en selector
     fetch(`${API_BASE_URL}/tipos-equipo/`)
         .then(r => r.json())
@@ -111,6 +135,28 @@ function cargarSelectoresFormularios() {
             const select = document.getElementById("select-tipo-equipo");
             if (select) select.innerHTML = '<option value="">Error al cargar tipos</option>';
         });
+
+    // Cargar Refrigerantes en selector
+    fetch(`${API_BASE_URL}/tipos-gas-refrigerante/`)
+        .then(r => r.json())
+        .then(data => {
+            const refrigerantes = Array.isArray(data) ? data : (data.items || []);
+            const select = document.getElementById("selectRefrigerante");
+            if (select) {
+                select.innerHTML = '<option value="">Selecciona un refrigerante</option>';
+                refrigerantes.forEach(ref => {
+                    const option = document.createElement("option");
+                    option.value = ref.nombre;
+                    option.textContent = ref.nombre;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(err => {
+            console.error("❌ Error al cargar refrigerantes:", err);
+            const select = document.getElementById("selectRefrigerante");
+            if (select) select.innerHTML = '<option value="">Error al cargar refrigerantes</option>';
+        });
 }
 
 /**
@@ -128,7 +174,7 @@ function cargarInventarioCompleto() {
     // Mostrar indicador de carga
     tablaBody.innerHTML = `
         <tr>
-            <td colspan="7" class="text-center py-12 text-slate-400">
+            <td colspan="5" class="text-center py-12 text-slate-400">
                 <i class="fas fa-spinner text-2xl animate-spin mb-3 block"></i>
                 <p class="text-sm">Cargando equipos desde la base de datos...</p>
             </td>
@@ -152,6 +198,7 @@ function cargarInventarioCompleto() {
 
             equiposCargadosGlobal = equipos;
             paginaActual = 1;
+            actualizarOpcionesPisoFiltro();
             renderizarTablaPaginada();
 
             console.log(`✅ Cargados ${equipos.length} equipos exitosamente`);
@@ -160,7 +207,7 @@ function cargarInventarioCompleto() {
             console.error("❌ Error al cargar equipos:", error);
             tablaBody.innerHTML = `
                 <tr>
-                    <td colspan="7" class="px-8 py-8">
+                    <td colspan="5" class="px-8 py-8">
                         <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
                             <p class="text-sm font-bold text-red-600">
                                 <i class="fas fa-exclamation-circle mr-2"></i>Error al conectar con el servidor
@@ -192,29 +239,22 @@ function crearFilaEquipo(equipo) {
     fila.setAttribute("data-equipo-id", equipo.id);
     fila.setAttribute("data-codigo-activo", equipo.codigo_activo);
 
-    // Determinar el badge de estado con colores
     const estadoBadge = obtenerBadgeEstado(equipo.estado);
-
-    // Construir la ubicación (combinar espacio, bloque, piso)
     const ubicacion = construirUbicacion(equipo);
-
-    // Obtener tipo de equipo
     const tipoEquipo = obtenerNombreTipoEquipo(equipo);
 
-    // Número de serie (con valor por defecto si no existe)
-    const numeroSerie = equipo.numero_serie || "N/A";
+    const piso = equipo.espacio && typeof equipo.espacio === "object" ? equipo.espacio.piso : "";
+    const bloqueId = equipo.espacio && typeof equipo.espacio === "object" ? equipo.espacio.bloque_id : "";
+    const espacioId = equipo.espacio && typeof equipo.espacio === "object" ? equipo.espacio.id : equipo.espacio_id;
 
-    // Marca y modelo (intentar extraer información)
-    const marcaModelo = equipo.marca
-        ? (typeof equipo.marca === 'object' ? equipo.marca.nombre : equipo.marca)
-        : "No especificada";
+    fila.setAttribute("data-piso", piso != null && piso !== "" ? String(piso) : "");
+    fila.setAttribute("data-bloque-id", bloqueId != null && bloqueId !== "" ? String(bloqueId) : "");
+    fila.setAttribute("data-espacio-id", espacioId != null && espacioId !== "" ? String(espacioId) : "");
+    fila.setAttribute("data-estado", normalizarEstadoEquipo(equipo.estado));
 
     fila.innerHTML = `
         <td class="px-8 py-5 font-black text-uccDark">
             ${equipo.codigo_activo}
-        </td>
-        <td class="px-8 py-5 font-bold text-slate-700">
-            ${marcaModelo}
         </td>
         <td class="px-8 py-5 font-bold text-slate-600">
             <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-lg text-xs font-bold">
@@ -224,9 +264,6 @@ function crearFilaEquipo(equipo) {
         <td class="px-8 py-5 font-semibold text-slate-600 col-ubicacion">
             <span class="text-xs block">${ubicacion.nombre}</span>
             <span class="text-xs text-slate-400 block">${ubicacion.piso}</span>
-        </td>
-        <td class="px-8 py-5 text-slate-600 text-xs">
-            ${numeroSerie}
         </td>
         <td class="px-8 py-5">
             ${estadoBadge}
@@ -316,22 +353,32 @@ function construirUbicacion(equipo) {
     let piso = "";
 
     if (equipo.espacio) {
-        if (typeof equipo.espacio === 'object') {
+        if (typeof equipo.espacio === "object") {
             const espacioNombre = equipo.espacio.nombre || "No especificado";
-            const bloqueNombre = equipo.espacio.bloque ?
-                (typeof equipo.espacio.bloque === 'object' ? equipo.espacio.bloque.nombre_bloque : equipo.espacio.bloque)
+            const bloqueNombre = equipo.espacio.bloque
+                ? (typeof equipo.espacio.bloque === "object" ? equipo.espacio.bloque.nombre_bloque : equipo.espacio.bloque)
                 : null;
 
-            ubicacion = bloqueNombre
-                ? `${espacioNombre} - ${bloqueNombre}`
-                : espacioNombre;
-            piso = equipo.espacio.piso ? `Piso ${equipo.espacio.piso}` : "";
+            ubicacion = bloqueNombre ? `${bloqueNombre} - ${espacioNombre}` : espacioNombre;
+            piso = equipo.espacio.piso != null ? `Piso ${equipo.espacio.piso}` : "";
         } else {
             ubicacion = equipo.espacio;
         }
     }
 
     return { nombre: ubicacion, piso };
+}
+
+function normalizarEstadoEquipo(estado) {
+    if (!estado) return "";
+    const mapa = {
+        "operativo": "Operativo",
+        "en reparacion": "En reparación",
+        "en reparación": "En reparación",
+        "inactivo": "Inactivo",
+        "dado de baja": "Dado de baja",
+    };
+    return mapa[estado.toLowerCase()] || estado;
 }
 
 /**
@@ -356,7 +403,7 @@ function renderizarTablaPaginada() {
     if (total === 0) {
         tablaBody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-12">
+                <td colspan="5" class="text-center py-12">
                     <p class="text-slate-400 text-sm">
                         <i class="fas fa-inbox text-2xl block mb-2"></i>
                         No hay equipos registrados en la base de datos
@@ -550,8 +597,9 @@ async function submitCrearEspacio(event) {
         const nombre = document.getElementById("inputNombreEspacio").value;
         const piso = parseInt(document.getElementById("inputPisoEspacio").value);
         const bloqueId = document.getElementById("select-bloque-espacio").value;
+        const tipoEspacioId = document.getElementById("select-tipo-espacio").value;
 
-        if (!codigoEspacio || !nombre || piso === "" || !bloqueId) {
+        if (!codigoEspacio || !nombre || piso === "" || !bloqueId || !tipoEspacioId) {
             mostrarNotificacion("error", "Por favor completa todos los campos del formulario");
             return;
         }
@@ -561,7 +609,7 @@ async function submitCrearEspacio(event) {
             nombre: nombre,
             piso: piso,
             bloque_id: parseInt(bloqueId),
-            tipo_espacio_id: 1
+            tipo_espacio_id: parseInt(tipoEspacioId)
         };
 
         console.log("🚀 Enviando espacio:", payload);
@@ -678,7 +726,10 @@ async function submitCrearActivoFormulario(event) {
 
         const response = await fetch(url, {
             method,
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
             body: JSON.stringify(bodyPayload)
         });
 
@@ -1006,45 +1057,120 @@ async function activateTechnicalSheet() {
 }
 
 /**
- * Función de filtrado de tabla en tiempo real
+ * Filtra la tabla aplicando todos los filtros simultáneamente (AND lógico)
  */
 function filtrarTabla() {
-    const inputBusqueda = document.getElementById("input-busqueda");
+    const inputPiso = document.getElementById("filterPiso");
     const selectEstado = document.getElementById("assetStateFilter");
     const selectBloque = document.getElementById("assetBlockFilter");
+    const selectAula = document.getElementById("assetAulaFilter");
     const tablaBody = document.getElementById("tablaEquiposBody");
-    const filas = tablaBody.querySelectorAll("tr");
-    
-    const terminoBusqueda = inputBusqueda.value.toLowerCase().trim();
-    const valorEstado = selectEstado.value;
-    const valorBloque = selectBloque.value;
+    if (!tablaBody) return;
 
-    filas.forEach(fila => {
-        const celdas = fila.querySelectorAll("td");
-        if (celdas.length > 0) {
-            const codigoActivo = celdas[0].textContent.toLowerCase();
-            const ubicacion = celdas[3].textContent.toLowerCase();
-            const estado = celdas[5].textContent.trim();
+    const valorPiso = (inputPiso?.value || "").trim();
+    const valorEstado = selectEstado?.value || "";
+    const valorBloque = selectBloque?.value || "";
+    const valorAula = selectAula?.value || "";
 
-            // Verificar cada condición
-            const coincideTexto = terminoBusqueda === "" || 
-                codigoActivo.includes(terminoBusqueda) || 
-                ubicacion.includes(terminoBusqueda);
-            
-            const coincideEstado = valorEstado === "Todos" || 
-                estado.includes(valorEstado);
-            
-            const coincideBloque = valorBloque === "Todos" || 
-                ubicacion.includes(valorBloque.toLowerCase());
+    tablaBody.querySelectorAll("tr[data-equipo-id]").forEach(fila => {
+        const pisoFila = fila.getAttribute("data-piso") || "";
+        const bloqueFila = fila.getAttribute("data-bloque-id") || "";
+        const espacioFila = fila.getAttribute("data-espacio-id") || "";
+        const estadoFila = fila.getAttribute("data-estado") || "";
 
-            // Todas las condiciones deben cumplirse (AND lógico)
-            if (coincideTexto && coincideEstado && coincideBloque) {
-                fila.style.display = "";
-            } else {
-                fila.style.display = "none";
+        const coincidePiso = !valorPiso || pisoFila === valorPiso;
+        const coincideEstado = !valorEstado || estadoFila === valorEstado;
+        const coincideBloque = !valorBloque || bloqueFila === valorBloque;
+        const coincideAula = !valorAula || espacioFila === valorAula;
+
+        fila.style.display = (coincidePiso && coincideEstado && coincideBloque && coincideAula) ? "" : "none";
+    });
+}
+
+function limpiarFiltrosInventario() {
+    const inputPiso = document.getElementById("filterPiso");
+    const selectEstado = document.getElementById("assetStateFilter");
+    const selectBloque = document.getElementById("assetBlockFilter");
+    const selectAula = document.getElementById("assetAulaFilter");
+
+    if (inputPiso) inputPiso.value = "";
+    if (selectEstado) selectEstado.value = "";
+    if (selectBloque) selectBloque.value = "";
+    if (selectAula) {
+        selectAula.innerHTML = '<option value="">Todos</option>';
+        selectAula.disabled = true;
+    }
+    filtrarTabla();
+}
+
+function actualizarOpcionesPisoFiltro() {
+    const datalist = document.getElementById("lista-pisos-filtro");
+    if (!datalist) return;
+
+    const pisos = new Set();
+    equiposCargadosGlobal.forEach(equipo => {
+        const piso = equipo.espacio && typeof equipo.espacio === "object" ? equipo.espacio.piso : null;
+        if (piso != null && piso !== "") pisos.add(String(piso));
+    });
+
+    datalist.innerHTML = "";
+    [...pisos].sort((a, b) => Number(a) - Number(b)).forEach(piso => {
+        const option = document.createElement("option");
+        option.value = piso;
+        datalist.appendChild(option);
+    });
+}
+
+async function cargarFiltrosInventario() {
+    try {
+        const [bloquesRes, espaciosRes] = await Promise.all([
+            fetch(`${API_BASE_URL}/bloques/?limit=100`),
+            fetch(`${API_BASE_URL}/espacios/?limit=500`),
+        ]);
+
+        if (bloquesRes.ok) {
+            const bloquesData = await bloquesRes.json();
+            bloquesCatalogGlobal = Array.isArray(bloquesData) ? bloquesData : (bloquesData.items || []);
+            const selectBloque = document.getElementById("assetBlockFilter");
+            if (selectBloque) {
+                selectBloque.innerHTML = '<option value="">Todos</option>';
+                bloquesCatalogGlobal.forEach(bloque => {
+                    const option = document.createElement("option");
+                    option.value = bloque.id;
+                    option.textContent = bloque.nombre_bloque || bloque.codigo_bloque;
+                    selectBloque.appendChild(option);
+                });
             }
         }
+
+        if (espaciosRes.ok) {
+            const espaciosData = await espaciosRes.json();
+            espaciosCatalogGlobal = Array.isArray(espaciosData) ? espaciosData : (espaciosData.items || []);
+        }
+    } catch (err) {
+        console.error("Error al cargar filtros del inventario:", err);
+    }
+}
+
+function poblarAulasPorBloque(bloqueId) {
+    const selectAula = document.getElementById("assetAulaFilter");
+    if (!selectAula) return;
+
+    selectAula.innerHTML = '<option value="">Todos</option>';
+
+    if (!bloqueId) {
+        selectAula.disabled = true;
+        return;
+    }
+
+    const espaciosFiltrados = espaciosCatalogGlobal.filter(e => String(e.bloque_id) === String(bloqueId));
+    espaciosFiltrados.forEach(espacio => {
+        const option = document.createElement("option");
+        option.value = espacio.id;
+        option.textContent = espacio.nombre;
+        selectAula.appendChild(option);
     });
+    selectAula.disabled = false;
 }
 
 /**
@@ -1297,6 +1423,7 @@ function openGestionEspaciosModal() {
     modal.classList.remove("hidden");
     modal.classList.add("flex");
     cargarBloquesGestionEspacios();
+    cargarSelectoresFormularios();
     renderizarListaEspacios();
 }
 
@@ -1364,7 +1491,7 @@ async function submitCrearEspacioGestion() {
     const bloqueId = parseInt(document.getElementById("select-gestion-espacio-bloque")?.value, 10);
 
     if (!codigo || !nombre || isNaN(bloqueId)) {
-        mostrarNotificacion("error", "Completa código, nombre y bloque del espacio");
+        mostrarNotificacion("error", "Completa código, nombre y bloque");
         return;
     }
 
@@ -1372,8 +1499,7 @@ async function submitCrearEspacioGestion() {
         codigo_espacio: codigo,
         nombre,
         piso,
-        bloque_id: bloqueId,
-        tipo_espacio_id: 1
+        bloque_id: bloqueId
     };
 
     try {
@@ -1455,6 +1581,494 @@ async function eliminarEspacio(id) {
         mostrarNotificacion("exito", "Espacio eliminado correctamente");
         await renderizarListaEspacios();
         cargarSelectoresFormularios();
+        cargarFiltrosInventario();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+// ========================================
+// GESTIÓN DE BLOQUES (CRUD)
+// ========================================
+
+function openGestionBloquesModal() {
+    const modal = document.getElementById("modal-gestion-bloques");
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    renderizarListaBloques();
+}
+
+function closeGestionBloquesModal() {
+    const modal = document.getElementById("modal-gestion-bloques");
+    if (!modal) return;
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    const codigo = document.getElementById("input-nuevo-bloque-codigo");
+    const nombre = document.getElementById("input-nuevo-bloque-nombre");
+    if (codigo) codigo.value = "";
+    if (nombre) nombre.value = "";
+}
+
+async function renderizarListaBloques() {
+    const lista = document.getElementById("lista-bloques-gestion");
+    if (!lista) return;
+
+    lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-1"></i> Cargando...</p>';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/bloques/?limit=100`);
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+        const data = await response.json();
+        const bloques = Array.isArray(data) ? data : (data.items || []);
+
+        if (!bloques.length) {
+            lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No hay bloques registrados</p>';
+            return;
+        }
+
+        lista.innerHTML = "";
+        bloques.forEach(bloque => {
+            const fila = document.createElement("div");
+            fila.id = `bloque-row-${bloque.id}`;
+            fila.className = CLASE_FILA_GESTION;
+            fila.innerHTML = `
+                <div class="min-w-0 flex-1 pr-2">
+                    <span class="bloque-codigo-display text-uccLight font-bold text-xs uppercase tracking-wide">${bloque.codigo_bloque}</span>
+                    <p class="bloque-nombre-display font-semibold text-slate-800 truncate">${bloque.nombre_bloque}</p>
+                </div>
+                <div class="flex items-center gap-0.5 shrink-0">
+                    <button type="button" onclick="activarEdicionBloque(${bloque.id})" class="${CLASE_BTN_EDITAR_GESTION}" title="Editar">
+                        <i class="fas fa-pen text-xs"></i>
+                    </button>
+                    <button type="button" onclick="eliminarBloque(${bloque.id})" class="${CLASE_BTN_ELIMINAR_GESTION}" title="Eliminar">
+                        <i class="fas fa-trash text-xs"></i>
+                    </button>
+                </div>`;
+            lista.appendChild(fila);
+        });
+    } catch (error) {
+        lista.innerHTML = `<p class="text-xs text-red-500 text-center py-6">${error.message}</p>`;
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+async function submitCrearBloque() {
+    const codigo = document.getElementById("input-nuevo-bloque-codigo")?.value.trim();
+    const nombre = document.getElementById("input-nuevo-bloque-nombre")?.value.trim();
+    if (!codigo || !nombre) {
+        mostrarNotificacion("error", "Ingresa código y nombre del bloque");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/bloques/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ codigo_bloque: codigo, nombre_bloque: nombre }),
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        document.getElementById("input-nuevo-bloque-codigo").value = "";
+        document.getElementById("input-nuevo-bloque-nombre").value = "";
+        mostrarNotificacion("exito", `Bloque "${nombre}" registrado correctamente`);
+        await renderizarListaBloques();
+        await cargarBloquesGestionEspacios();
+        cargarSelectoresFormularios();
+        cargarFiltrosInventario();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+function activarEdicionBloque(id) {
+    const fila = document.getElementById(`bloque-row-${id}`);
+    if (!fila) return;
+
+    const nombreActual = fila.querySelector(".bloque-nombre-display")?.textContent?.trim() || "";
+    const codigoActual = fila.querySelector(".bloque-codigo-display")?.textContent?.trim() || "";
+
+    fila.className = `${CLASE_FILA_GESTION} flex-col sm:flex-row sm:items-center bg-white ring-2 ring-cyan-100 border border-uccLight/30 gap-3`;
+    fila.innerHTML = `
+        <div class="flex-1 min-w-0">
+            <span class="text-xs text-slate-400 font-bold uppercase">${codigoActual}</span>
+            <input type="text" id="edit-bloque-nombre-${id}" value="${nombreActual.replace(/"/g, "&quot;")}" maxlength="65"
+                class="${CLASE_INPUT_INLINE_GESTION} mt-1">
+        </div>
+        <div class="flex items-center gap-1 shrink-0 self-end sm:self-center">
+            <button type="button" onclick="guardarEdicionBloque(${id})" class="p-2.5 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 transition-colors duration-200" title="Guardar">
+                <i class="fas fa-check"></i>
+            </button>
+            <button type="button" onclick="renderizarListaBloques()" class="p-2.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-white transition-colors duration-200" title="Cancelar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>`;
+}
+
+async function guardarEdicionBloque(id) {
+    const nombre = document.getElementById(`edit-bloque-nombre-${id}`)?.value.trim();
+    if (!nombre) {
+        mostrarNotificacion("error", "El nombre no puede estar vacío");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/bloques/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nombre_bloque: nombre }),
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        mostrarNotificacion("exito", "Bloque actualizado correctamente");
+        await renderizarListaBloques();
+        await cargarBloquesGestionEspacios();
+        cargarSelectoresFormularios();
+        cargarFiltrosInventario();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+async function eliminarBloque(id) {
+    if (!confirm("¿Eliminar este bloque del catálogo?")) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/bloques/${id}`, { method: "DELETE" });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        mostrarNotificacion("exito", "Bloque eliminado correctamente");
+        await renderizarListaBloques();
+        await cargarBloquesGestionEspacios();
+        cargarSelectoresFormularios();
+        cargarFiltrosInventario();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+// ========================================
+// GESTIÓN DE TIPOS DE EQUIPO (CRUD — superusuario)
+// ========================================
+
+function esSuperusuarioInventario() {
+    const rol = (localStorage.getItem("rol") || localStorage.getItem("userRole") || "").toLowerCase();
+    return rol.includes("jefe de infraestructura");
+}
+
+function aplicarVisibilidadGestionTiposEquipo() {
+    const esSuper = esSuperusuarioInventario();
+    const btnTipos = document.getElementById("btn-gestion-tipos-equipo");
+    const btnRefrig = document.getElementById("btn-gestion-refrigerantes");
+    if (btnTipos) btnTipos.classList.toggle("hidden", !esSuper);
+    if (btnRefrig) btnRefrig.classList.toggle("hidden", !esSuper);
+}
+
+function openGestionTiposEquipoModal() {
+    if (!esSuperusuarioInventario()) {
+        mostrarNotificacion("error", "Solo el superusuario puede gestionar tipos de equipo.");
+        return;
+    }
+    const modal = document.getElementById("modal-gestion-tipos-equipo");
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    renderizarListaTiposEquipo();
+}
+
+function closeGestionTiposEquipoModal() {
+    const modal = document.getElementById("modal-gestion-tipos-equipo");
+    if (!modal) return;
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    const input = document.getElementById("input-nuevo-tipo-equipo");
+    if (input) input.value = "";
+}
+
+async function renderizarListaTiposEquipo() {
+    const lista = document.getElementById("lista-tipos-equipo-gestion");
+    if (!lista) return;
+
+    lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-1"></i> Cargando...</p>';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipos-equipo/`);
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+        const tipos = await response.json();
+
+        if (!tipos.length) {
+            lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No hay tipos de equipo registrados</p>';
+            return;
+        }
+
+        lista.innerHTML = "";
+        tipos.forEach((tipo) => {
+            const fila = document.createElement("div");
+            fila.id = `tipo-equipo-row-${tipo.id}`;
+            fila.className = CLASE_FILA_GESTION;
+            fila.innerHTML = `
+                <span class="font-semibold text-slate-800 truncate tipo-equipo-nombre-display flex-1 min-w-0 pr-2">${tipo.nombre}</span>
+                <div class="flex items-center gap-0.5 shrink-0">
+                    <button type="button" onclick="activarEdicionTipoEquipo(${tipo.id})" class="${CLASE_BTN_EDITAR_GESTION}" title="Editar">
+                        <i class="fas fa-pen text-xs"></i>
+                    </button>
+                    <button type="button" onclick="eliminarTipoEquipo(${tipo.id})" class="${CLASE_BTN_ELIMINAR_GESTION}" title="Eliminar">
+                        <i class="fas fa-trash text-xs"></i>
+                    </button>
+                </div>`;
+            lista.appendChild(fila);
+        });
+    } catch (error) {
+        lista.innerHTML = `<p class="text-xs text-red-500 text-center py-6">${error.message}</p>`;
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+async function submitCrearTipoEquipo() {
+    const input = document.getElementById("input-nuevo-tipo-equipo");
+    const nombre = input?.value.trim();
+    if (!nombre) {
+        mostrarNotificacion("error", "Ingresa el nombre del tipo de equipo");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipos-equipo/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ nombre }),
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        input.value = "";
+        mostrarNotificacion("exito", `Tipo de equipo "${nombre}" registrado`);
+        await renderizarListaTiposEquipo();
+        cargarSelectoresFormularios();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+function activarEdicionTipoEquipo(id) {
+    const fila = document.getElementById(`tipo-equipo-row-${id}`);
+    if (!fila) return;
+    const nombreActual = fila.querySelector(".tipo-equipo-nombre-display")?.textContent?.trim() || "";
+
+    fila.className = `${CLASE_FILA_GESTION} bg-white ring-2 ring-cyan-100 border border-uccLight/30`;
+    fila.innerHTML = `
+        <input type="text" id="edit-tipo-equipo-${id}" value="${nombreActual.replace(/"/g, "&quot;")}" maxlength="30"
+            class="${CLASE_INPUT_INLINE_GESTION}">
+        <div class="flex items-center gap-1 shrink-0">
+            <button type="button" onclick="guardarEdicionTipoEquipo(${id})" class="p-2.5 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 transition-colors duration-200" title="Guardar">
+                <i class="fas fa-check"></i>
+            </button>
+            <button type="button" onclick="renderizarListaTiposEquipo()" class="p-2.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-white transition-colors duration-200" title="Cancelar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>`;
+    document.getElementById(`edit-tipo-equipo-${id}`)?.focus();
+}
+
+async function guardarEdicionTipoEquipo(id) {
+    const input = document.getElementById(`edit-tipo-equipo-${id}`);
+    const nombre = input?.value.trim();
+    if (!nombre) {
+        mostrarNotificacion("error", "El nombre no puede estar vacío");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipos-equipo/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ nombre }),
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        mostrarNotificacion("exito", "Tipo de equipo actualizado");
+        await renderizarListaTiposEquipo();
+        cargarSelectoresFormularios();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+async function eliminarTipoEquipo(id) {
+    if (!confirm("¿Eliminar este tipo de equipo del catálogo?")) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipos-equipo/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        mostrarNotificacion("exito", "Tipo de equipo eliminado");
+        await renderizarListaTiposEquipo();
+        cargarSelectoresFormularios();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+// ========================================
+// GESTIÓN DE REFRIGERANTES (CRUD — superusuario)
+// ========================================
+
+function openGestionRefrigerantesModal() {
+    if (!esSuperusuarioInventario()) {
+        mostrarNotificacion("error", "Solo el superusuario puede gestionar tipos de refrigerante.");
+        return;
+    }
+    const modal = document.getElementById("modal-gestion-refrigerantes");
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    renderizarListaRefrigerantes();
+}
+
+function closeGestionRefrigerantesModal() {
+    const modal = document.getElementById("modal-gestion-refrigerantes");
+    if (!modal) return;
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    const input = document.getElementById("input-nuevo-refrigerante");
+    if (input) input.value = "";
+}
+
+async function renderizarListaRefrigerantes() {
+    const lista = document.getElementById("lista-refrigerantes-gestion");
+    if (!lista) return;
+
+    lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-1"></i> Cargando...</p>';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipos-gas-refrigerante/`);
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+        const refrigerantes = await response.json();
+
+        if (!refrigerantes.length) {
+            lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No hay refrigerantes registrados</p>';
+            return;
+        }
+
+        lista.innerHTML = "";
+        refrigerantes.forEach(ref => {
+            const fila = document.createElement("div");
+            fila.id = `refrigerante-row-${ref.id}`;
+            fila.className = CLASE_FILA_GESTION;
+            fila.innerHTML = `
+                <span class="font-semibold text-slate-800 truncate refrigerante-nombre-display flex-1 min-w-0 pr-2">${ref.nombre}</span>
+                <div class="flex items-center gap-0.5 shrink-0">
+                    <button type="button" onclick="activarEdicionRefrigerante(${ref.id})" class="${CLASE_BTN_EDITAR_GESTION}" title="Editar">
+                        <i class="fas fa-pen text-xs"></i>
+                    </button>
+                    <button type="button" onclick="eliminarRefrigerante(${ref.id})" class="${CLASE_BTN_ELIMINAR_GESTION}" title="Eliminar">
+                        <i class="fas fa-trash text-xs"></i>
+                    </button>
+                </div>`;
+            lista.appendChild(fila);
+        });
+    } catch (error) {
+        lista.innerHTML = `<p class="text-xs text-red-500 text-center py-6">${error.message}</p>`;
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+async function submitCrearRefrigerante() {
+    const input = document.getElementById("input-nuevo-refrigerante");
+    const nombre = input?.value.trim();
+    if (!nombre) {
+        mostrarNotificacion("error", "Ingresa el nombre del refrigerante");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipos-gas-refrigerante/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ nombre }),
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        input.value = "";
+        mostrarNotificacion("exito", `Refrigerante "${nombre}" registrado`);
+        await renderizarListaRefrigerantes();
+        cargarSelectoresFormularios();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+function activarEdicionRefrigerante(id) {
+    const fila = document.getElementById(`refrigerante-row-${id}`);
+    if (!fila) return;
+    const nombreActual = fila.querySelector(".refrigerante-nombre-display")?.textContent?.trim() || "";
+
+    fila.className = `${CLASE_FILA_GESTION} bg-white ring-2 ring-cyan-100 border border-uccLight/30`;
+    fila.innerHTML = `
+        <input type="text" id="edit-refrigerante-${id}" value="${nombreActual.replace(/"/g, "&quot;")}" maxlength="20"
+            class="${CLASE_INPUT_INLINE_GESTION}">
+        <div class="flex items-center gap-1 shrink-0">
+            <button type="button" onclick="guardarEdicionRefrigerante(${id})" class="p-2.5 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 transition-colors duration-200" title="Guardar">
+                <i class="fas fa-check"></i>
+            </button>
+            <button type="button" onclick="renderizarListaRefrigerantes()" class="p-2.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-white transition-colors duration-200" title="Cancelar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>`;
+    document.getElementById(`edit-refrigerante-${id}`)?.focus();
+}
+
+async function guardarEdicionRefrigerante(id) {
+    const input = document.getElementById(`edit-refrigerante-${id}`);
+    const nombre = input?.value.trim();
+    if (!nombre) {
+        mostrarNotificacion("error", "El nombre no puede estar vacío");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipos-gas-refrigerante/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ nombre }),
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        mostrarNotificacion("exito", "Refrigerante actualizado");
+        await renderizarListaRefrigerantes();
+        cargarSelectoresFormularios();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+async function eliminarRefrigerante(id) {
+    if (!confirm("¿Eliminar este refrigerante del catálogo?")) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipos-gas-refrigerante/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        mostrarNotificacion("exito", "Refrigerante eliminado");
+        await renderizarListaRefrigerantes();
+        cargarSelectoresFormularios();
     } catch (error) {
         mostrarNotificacion("error", error.message);
     }
@@ -1465,7 +2079,9 @@ async function eliminarEspacio(id) {
  */
 document.addEventListener("DOMContentLoaded", () => {
     console.log("📋 Inicializando cargador de inventario...");
+    aplicarVisibilidadGestionTiposEquipo();
     cargarSelectoresFormularios();
+    cargarFiltrosInventario();
     cargarInventarioCompleto();
 
     // Agregar event listener al formulario de crear equipo
@@ -1474,13 +2090,12 @@ document.addEventListener("DOMContentLoaded", () => {
         formCrearActivo.addEventListener("submit", submitCrearActivoFormulario);
     }
 
-    // Agregar event listener al buscador principal
-    const inputBusqueda = document.getElementById("input-busqueda");
-    if (inputBusqueda) {
-        inputBusqueda.addEventListener("input", filtrarTabla);
+    const inputPiso = document.getElementById("filterPiso");
+    if (inputPiso) {
+        inputPiso.addEventListener("input", filtrarTabla);
+        inputPiso.addEventListener("change", filtrarTabla);
     }
 
-    // Agregar event listeners a los selectores de estado y bloque
     const selectEstado = document.getElementById("assetStateFilter");
     if (selectEstado) {
         selectEstado.addEventListener("change", filtrarTabla);
@@ -1488,7 +2103,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const selectBloque = document.getElementById("assetBlockFilter");
     if (selectBloque) {
-        selectBloque.addEventListener("change", filtrarTabla);
+        selectBloque.addEventListener("change", () => {
+            poblarAulasPorBloque(selectBloque.value);
+            filtrarTabla();
+        });
+    }
+
+    const selectAula = document.getElementById("assetAulaFilter");
+    if (selectAula) {
+        selectAula.addEventListener("change", filtrarTabla);
     }
 });
 

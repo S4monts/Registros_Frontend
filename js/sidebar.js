@@ -42,10 +42,10 @@
 
             const botones = [
                 {
-                    id: "nav-reporte-tecnico",
-                    href: "service_report_form.html",
-                    label: "Registrar Reporte Técnico",
-                    icono: "fas fa-clipboard-list"
+                    id: "nav-mis-ordenes",
+                    href: "mis_ordenes.html",
+                    label: "Agenda de Mantenimiento",
+                    icono: "fas fa-calendar-check"
                 },
                 {
                     id: "nav-inventario",
@@ -71,21 +71,31 @@
                 }
             });
 
-            const navInventario = document.getElementById("nav-inventario");
-            if (navInventario && currentPath.includes("asset_inventory.html")) {
-                navInventario.classList.remove("text-slate-300", "hover:bg-slate-700/50", "hover:text-white");
-                navInventario.classList.add("bg-uccLight", "text-uccDark", "font-bold");
+            function marcarNavActivo(navId) {
+                const enlace = document.getElementById(navId);
+                if (!enlace) return;
 
-                const iconoContenedor = navInventario.querySelector("div");
-                const textoInventario = navInventario.querySelector("span");
+                enlace.classList.remove("text-slate-300", "hover:bg-slate-700/50", "hover:text-white");
+                enlace.classList.add("bg-uccLight", "text-uccDark", "font-bold");
+
+                const iconoContenedor = enlace.querySelector("div");
+                const texto = enlace.querySelector("span");
 
                 if (iconoContenedor) {
                     iconoContenedor.className = "text-uccDark";
                 }
 
-                if (textoInventario) {
-                    textoInventario.className = "text-uccDark";
+                if (texto) {
+                    texto.className = "text-uccDark";
                 }
+            }
+
+            if (currentPath.includes("mis_ordenes.html")) {
+                marcarNavActivo("nav-mis-ordenes");
+            } else if (currentPath.includes("asset_inventory.html")) {
+                marcarNavActivo("nav-inventario");
+            } else if (currentPath.includes("service_report_form.html")) {
+                marcarNavActivo("nav-mis-ordenes");
             }
         }
 

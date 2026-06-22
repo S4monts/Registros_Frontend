@@ -16,7 +16,7 @@ let programacionesPorId = {};
 let ordenSeleccionada = null;
 let cancelacionPendiente = false;
 
-const TIPOS_MANTENIMIENTO = { 1: 'Preventivo', 2: 'Correctivo' };
+let tiposMantenimientoPorId = {};
 
 /* ── Utilidades ───────────────────────────────────────────────────────────── */
 
@@ -186,7 +186,7 @@ function construirOrdenDesdeMantenimiento(mantenimiento) {
         aula_busqueda: normalizarTexto(equipo?.espacio?.nombre || aulaNombre),
         tecnico_nombre: nombreCompletoUsuario(tecnico),
         tecnico_busqueda: normalizarTexto(nombreCompletoUsuario(tecnico)),
-        tipo_nombre: programacion?.tipo_mantenimiento?.nombre || TIPOS_MANTENIMIENTO[tipoId] || '—',
+        tipo_nombre: programacion?.tipo_mantenimiento?.nombre || nombreTipoMantenimiento(tipoId) || '—',
         raw: mantenimiento
     };
 }
@@ -212,7 +212,7 @@ function construirOrdenDesdeProgramacion(programacion) {
         tecnico_nombre: nombreCompletoUsuario(tecnico),
         tecnico_busqueda: normalizarTexto(nombreCompletoUsuario(tecnico)),
         tipo_nombre: programacion.tipo_mantenimiento?.nombre
-            || TIPOS_MANTENIMIENTO[programacion.tipo_mantenimiento_id]
+            || nombreTipoMantenimiento(programacion.tipo_mantenimiento_id)
             || '—',
         raw: programacion
     };
@@ -243,6 +243,33 @@ function fusionarOrdenes(mantenimientos, programaciones) {
 }
 
 /* ── Catálogos y selectores ───────────────────────────────────────────────── */
+
+function nombreTipoMantenimiento(tipoId, tipoAnidado) {
+    if (tipoAnidado?.nombre) return tipoAnidado.nombre;
+    if (tipoId != null && tiposMantenimientoPorId[tipoId]) {
+        return tiposMantenimientoPorId[tipoId];
+    }
+    return null;
+}
+
+function poblarSelectTipoMantenimiento(tipos) {
+    const selectTipo = document.getElementById('selectTipo');
+    if (!selectTipo) return;
+
+    const lista = Array.isArray(tipos) ? tipos : [];
+    let html = '<option value="">Selecciona el tipo</option>';
+    lista.forEach((tipo) => {
+        html += `<option value="${tipo.id}">${escaparHtml(tipo.nombre)}</option>`;
+    });
+    selectTipo.innerHTML = html;
+}
+
+function indexarTiposMantenimiento(tipos) {
+    tiposMantenimientoPorId = {};
+    (tipos || []).forEach((tipo) => {
+        tiposMantenimientoPorId[tipo.id] = tipo.nombre;
+    });
+}
 
 function poblarSelectoresFormulario(equipos, tecnicos) {
     const selectActivo = document.getElementById('selectActivo');
@@ -282,11 +309,12 @@ async function cargarDatosIniciales() {
     const tbody = document.getElementById('tabla-mantenimientos-body');
 
     try {
-        const [equiposRes, usuariosRes, mantenimientosRes, programacionesRes] = await Promise.all([
+        const [equiposRes, usuariosRes, mantenimientosRes, programacionesRes, tiposRes] = await Promise.all([
             API.get('/equipos/?limit=100'),
             API.get('/usuarios/?limit=100&rol=Tecnico'),
             API.get('/mantenimientos/?limit=100'),
-            API.get('/programaciones/?size=100')
+            API.get('/programaciones/?size=100'),
+            API.get('/tipos-mantenimiento/'),
         ]);
 
         const listaEquipos = equiposRes?.items || equiposRes || [];
@@ -304,6 +332,10 @@ async function cargarDatosIniciales() {
 
         const listaProgramaciones = programacionesRes?.items || programacionesRes || [];
         programacionesPorId = {};
+
+        const listaTipos = Array.isArray(tiposRes) ? tiposRes : (tiposRes?.items || []);
+        indexarTiposMantenimiento(listaTipos);
+        poblarSelectTipoMantenimiento(listaTipos);
 
         mantenimientosCargadosGlobal = fusionarOrdenes(listaMantenimientos, listaProgramaciones);
 
@@ -721,8 +753,212 @@ function inicializarEventosMaintenance() {
 
 document.addEventListener('DOMContentLoaded', () => {
     inicializarEventosMaintenance();
+    aplicarVisibilidadGestionTiposMantenimiento();
     cargarDatosIniciales();
 });
+
+/* ── Gestión de tipos de mantenimiento (CRUD — superusuario) ─────────────── */
+
+const CLASE_FILA_GESTION = 'bg-slate-50 rounded-xl px-4 py-2.5 mb-2 flex justify-between items-center text-sm hover:bg-slate-100/90 transition-colors duration-200';
+const CLASE_BTN_EDITAR_GESTION = 'p-2 rounded-lg text-slate-400 hover:text-uccLight transition-colors';
+const CLASE_BTN_ELIMINAR_GESTION = 'p-2 rounded-lg text-slate-400 hover:text-red-500 transition-colors';
+const CLASE_INPUT_INLINE_GESTION = 'flex-1 border border-slate-200 hover:border-slate-300 focus:border-uccLight focus:ring-2 focus:ring-cyan-100 transition-all rounded-xl px-4 py-2.5 text-slate-800 bg-white text-sm font-medium';
+
+function esSuperusuarioProgramacion() {
+    const rol = (localStorage.getItem('rol') || localStorage.getItem('userRole') || '').toLowerCase();
+    return rol.includes('jefe de infraestructura');
+}
+
+function aplicarVisibilidadGestionTiposMantenimiento() {
+    const btn = document.getElementById('btn-gestion-tipos-mantenimiento');
+    if (btn) btn.classList.toggle('hidden', !esSuperusuarioProgramacion());
+}
+
+function formatearFrecuenciaTipoMantenimiento(frecuenciaDias) {
+    if (frecuenciaDias == null || frecuenciaDias === '') return 'Sin frecuencia';
+    return `${frecuenciaDias} día${Number(frecuenciaDias) === 1 ? '' : 's'}`;
+}
+
+function parsearFrecuenciaInput(valor) {
+    const texto = String(valor ?? '').trim();
+    if (!texto) return null;
+    const numero = Number.parseInt(texto, 10);
+    if (Number.isNaN(numero) || numero < 0) {
+        throw new Error('La frecuencia debe ser un número entero mayor o igual a 0');
+    }
+    return numero;
+}
+
+async function recargarTiposMantenimientoEnFormularios() {
+    const tipos = await API.get('/tipos-mantenimiento/');
+    const lista = Array.isArray(tipos) ? tipos : (tipos?.items || []);
+    indexarTiposMantenimiento(lista);
+    poblarSelectTipoMantenimiento(lista);
+    return lista;
+}
+
+function openGestionTiposMantenimientoModal() {
+    if (!esSuperusuarioProgramacion()) {
+        mostrarNotificacion('error', 'Solo el superusuario puede gestionar tipos de mantenimiento.');
+        return;
+    }
+    const modal = document.getElementById('modal-gestion-tipos-mantenimiento');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    renderizarListaTiposMantenimiento();
+}
+
+function closeGestionTiposMantenimientoModal() {
+    const modal = document.getElementById('modal-gestion-tipos-mantenimiento');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    const inputNombre = document.getElementById('input-nuevo-tipo-mantenimiento');
+    const inputFrecuencia = document.getElementById('input-nuevo-frecuencia-mantenimiento');
+    if (inputNombre) inputNombre.value = '';
+    if (inputFrecuencia) inputFrecuencia.value = '';
+}
+
+async function renderizarListaTiposMantenimiento() {
+    const lista = document.getElementById('lista-tipos-mantenimiento-gestion');
+    if (!lista) return;
+
+    lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-1"></i> Cargando...</p>';
+
+    try {
+        const tipos = await API.get('/tipos-mantenimiento/');
+
+        if (!tipos.length) {
+            lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No hay tipos de mantenimiento registrados</p>';
+            return;
+        }
+
+        lista.innerHTML = '';
+        tipos.forEach((tipo) => {
+            const fila = document.createElement('div');
+            fila.id = `tipo-mantenimiento-row-${tipo.id}`;
+            fila.className = CLASE_FILA_GESTION;
+            fila.innerHTML = `
+                <div class="flex-1 min-w-0 pr-2">
+                    <span class="font-semibold text-slate-800 truncate tipo-mantenimiento-nombre-display">${escaparHtml(tipo.nombre)}</span>
+                    <span class="text-xs text-slate-400 ml-2 tipo-mantenimiento-frecuencia-display">${escaparHtml(formatearFrecuenciaTipoMantenimiento(tipo.frecuencia_dias))}</span>
+                </div>
+                <div class="flex items-center gap-0.5 shrink-0">
+                    <button type="button" onclick="activarEdicionTipoMantenimiento(${tipo.id})" class="${CLASE_BTN_EDITAR_GESTION}" title="Editar">
+                        <i class="fas fa-pen text-xs"></i>
+                    </button>
+                    <button type="button" onclick="eliminarTipoMantenimiento(${tipo.id})" class="${CLASE_BTN_ELIMINAR_GESTION}" title="Eliminar">
+                        <i class="fas fa-trash text-xs"></i>
+                    </button>
+                </div>`;
+            fila.dataset.frecuencia = tipo.frecuencia_dias ?? '';
+            lista.appendChild(fila);
+        });
+    } catch (error) {
+        lista.innerHTML = `<p class="text-xs text-red-500 text-center py-6">${escaparHtml(extraerMensajeError(error))}</p>`;
+        mostrarNotificacion('error', extraerMensajeError(error));
+    }
+}
+
+async function submitCrearTipoMantenimiento() {
+    const inputNombre = document.getElementById('input-nuevo-tipo-mantenimiento');
+    const inputFrecuencia = document.getElementById('input-nuevo-frecuencia-mantenimiento');
+    const nombre = inputNombre?.value.trim();
+    if (!nombre) {
+        mostrarNotificacion('error', 'Ingresa el nombre del tipo de mantenimiento');
+        return;
+    }
+
+    let frecuencia_dias = null;
+    try {
+        frecuencia_dias = parsearFrecuenciaInput(inputFrecuencia?.value);
+    } catch (error) {
+        mostrarNotificacion('error', extraerMensajeError(error));
+        return;
+    }
+
+    const payload = { nombre };
+    if (frecuencia_dias != null) payload.frecuencia_dias = frecuencia_dias;
+
+    try {
+        await API.post('/tipos-mantenimiento/', payload);
+        if (inputNombre) inputNombre.value = '';
+        if (inputFrecuencia) inputFrecuencia.value = '';
+        mostrarNotificacion('exito', `Tipo de mantenimiento "${nombre}" registrado`);
+        await renderizarListaTiposMantenimiento();
+        await recargarTiposMantenimientoEnFormularios();
+    } catch (error) {
+        mostrarNotificacion('error', extraerMensajeError(error));
+    }
+}
+
+function activarEdicionTipoMantenimiento(id) {
+    const fila = document.getElementById(`tipo-mantenimiento-row-${id}`);
+    if (!fila) return;
+    const nombreActual = fila.querySelector('.tipo-mantenimiento-nombre-display')?.textContent?.trim() || '';
+    const frecuenciaActual = fila.dataset.frecuencia ?? '';
+
+    fila.className = `${CLASE_FILA_GESTION} flex-col sm:flex-row sm:items-center bg-white ring-2 ring-cyan-100 border border-uccLight/30 gap-3`;
+    fila.innerHTML = `
+        <div class="flex flex-col sm:flex-row gap-2 flex-1 min-w-0 w-full">
+            <input type="text" id="edit-tipo-mantenimiento-nombre-${id}" value="${nombreActual.replace(/"/g, '&quot;')}" maxlength="30"
+                placeholder="Nombre" class="${CLASE_INPUT_INLINE_GESTION}">
+            <input type="number" id="edit-tipo-mantenimiento-frecuencia-${id}" value="${frecuenciaActual.replace(/"/g, '&quot;')}" min="0" step="1"
+                placeholder="Frecuencia (días)" class="${CLASE_INPUT_INLINE_GESTION} sm:max-w-[160px]">
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+            <button type="button" onclick="guardarEdicionTipoMantenimiento(${id})" class="p-2.5 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 transition-colors duration-200" title="Guardar">
+                <i class="fas fa-check"></i>
+            </button>
+            <button type="button" onclick="renderizarListaTiposMantenimiento()" class="p-2.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-white transition-colors duration-200" title="Cancelar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>`;
+    document.getElementById(`edit-tipo-mantenimiento-nombre-${id}`)?.focus();
+}
+
+async function guardarEdicionTipoMantenimiento(id) {
+    const inputNombre = document.getElementById(`edit-tipo-mantenimiento-nombre-${id}`);
+    const inputFrecuencia = document.getElementById(`edit-tipo-mantenimiento-frecuencia-${id}`);
+    const nombre = inputNombre?.value.trim();
+    if (!nombre) {
+        mostrarNotificacion('error', 'El nombre no puede estar vacío');
+        return;
+    }
+
+    let frecuencia_dias = null;
+    try {
+        frecuencia_dias = parsearFrecuenciaInput(inputFrecuencia?.value);
+    } catch (error) {
+        mostrarNotificacion('error', extraerMensajeError(error));
+        return;
+    }
+
+    const payload = { nombre, frecuencia_dias };
+
+    try {
+        await API.put(`/tipos-mantenimiento/${id}`, payload);
+        mostrarNotificacion('exito', 'Tipo de mantenimiento actualizado');
+        await renderizarListaTiposMantenimiento();
+        await recargarTiposMantenimientoEnFormularios();
+    } catch (error) {
+        mostrarNotificacion('error', extraerMensajeError(error));
+    }
+}
+
+async function eliminarTipoMantenimiento(id) {
+    if (!confirm('¿Eliminar este tipo de mantenimiento del catálogo?')) return;
+
+    try {
+        await API.delete(`/tipos-mantenimiento/${id}`);
+        mostrarNotificacion('exito', 'Tipo de mantenimiento eliminado');
+        await renderizarListaTiposMantenimiento();
+        await recargarTiposMantenimientoEnFormularios();
+    } catch (error) {
+        mostrarNotificacion('error', extraerMensajeError(error));
+    }
+}
 
 /* ── Exposición global (handlers inline del HTML) ─────────────────────────── */
 window.openProgramarMantenimientoModal = openProgramarMantenimientoModal;
@@ -733,3 +969,10 @@ window.closeDetalleOrdenModal = closeDetalleOrdenModal;
 window.guardarCambiosOrden = guardarCambiosOrden;
 window.cancelarMantenimiento = cancelarMantenimiento;
 window.mostrarNotificacion = mostrarNotificacion;
+window.openGestionTiposMantenimientoModal = openGestionTiposMantenimientoModal;
+window.closeGestionTiposMantenimientoModal = closeGestionTiposMantenimientoModal;
+window.submitCrearTipoMantenimiento = submitCrearTipoMantenimiento;
+window.activarEdicionTipoMantenimiento = activarEdicionTipoMantenimiento;
+window.guardarEdicionTipoMantenimiento = guardarEdicionTipoMantenimiento;
+window.eliminarTipoMantenimiento = eliminarTipoMantenimiento;
+window.renderizarListaTiposMantenimiento = renderizarListaTiposMantenimiento;
