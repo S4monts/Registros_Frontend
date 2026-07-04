@@ -936,7 +936,7 @@ async function cargarHistorialIntervenciones(equipoId, forzarVacio = false) {
                 <td class="px-6 py-3">
                     <span class="bg-cyan-50 text-uccLight px-2 py-1 rounded-md text-xs font-bold">${item.tipo_nombre || "—"}</span>
                 </td>
-                <td class="px-6 py-3 text-slate-600 text-sm">${item.detalle_mantenimiento || "Sin observaciones"}</td>
+                <td class="px-6 py-3 text-slate-600 text-sm align-top">${formatearObservacionesMantenimiento(item.detalle_mantenimiento)}</td>
             `;
             tbody.appendChild(fila);
         });
@@ -1125,7 +1125,7 @@ async function cargarFiltrosInventario() {
     try {
         const [bloquesRes, espaciosRes] = await Promise.all([
             fetch(`${API_BASE_URL}/bloques/?limit=100`),
-            fetch(`${API_BASE_URL}/espacios/?limit=500`),
+            fetch(`${API_BASE_URL}/espacios/?limit=100`),
         ]);
 
         if (bloquesRes.ok) {
@@ -1272,7 +1272,7 @@ async function renderizarListaMarcas() {
     lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-1"></i> Cargando...</p>';
 
     try {
-        const response = await fetch(`${API_BASE_URL}/marcas/?limit=500`);
+        const response = await fetch(`${API_BASE_URL}/marcas/?limit=100`);
         if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
         const marcas = await response.json();
 
@@ -1760,8 +1760,10 @@ function aplicarVisibilidadGestionTiposEquipo() {
     const esSuper = esSuperusuarioInventario();
     const btnTipos = document.getElementById("btn-gestion-tipos-equipo");
     const btnRefrig = document.getElementById("btn-gestion-refrigerantes");
+    const btnComponentes = document.getElementById("btn-gestion-tipos-componente");
     if (btnTipos) btnTipos.classList.toggle("hidden", !esSuper);
     if (btnRefrig) btnRefrig.classList.toggle("hidden", !esSuper);
+    if (btnComponentes) btnComponentes.classList.toggle("hidden", !esSuper);
 }
 
 function openGestionTiposEquipoModal() {
@@ -2069,6 +2071,162 @@ async function eliminarRefrigerante(id) {
         mostrarNotificacion("exito", "Refrigerante eliminado");
         await renderizarListaRefrigerantes();
         cargarSelectoresFormularios();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+// ========================================
+// GESTIÓN DE TIPOS DE COMPONENTES / INSUMOS (CRUD — superusuario)
+// ========================================
+
+function openGestionTiposComponenteModal() {
+    if (!esSuperusuarioInventario()) {
+        mostrarNotificacion("error", "Solo el superusuario puede gestionar tipos de insumos.");
+        return;
+    }
+    const modal = document.getElementById("modal-gestion-tipos-componente");
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    renderizarListaTiposComponente();
+}
+
+function closeGestionTiposComponenteModal() {
+    const modal = document.getElementById("modal-gestion-tipos-componente");
+    if (!modal) return;
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    const input = document.getElementById("input-nuevo-tipo-componente");
+    if (input) input.value = "";
+}
+
+async function renderizarListaTiposComponente() {
+    const lista = document.getElementById("lista-tipos-componente-gestion");
+    if (!lista) return;
+
+    lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-1"></i> Cargando...</p>';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipo_componentes/`);
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+        const tipos = await response.json();
+
+        if (!tipos.length) {
+            lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No hay tipos de insumos registrados</p>';
+            return;
+        }
+
+        lista.innerHTML = "";
+        tipos.forEach((tipo) => {
+            const fila = document.createElement("div");
+            fila.id = `tipo-componente-row-${tipo.id}`;
+            fila.className = CLASE_FILA_GESTION;
+            fila.innerHTML = `
+                <span class="font-semibold text-slate-800 truncate tipo-componente-nombre-display flex-1 min-w-0 pr-2">${tipo.nombre}</span>
+                <div class="flex items-center gap-0.5 shrink-0">
+                    <button type="button" onclick="activarEdicionTipoComponente(${tipo.id})" class="${CLASE_BTN_EDITAR_GESTION}" title="Editar">
+                        <i class="fas fa-pen text-xs"></i>
+                    </button>
+                    <button type="button" onclick="eliminarTipoComponente(${tipo.id})" class="${CLASE_BTN_ELIMINAR_GESTION}" title="Eliminar">
+                        <i class="fas fa-trash text-xs"></i>
+                    </button>
+                </div>`;
+            lista.appendChild(fila);
+        });
+    } catch (error) {
+        lista.innerHTML = `<p class="text-xs text-red-500 text-center py-6">${error.message}</p>`;
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+async function submitCrearTipoComponente() {
+    const input = document.getElementById("input-nuevo-tipo-componente");
+    const nombre = input?.value.trim();
+    if (!nombre) {
+        mostrarNotificacion("error", "Ingresa el nombre del insumo o componente");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipo_componentes/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ nombre }),
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        input.value = "";
+        mostrarNotificacion("exito", `Insumo "${nombre}" registrado`);
+        await renderizarListaTiposComponente();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+function activarEdicionTipoComponente(id) {
+    const fila = document.getElementById(`tipo-componente-row-${id}`);
+    if (!fila) return;
+
+    const nombreActual = fila.querySelector(".tipo-componente-nombre-display")?.textContent?.trim() || "";
+
+    fila.className = `${CLASE_FILA_GESTION} bg-white ring-2 ring-cyan-100 border border-uccLight/30`;
+    fila.innerHTML = `
+        <input type="text" id="edit-tipo-componente-nombre-${id}" value="${nombreActual.replace(/"/g, "&quot;")}" maxlength="60"
+            class="${CLASE_INPUT_INLINE_GESTION} flex-1 min-w-0">
+        <div class="flex items-center gap-0.5 shrink-0">
+            <button type="button" onclick="guardarEdicionTipoComponente(${id})" class="p-2.5 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 transition-colors duration-200" title="Guardar">
+                <i class="fas fa-check"></i>
+            </button>
+            <button type="button" onclick="renderizarListaTiposComponente()" class="p-2.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-white transition-colors duration-200" title="Cancelar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>`;
+}
+
+async function guardarEdicionTipoComponente(id) {
+    const nombre = document.getElementById(`edit-tipo-componente-nombre-${id}`)?.value.trim();
+    if (!nombre) {
+        mostrarNotificacion("error", "El nombre no puede estar vacío");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipo_componentes/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ nombre }),
+        });
+        if (!response.ok) throw new Error(extraerMensajeError(await response.json()));
+
+        mostrarNotificacion("exito", "Insumo actualizado");
+        await renderizarListaTiposComponente();
+    } catch (error) {
+        mostrarNotificacion("error", error.message);
+    }
+}
+
+async function eliminarTipoComponente(id) {
+    if (!confirm("¿Eliminar este insumo del catálogo?")) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/tipo_componentes/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        if (!response.ok) {
+            const payload = response.status === 204 ? null : await response.json();
+            throw new Error(extraerMensajeError(payload));
+        }
+
+        mostrarNotificacion("exito", "Insumo eliminado");
+        await renderizarListaTiposComponente();
     } catch (error) {
         mostrarNotificacion("error", error.message);
     }

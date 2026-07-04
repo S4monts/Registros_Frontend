@@ -158,7 +158,7 @@ async function cargarEspaciosPorBloque(bloqueId) {
     if (!bloqueId) return;
 
     try {
-        const data = await API.get(`/espacios/?bloque_id=${bloqueId}&limit=200`);
+        const data = await API.get(`/espacios/?bloque_id=${bloqueId}&limit=100`);
         catalogoEspacios = Array.isArray(data) ? data : (data.items || []);
 
         const pisos = [...new Set(catalogoEspacios.map((e) => e.piso).filter((p) => p !== null && p !== undefined))].sort((a, b) => a - b);

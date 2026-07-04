@@ -106,6 +106,10 @@
                             <p class="text-slate-500 font-medium mt-2">Base de datos de activos instalados en campus Montería</p>
                         </div>
                         <div class="flex gap-3">
+                            <button type="button" id="btn-gestion-tipos-componente" onclick="openGestionTiposComponenteModal()" title="Gestionar tipos de insumos" class="hidden bg-uccDark hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                                <i class="fas fa-toolbox"></i>
+                                <span>Gestionar Insumos</span>
+                            </button>
                             <button id="btn-registrar-activo" onclick="openCrearActivoModal()" class="bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
                                 <i class="fas fa-plus"></i>
                                 <span>Registrar Nuevo Activo</span>
@@ -407,6 +411,41 @@
             <div class="px-6 py-4 flex-1 min-h-0 overflow-hidden flex flex-col bg-white">
                 <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 shrink-0">Refrigerantes registrados</p>
                 <div id="lista-refrigerantes-gestion" class="max-h-[50vh] overflow-y-auto pr-2 flex-1">
+                    <p class="text-sm text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-2 text-uccLight"></i>Cargando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gestión de Tipos de Insumos / Componentes -->
+    <div id="modal-gestion-tipos-componente" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-white max-w-md w-full rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="shrink-0 px-6 py-5 border-b border-slate-100 flex items-center justify-between gap-3 bg-white">
+                <div class="min-w-0">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-uccLight mb-0.5">Catálogo</p>
+                    <h3 class="text-slate-800 font-extrabold text-xl leading-tight truncate">Gestión de Insumos y Componentes</h3>
+                </div>
+                <button type="button" onclick="closeGestionTiposComponenteModal()" class="shrink-0 w-9 h-9 rounded-lg border border-slate-200 text-slate-400 hover:text-uccLight hover:bg-cyan-50/60 flex items-center justify-center transition-all" aria-label="Cerrar">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            <div class="px-6 py-4 border-b border-slate-50 shrink-0 bg-white">
+                <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+                    <div class="flex-1 min-w-0">
+                        <label for="input-nuevo-tipo-componente" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Nombre del insumo</label>
+                        <input id="input-nuevo-tipo-componente" type="text" maxlength="60" placeholder="Ej: Capacitor de Marcha"
+                            class="w-full border border-slate-200 focus:border-uccLight focus:ring-4 focus:ring-cyan-50 rounded-xl px-3 py-2.5 text-sm bg-slate-50/50 transition-all text-slate-700 placeholder-slate-400">
+                    </div>
+                    <button type="button" onclick="submitCrearTipoComponente()"
+                        class="shrink-0 bg-uccLight hover:bg-[#00b8d4] text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm whitespace-nowrap">
+                        <i class="fas fa-plus text-xs"></i>
+                        <span>Agregar</span>
+                    </button>
+                </div>
+            </div>
+            <div class="px-6 py-4 flex-1 min-h-0 overflow-hidden flex flex-col bg-white">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 shrink-0">Insumos registrados</p>
+                <div id="lista-tipos-componente-gestion" class="max-h-[50vh] overflow-y-auto pr-2 flex-1">
                     <p class="text-sm text-slate-400 text-center py-6"><i class="fas fa-spinner fa-spin mr-2 text-uccLight"></i>Cargando...</p>
                 </div>
             </div>
@@ -777,6 +816,8 @@
         </div>
     </div>
 
+<script src="js/config.js"></script>
+<script src="js/observaciones-utils.js"></script>
 <script src="js/sidebar.js"></script>
 <script src="js/inventory-loader.js"></script>
 </body>

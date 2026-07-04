@@ -569,11 +569,6 @@ function inicializarFormularioReporte() {
             reiniciarFormularioEditable();
         }
     });
-
-    document.getElementById('btn-cerrar-sesion')?.addEventListener('click', () => {
-        localStorage.clear();
-        window.location.href = 'auth_login.html';
-    });
 }
 
 function mostrarAccesoDesdeAgenda() {

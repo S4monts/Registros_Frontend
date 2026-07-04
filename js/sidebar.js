@@ -10,6 +10,7 @@
         const currentPath = window.location.pathname.toLowerCase();
 
         if (!sidebar || !overlay) {
+            vincularBotonCerrarSesion();
             console.warn("⚠️ Sidebar: no se encontraron los elementos estructurales necesarios.");
             return;
         }
@@ -123,6 +124,30 @@
             });
         }
 
+        function vincularBotonCerrarSesion() {
+            const accionLogout = () => {
+                if (typeof window.logout === "function") {
+                    window.logout();
+                    return;
+                }
+                localStorage.clear();
+                window.location.href = "/";
+            };
+
+            document.querySelectorAll("#btn-cerrar-sesion, button[onclick*='logout']").forEach((boton) => {
+                if (boton.dataset.logoutBound === "1") {
+                    return;
+                }
+                boton.dataset.logoutBound = "1";
+                boton.removeAttribute("onclick");
+                boton.addEventListener("click", (evento) => {
+                    evento.preventDefault();
+                    evento.stopPropagation();
+                    accionLogout();
+                });
+            });
+        }
+
         function vincularControlesMoviles() {
             reemplazarYVincular('[id*="btn-menu"], .fa-bars, #btn-menu-mobile, .toggle-sidebar', toggleSidebar);
 
@@ -149,6 +174,7 @@
         }
 
         limpiarEInyectarNavTecnico();
+        vincularBotonCerrarSesion();
         vincularControlesMoviles();
         cerrarSidebar();
 

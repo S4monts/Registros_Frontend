@@ -1,4 +1,41 @@
 // js/api.js
+
+function extraerMensajeErrorApi(datos, respuesta) {
+    if (datos == null) {
+        return respuesta?.statusText || "Error en la petición";
+    }
+
+    const detalle = datos.detail ?? datos.message ?? datos.error;
+
+    if (typeof detalle === "string" && detalle.trim()) {
+        return detalle;
+    }
+
+    if (Array.isArray(detalle)) {
+        return detalle
+            .map((item) => {
+                if (typeof item === "string") return item;
+                if (item?.msg) {
+                    const campo = Array.isArray(item.loc) ? item.loc.filter(Boolean).join(".") : "";
+                    return campo ? `${campo}: ${item.msg}` : item.msg;
+                }
+                return JSON.stringify(item);
+            })
+            .join("; ");
+    }
+
+    if (detalle && typeof detalle === "object") {
+        if (typeof detalle.msg === "string") return detalle.msg;
+        try {
+            return JSON.stringify(detalle);
+        } catch {
+            return "Error en la petición";
+        }
+    }
+
+    return "Error en la petición";
+}
+
 const API = {
     async peticion(endpoint, opciones = {}) {
         const token = localStorage.getItem("token");
@@ -29,12 +66,15 @@ const API = {
             if (respuesta.status === 204) return true;
 
             const datos = await respuesta.json();
-            if (!respuesta.ok) throw new Error(datos.detail || "Error en la petición");
+            if (!respuesta.ok) {
+                throw new Error(extraerMensajeErrorApi(datos, respuesta));
+            }
 
             return datos;
         } catch (error) {
-            console.error("Error API:", error.message);
-            throw error;
+            const mensaje = error?.message || String(error);
+            console.error("Error API:", mensaje);
+            throw error instanceof Error ? error : new Error(mensaje);
         }
     },
 
@@ -62,7 +102,7 @@ API.authLogin = async function authLogin(email, password) {
         const datos = await respuesta.json();
 
         if (!respuesta.ok) {
-            throw new Error(datos.detail || 'Credenciales incorrectas');
+            throw new Error(extraerMensajeErrorApi(datos, respuesta) || 'Credenciales incorrectas');
         }
 
         // 1. Persistencia del Token JWT Base
@@ -91,15 +131,15 @@ API.authLogin = async function authLogin(email, password) {
 };
 
 // Helper global para cierre de sesión (compatible con botones inline onclick="logout()")
-API.logout = function() {
+API.logout = function logout() {
     try {
         localStorage.clear();
-        // Redirigir al login
         window.location.href = "/";
     } catch (err) {
-        console.error('Error durante logout:', err);
+        console.error("Error durante logout:", err);
     }
 };
 
-// Exponer función global por compatibilidad con HTML existentes
-window.logout = API.logout;
+if (typeof window.logout !== "function") {
+    window.logout = API.logout;
+}
